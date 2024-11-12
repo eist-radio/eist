@@ -9,18 +9,18 @@
 
 /* text selection */
 ::-moz-selection {
-  background: $highlight-grey;
+  background: $pantone-macaw-green;
 }
 
 ::selection {
-  background: $highlight-grey;
+  background: $pantone-macaw-green;
 }
 
 /* Webkit Scrollbar Customize */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background: $midnightblue;
+  background: $pantone-macaw-green;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -32,7 +32,7 @@
 }
 
 html {
-  background: $light-grey;
+  background: $pantone-macaw-green;
   line-height: 1.6;
   letter-spacing: .06em;
   scroll-behavior: smooth;
