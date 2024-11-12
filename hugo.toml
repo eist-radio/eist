@@ -114,8 +114,8 @@ expiryDate = ["expiryDate"]
   # usesAnimation = true
 
   [[params.socialLinks]]
-    name = "github"
-    url = "https://github.com/1bl4z3r/hermit-V2/tree/staging"
+    name = "instagram"
+    url = "https://www.instagram.com/eistlive"
 
 [menu]
 
@@ -124,7 +124,7 @@ expiryDate = ["expiryDate"]
 #     url = "posts/"
 #     weight = 10
 
-  [[menu.main]]
-    name = "About"
-    url = "about/"
-    weight = 20
+#   [[menu.main]]
+#     name = "About"
+#     url = "about/"
+#     weight = 20
