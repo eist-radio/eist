@@ -60,7 +60,6 @@ jobs:
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
-            --verbose \
             && cp public/en/404.html public/404.html 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
