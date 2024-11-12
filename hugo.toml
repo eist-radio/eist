@@ -79,7 +79,7 @@ expiryDate = ["expiryDate"]
   description = "Continuing Hermit's legacy to be minimal and fast theme"
   # images = [""]
   # Pantone 13-1016 Tpx Wheat Color
-  themeColor = "#E3C7A6"
+  themeColor = "#2c3e50"
 
   #homeSubtitle = "Continuing Hermit's legacy to be minimal and fast theme"
   footerCopyright = ' <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
@@ -114,8 +114,23 @@ expiryDate = ["expiryDate"]
   # usesAnimation = true
 
   [[params.socialLinks]]
+    name = "email"
+    url = "mailto:eistlive@gmail.com"
+
+  [[params.socialLinks]]
+    name = "discord"
+    url = "https://discord.com/channels/1292547227289387018/1297937382309630005"
+
+  [[params.socialLinks]]
     name = "instagram"
     url = "https://www.instagram.com/eistlive"
+
+  [[params.socialLinks]]
+    name = "github"
+    url = "https://github.com/aidanreilly/eist"
+
+
+
 
 [menu]
 
