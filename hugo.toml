@@ -31,43 +31,15 @@ rssLimit = 10
 copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
 enableEmoji = true
 
-#[services]
-#  [services.disqus]
-#    shortname = ''
-#  [services.googleAnalytics]
-#    id = ''
-
-
 [frontmatter]
 date = ["lastmod", "date", "publishDate"]
 lastmod = ["date", "lastmod", ":git", "publishDate"]
 publishDate = ["publishDate", "date"]
 expiryDate = ["expiryDate"]
 
-
 [params.author]
   name = "Eist"
   about = "about"
-
-[blackfriday]
-  # hrefTargetBlank = true
-  # noreferrerLinks = true
-  # nofollowLinks = true
-
-[taxonomies]
-  tag = "tags"
-  # Categories are disabled by default.
-  # category = "categories"
-
-[markup]
-  [markup.goldmark]
-    [markup.goldmark.extensions]
-      [markup.goldmark.extensions.passthrough]
-        enable = true
-        [markup.goldmark.extensions.passthrough.delimiters]
-          block = [['\[', '\]'], ['$$', '$$']]
-          inline = [['\(', '\)']]
-
 
 [params]
   dateform        = "Jan 2, 2006"
@@ -76,15 +48,9 @@ expiryDate = ["expiryDate"]
   dateformNumTime = "2006-01-02 15:04 -0700"
 
   # Metadata mostly used in document's head
-  description = "Continuing Hermit's legacy to be minimal and fast theme"
-  # images = [""]
-  # Pantone 13-1016 Tpx Wheat Color
+  description = "Éist is an internet radio station based in Cork, Ireland."
   themeColor = "#2c3e50"
-
-  #homeSubtitle = "Continuing Hermit's legacy to be minimal and fast theme"
   footerCopyright = ' <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
-  # bgImg = ""
-  # gitUrl = "https://github.com/1bl4z3r/hermit-V2/tree/staging"
 
   justifyContent = false
 
@@ -96,13 +62,8 @@ expiryDate = ["expiryDate"]
   global_mathjax = false
   readTime = true
   readTimeSeparator = "\u2026 \u23F2 Reading Time:"
-  # legacyLayout = false
   shareSocial = true
-  # googleTagManager = "GTM-XXXXXXXX"
-  # tagSymbol = "#"
-  # categorySymbol = "⊲"
   pinned = "Pinned Posts"
-  # pinnedSVGname = "pin"
   descriptionInPosts = true
   # initialPublish = "Initally Posted on: "
   human = ["single","posts"]
