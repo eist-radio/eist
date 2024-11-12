@@ -1,6 +1,6 @@
 baseURL = "https://aidanreilly.github.io/eist/"
 defaultContentLanguage = "en"
-defaultContentLanguageInSubdir = true
+defaultContentLanguageInSubdir = false
 
 # [outputs]
 #   home = ['html', 'rss']
