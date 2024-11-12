@@ -2,14 +2,6 @@ baseURL = "https://aidanreilly.github.io/eist/"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 
-# [outputs]
-#   home = ['html', 'rss']
-#   page = ['html']
-#   rss = ['rss']
-#   section = ['html', 'rss']
-#   taxonomy = ['html', 'rss']
-#   term = ['html', 'rss']
-
 [languages]
   [languages.en]
     title = 'Éist'
@@ -19,12 +11,8 @@ defaultContentLanguageInSubdir = false
  
 languageCode = "en-us"
 
-# title = "Hermit - V2"
-# enableGitInfo = true
-
 pygmentsCodefences  = true
 pygmentsUseClasses  = true
-#hasCJKLanguage = true
 
 rssLimit = 10
 
@@ -65,14 +53,12 @@ expiryDate = ["expiryDate"]
   shareSocial = true
   pinned = "Pinned Posts"
   descriptionInPosts = true
-  # initialPublish = "Initally Posted on: "
   human = ["single","posts"]
-  # denyRobots = "noindex, nofollow, noarchive"
+  denyRobots = "noindex, nofollow, noarchive"
   # allowRobots = "index, follow"
   # siteNoIndex = false
-  # noIndexPages = ["404 Page not found"]
+  noIndexPages = ["404 Page not found"]
   # footerHideThemeName = false
-  # usesAnimation = true
 
   [[params.socialLinks]]
     name = "email"
@@ -89,9 +75,6 @@ expiryDate = ["expiryDate"]
   [[params.socialLinks]]
     name = "github"
     url = "https://github.com/aidanreilly/eist"
-
-
-
 
 [menu]
 
