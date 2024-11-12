@@ -17,7 +17,19 @@
 			<h1 id="home-title">{{ .Site.Title }}</h1>
 			{{- with .Site.Params.homeSubtitle }}
 			<p id="home-subtitle">
-				<a href="http://stream-relay-geo.ntslive.net/stream" onclick="if (window.currentAudio) { window.currentAudio.pause(); } window.currentAudio = new Audio('http://stream-relay-geo.ntslive.net/stream'); window.currentAudio.play(); document.querySelector('#home-subtitle a').style.fontWeight = 'bold'; return false;">(Listen)</a>
+			    <a href="http://stream-relay-geo.ntslive.net/stream" 
+			       onclick="
+			            if (window.currentAudio && !window.currentAudio.paused) {
+			                window.currentAudio.pause();
+			                window.currentAudio = null;  // Clear current audio instance
+			            }
+			            // Create a new Audio object and play
+			            window.currentAudio = new Audio('http://stream-relay-geo.ntslive.net/stream');
+			            window.currentAudio.play();
+			            document.querySelector('#home-subtitle a').style.fontWeight = 'bold';
+			            return false;">
+			        (Listen)
+			    </a>
 			</p>
 			{{- end }}
 			{{- with .Site.Params.socialLinks }}
