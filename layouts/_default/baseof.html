@@ -3,12 +3,9 @@
 <!DOCTYPE html>
 <html lang="{{.Site.LanguageCode}}">
 <head>
-{{- if .Site.Params.googleTagManager -}}{{- partial "googleTagManager_head.html" . -}}{{- end -}}
-{{- partial "analytics.html" . -}}
 {{- partial "site-meta.html" . -}}
 {{ $author := (.Params.author | default .Site.Params.author.name) -}}<meta name="author" content="{{ $author }}">
 {{- with .Page.Params.description | default .Site.Params.description -}}<meta name="description" content="{{.}}">{{- end -}}
-{{- partial "structure-extra.html" . -}}
 {{- partial "webschema.html" . -}}
 <title>{{.Title}}</title>
 {{ range .AlternativeOutputFormats -}}
@@ -24,7 +21,6 @@
 {{- if templates.Exists "partials/extra-head.html" -}}{{- partial "extra-head.html" . -}}{{- end -}}
 </head>
 <body id="page">
-{{- if .Site.Params.googleTagManager -}}{{- partial "googleTagManager_body.html" . -}}{{- end -}}
 {{- block "header" . -}}{{ end -}}
 {{- block "main" . -}}{{ end -}}
 {{- block "footer" . -}}{{ end }}
@@ -40,8 +36,6 @@
 {{ $c_js := resources.Get . | minify | fingerprint -}}
 <script defer src="{{ $c_js.Permalink }}" {{ printf "integrity=%q" $c_js.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
 {{- end }}
-{{- partial "mathjax.html" . -}}
-{{- partial "mermaid.html" . -}}
 {{- if templates.Exists "partials/extra-foot.html" -}}{{- partial "extra-foot.html" . -}}{{- end }}
 </body>
 
