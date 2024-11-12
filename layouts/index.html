@@ -1,51 +1,51 @@
 {{ define "head" }}
-    {{ if .Site.Params.bgImg -}}
-    <style>.bg-img {background-image: url('{{.Site.Params.bgImg}}');}</style>
-    {{- else if .Site.Params.images -}}
-        {{- range first 1 .Site.Params.images -}}
-        <style>.bg-img {background-image: url('{{. | absURL}}');}</style>
-        {{- end -}}
-    {{- end -}}
+{{ if .Site.Params.bgImg -}}
+<style>
+.bg-img {
+    background-image: url('{{.Site.Params.bgImg}}');
+}
+</style>
+{{- else if .Site.Params.images -}}
+{{- range first 1 .Site.Params.images -}}
+<style>
+.bg-img {
+    background-image: url('{{. | absURL}}');
+}
+</style>
+{{- end -}}
+{{- end -}}
 {{ end }}
-
 {{ define "main" }}
-    {{- if (or .Site.Params.images .Site.Params.bgImg) }}
-    <div class="bg-img"></div>
-    {{- end }}
-    <div id="spotlight">
-        <div id="home-center">
-            <h1 id="home-title">{{ .Site.Title }}</h1>
-            {{- with .Site.Params.homeSubtitle }}
-            <p id="home-subtitle">
-                <a href="http://stream-relay-geo.ntslive.net/stream" 
-                   onclick="
-                        if (!window.currentAudio) {
-                            // Create the audio if it doesn't exist
-                            window.currentAudio = new Audio('http://stream-relay-geo.ntslive.net/stream');
-                            window.currentAudio.play();
-                            document.querySelector('#home-subtitle a').style.fontWeight = 'bold';
-                        } else if (window.currentAudio.paused) {
-                            // Resume playing if paused
-                            window.currentAudio.play();
-                            document.querySelector('#home-subtitle a').style.fontWeight = 'bold';
-                        } else {
-                            // Pause if playing
-                            window.currentAudio.pause();
-                            document.querySelector('#home-subtitle a').style.fontWeight = 'normal';
-                        }
-                        return false; // Prevents navigating to the URL
-                    ">(Listen)</a>
-            </p>
-            {{- end }}
-            {{- with .Site.Params.socialLinks }}
-            <div id="home-links">
-                {{ partialCached "social-icons.html" . }}
-            </div>
-            {{- end }}
-            <nav id="home-nav" class="site-nav">
-                {{ partialCached "menu.html" . }}
-            </nav>
+{{- if (or .Site.Params.images .Site.Params.bgImg) }}
+<div class="bg-img"></div>
+{{- end }}
+<div id="spotlight">
+    <div id="home-center">
+        <h1 id="home-title">{{ .Site.Title }}</h1>
+        <p id="home-subtitle">
+            <a href="http://stream-relay-geo.ntslive.net/stream" onclick=
+            "if (!window.currentAudio) {
+                window.currentAudio = new Audio('http://stream-relay-geo.ntslive.net/stream');
+                window.currentAudio.play();
+                document.querySelector('#home-subtitle a').style.fontWeight = 'bold';
+            } else if (window.currentAudio.paused) {
+                window.currentAudio.play();
+                document.querySelector('#home-subtitle a').style.fontWeight = 'bold';
+            } else {
+                window.currentAudio.pause();
+                document.querySelector('#home-subtitle a').style.fontWeight = 'normal';
+                        };
+                        return false;">(Listen)</a>
+        </p>
+        {{- with .Site.Params.socialLinks }}
+        <div id="home-links">
+            {{ partialCached "social-icons.html" . }}
         </div>
-        <div id="home-footer">{{ partialCached "single-footer.html" . }}</div>
+        {{- end }}
+        <nav id="home-nav" class="site-nav">
+            {{ partialCached "menu.html" . }}
+        </nav>
     </div>
+    <div id="home-footer">{{ partialCached "single-footer.html" . }}</div>
+</div>
 {{ end }}

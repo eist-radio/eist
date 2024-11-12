@@ -1,11 +1,11 @@
 This is a human
 
 /* TEAM */
-Your title: BLZR (1BL4Z3R).
-Site: github/com/1bl4z3r
+Your title: Éist 
+Site: eist.live
 
 /* THANKS */
-Name: Hermit - V2
+Name: Éist
 
 /* SITE */
 Last update: 2024/07/11
