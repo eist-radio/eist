@@ -38,6 +38,10 @@ html {
   scroll-behavior: smooth;
 }
 
+body.with-header {
+  padding-top: 40px;
+}
+
 body,
 button,
 input,
@@ -242,12 +246,11 @@ table {
 #site-header {
   position: fixed;
   z-index: 1;
-  bottom: 0;
+  top: 0;
   width: 100%;
   box-sizing: border-box;
-  box-shadow: -1px -2px 3px rgba(0, 0, 0, 0.45);
-  background-color: $dark-grey;
-  animation-duration: .3s;
+  background-color: $pantone-2060;
+  animation-duration: .8s;
 }
 
 .hdr-wrapper {
@@ -285,6 +288,7 @@ table {
 
 .hdr-icons {
   font-size: 1.2em;
+  padding: 0.1em
 }
 
 .hdr-links {
@@ -312,14 +316,15 @@ table {
 
 #mobile-menu {
   position: fixed;
-  bottom: 4.8em;
-  right: 4.5em;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: none;
   padding: .6em 1.8em;
   z-index: 1;
   box-sizing: border-box;
-  box-shadow: -1px -2px 3px 0px rgba(0, 0, 0, 0.45);
-  background-color: $dark-grey;
+  background-color: $pantone-2060;
 
   ul {
     list-style: none;
@@ -332,7 +337,7 @@ table {
 
 #site-footer {
   text-align: center;
-  font-size: .9em;
+  font-size: 1em;
   margin-bottom: 96px;
   margin-top: 64px;
 

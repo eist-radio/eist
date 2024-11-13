@@ -1,7 +1,7 @@
 +++
-title = "About Éist"
+title = "Schedule"
 date = 2024-11-13T15:53:33Z
 draft = false
 +++
 
-Éist is a radio station.
+Radio schedule.

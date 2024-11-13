@@ -26,7 +26,7 @@ publishDate = ["publishDate", "date"]
 expiryDate = ["expiryDate"]
 
 [params.author]
-  name = "Eist"
+  name = "Éist"
   about = "about"
 
 [params.meta]
@@ -81,12 +81,17 @@ expiryDate = ["expiryDate"]
 
 [menu]
 
-#   [[menu.main]]
-#     name = "Posts"
-#     url = "posts/"
-#     weight = 10
+  [[menu.main]]
+    name = "About"
+    url = "about/"
+    weight = 10
 
-#   [[menu.main]]
-#     name = "About"
-#     url = "about/"
-#     weight = 20
+  [[menu.main]]
+    name = "Schedule"
+    url = "schedule/"
+    weight = 20
+
+  [[menu.main]]
+    name = "Events"
+    url = "events/"
+    weight = 30

@@ -28,4 +28,13 @@
 <meta name="theme-color" content="{{.}}">
 <meta name="msapplication-TileColor" content="{{.}}">
 <link rel="mask-icon" href="{{"safari-pinned-tab.svg" | relURL}}" color="{{.}}">
+<script defer>
+  document.addEventListener("DOMContentLoaded", function() {
+    const siteHeader = document.getElementById("site-header");
+
+    if (siteHeader && getComputedStyle(siteHeader).display !== "none") {
+      document.body.classList.add("with-header");
+    }
+  });
+</script>
 {{- end -}}
