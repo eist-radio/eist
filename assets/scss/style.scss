@@ -39,7 +39,7 @@ html {
 }
 
 body.with-header {
-  padding-top: 40px;
+  padding-top: 55px;
 }
 
 body,
@@ -257,7 +257,8 @@ table {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: .5em 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
   font-size: 1.2rem;
 
   .site-branding {
@@ -316,7 +317,7 @@ table {
 
 #mobile-menu {
   position: fixed;
-  top: 65px;
+  top: 75px;
   bottom: 0.2em;
   left: 0;
   right: 0;
