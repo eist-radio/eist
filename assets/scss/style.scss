@@ -316,10 +316,11 @@ table {
 
 #mobile-menu {
   position: fixed;
-  top: 70px;
+  top: 65px;
+  bottom: 0.2em;
   left: 0;
   right: 0;
-  bottom: 0;
+  width: 100%;
   display: none;
   padding: .6em 1.8em;
   z-index: 1;
