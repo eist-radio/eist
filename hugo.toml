@@ -1,4 +1,4 @@
-baseURL = "https://aidanreilly.github.io/eist/"
+baseURL = "https://eist-radio.github.io/eist/"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 
@@ -82,7 +82,7 @@ expiryDate = ["expiryDate"]
 
   [[params.socialLinks]]
     name = "email"
-    url = "mailto:eistlive@gmail.com"
+    url = "mailto:eistcork@gmail.com"
 
   [[params.socialLinks]]
     name = "discord"
@@ -90,11 +90,11 @@ expiryDate = ["expiryDate"]
 
   [[params.socialLinks]]
     name = "instagram"
-    url = "https://www.instagram.com/eistlive"
+    url = "https://www.instagram.com/eistradio"
 
   [[params.socialLinks]]
     name = "github"
-    url = "https://github.com/aidanreilly/eist"
+    url = "https://github.com/eist-radio/eist"
 
 [menu]
 
