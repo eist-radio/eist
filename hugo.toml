@@ -2,6 +2,23 @@ baseURL = "https://aidanreilly.github.io/eist/"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 
+[outputs]
+  home = ['html', 'rss']
+  section = ['html', 'rss']
+
+# Use this to include raw HTML in posts
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+custom_css = ["custom_css/custom.css"]
+custom_js = ["custom_js/custom-about.js"]
+
+[services]
+  [services.rss]
+    limit = 42
+
 [languages]
   [languages.en]
     title = 'Éist'
@@ -84,14 +101,19 @@ expiryDate = ["expiryDate"]
   [[menu.main]]
     name = "About"
     url = "about/"
-    weight = 10
+    weight = 1
 
   [[menu.main]]
     name = "Schedule"
     url = "schedule/"
-    weight = 20
+    weight = 2
 
   [[menu.main]]
     name = "Events"
     url = "events/"
-    weight = 30
+    weight = 3
+
+  [[menu.main]]
+    name = "Support"
+    url = "support/"
+    weight = 4

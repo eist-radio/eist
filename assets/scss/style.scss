@@ -3,8 +3,8 @@
 @import "syntax.scss";
 @import "scroll.scss";
 @import "socialshare.scss";
-{{ if (fileExists "assets/scss/userstyles.scss") }}
-@import "userstyles.scss";
+{{ if (fileExists "assets/scss/custom.scss") }}
+@import "custom.scss";
 {{ end }}
 
 /* text selection */
