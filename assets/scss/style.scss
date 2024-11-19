@@ -9,18 +9,18 @@
 
 /* text selection */
 ::-moz-selection {
-  background: $nile-blue;
+  background: $deep-violet;
 }
 
 ::selection {
-  background: $nile-blue;
+  background: $deep-violet;
 }
 
 /* Webkit Scrollbar Customize */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background: $nile-blue;
+  background: $deep-violet;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -32,7 +32,7 @@
 }
 
 html {
-  background: $nile-blue;
+  background: $deep-violet;
   line-height: 1.6;
   letter-spacing: .06em;
   scroll-behavior: smooth;
@@ -110,7 +110,7 @@ a {
 
   &:hover {
     color: $highlight;
-    text-shadow: 0 0 1px #fff;
+    text-shadow: 0 0 1px #7e3075;
   }
 }
 
@@ -245,7 +245,7 @@ table {
   top: 0;
   width: 100%;
   box-sizing: border-box;
-  background-color: $nile-blue;
+  background-color: $deep-violet;
   animation-duration: .8s;
 }
 
@@ -322,7 +322,7 @@ table {
   padding: .6em 1.8em;
   z-index: 1;
   box-sizing: border-box;
-  background-color: $nile-blue;
+  background-color: $deep-violet;
 
   ul {
     list-style: none;
