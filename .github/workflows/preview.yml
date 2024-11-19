@@ -48,10 +48,10 @@ jobs:
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
 
-      - name: Deploy to overt-stop.surge.sh
+      - name: Deploy to abusive-van.surge.sh
         uses: dswistowski/surge-sh-action@v1
         with:
-          domain: 'overt-stop.surge.sh'
+          domain: 'abusive-van.surge.sh'
           project: './public'
           login: ${{ secrets.SURGE_LOGIN }}
           token: ${{ secrets.SURGE_TOKEN }}

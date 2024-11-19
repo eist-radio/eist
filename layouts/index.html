@@ -5,23 +5,24 @@
 <main class="site-main section-inner thin">
     <div id="spotlight">
         <p id="home-subtitle">
-            <a href="http://stream-relay-geo.ntslive.net/stream" onclick="
-                               if (!window.currentAudio) {
-                                   window.currentAudio = new Audio('http://stream-relay-geo.ntslive.net/stream');
-                                   window.currentAudio.play();
-                                   document.querySelector('#home-subtitle a').style.fontWeight = 'bold';
-                                   document.querySelector('#home-subtitle img').src = 'dayglo-on.png';
-                               } else if (window.currentAudio.paused) {
-                                   window.currentAudio.play();
-                                   document.querySelector('#home-subtitle a').style.fontWeight = 'bold';
-                                   document.querySelector('#home-subtitle img').src = 'dayglo-on.png';
-                               } else {
-                                   window.currentAudio.pause();
-                                   document.querySelector('#home-subtitle a').style.fontWeight = 'normal';
-                                   document.querySelector('#home-subtitle img').src = 'dayglo-off.png';
-                               };
-                               return false;">
-                <img src="dayglo-off.png" onmouseover="this.src='dayglo-on.png'" onmouseout="if (!window.currentAudio || window.currentAudio.paused) this.src='dayglo-off.png';" class="dayglo" />
+            <a href="#" onclick="
+                if (!window.currentAudio) {
+                    window.currentAudio = new Audio('http://stream-relay-geo.ntslive.net/stream');
+                    window.currentAudio.play();
+                    document.querySelector('#home-subtitle img').style.filter = 'grayscale(0%)';
+                } else if (window.currentAudio.paused) {
+                    window.currentAudio.play();
+                    document.querySelector('#home-subtitle img').style.filter = 'grayscale(0%)';
+                } else {
+                    window.currentAudio.pause();
+                    document.querySelector('#home-subtitle img').style.filter = 'grayscale(100%)';
+                }
+                return false;">
+                <img 
+                    src="4-dots.png" 
+                    style="filter: grayscale(100%); transition: filter 0.3s;" 
+                    onmouseover="this.style.filter = 'grayscale(0%)';" 
+                    onmouseout="if (!window.currentAudio || window.currentAudio.paused) this.style.filter = 'grayscale(100%)';" class="front-page-img" />
             </a>
         </p>
     </div>
