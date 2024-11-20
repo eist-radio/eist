@@ -9,18 +9,18 @@
 
 /* text selection */
 ::-moz-selection {
-  background: $pantone-2060;
+  background: $sulphur;
 }
 
 ::selection {
-  background: $pantone-2060;
+  background: $sulphur;
 }
 
 /* Webkit Scrollbar Customize */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background: $pantone-2060;
+  background: $sulphur;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -32,14 +32,10 @@
 }
 
 html {
-  background: $pantone-2060;
+  background: $sulphur;
   line-height: 1.6;
   letter-spacing: .06em;
   scroll-behavior: smooth;
-}
-
-body.with-header {
-  padding-top: 55px;
 }
 
 body,
@@ -113,7 +109,7 @@ a {
   transition-timing-function: ease-out;
 
   &:hover {
-    color: #fff;
+    color: #fa54ff;
     text-shadow: 0 0 1px #fff;
   }
 }
@@ -249,7 +245,7 @@ table {
   top: 0;
   width: 100%;
   box-sizing: border-box;
-  background-color: $pantone-2060;
+  background-color: $sulphur;
   animation-duration: .8s;
 }
 
@@ -326,7 +322,7 @@ table {
   padding: .6em 1.8em;
   z-index: 1;
   box-sizing: border-box;
-  background-color: $pantone-2060;
+  background-color: $sulphur;
 
   ul {
     list-style: none;
@@ -340,8 +336,6 @@ table {
 #site-footer {
   text-align: center;
   font-size: 1em;
-  margin-bottom: 96px;
-  margin-top: 64px;
 
   p {
     margin: 0;
@@ -350,9 +344,9 @@ table {
 
 // Spotlight
 //
-#spotlight {
+spotlight {
   display: flex;
-  min-height: 100vh;
+  min-height: 60vh !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -920,6 +914,14 @@ a.footnote-ref {
 
 @media (max-width: 760px) {
 
+  #site-footer {
+    margin-top: 20vh;
+  }
+
+  body.with-header {
+    padding-top: 80px;
+  }
+
   .hide-in-mobile,
   .site-nav.hide-in-mobile {
     display: none;
@@ -971,4 +973,13 @@ a.footnote-ref {
 .human{
   display: flex;
   justify-content: flex-end;
+}
+
+.front-page-img {
+max-width:100%;
+height: auto; 
+}
+
+.slideOutDown {
+  max-height: 100% !important;
 }

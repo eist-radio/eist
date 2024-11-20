@@ -12,9 +12,6 @@ defaultContentLanguageInSubdir = false
     [markup.goldmark.renderer]
       unsafe = true
 
-custom_css = ["custom_css/custom.css"]
-custom_js = ["custom_js/custom-about.js"]
-
 [services]
   [services.rss]
     limit = 42
@@ -54,6 +51,10 @@ expiryDate = ["expiryDate"]
   dateformShort   = "Jan 2"
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04 -0700"
+
+  # PLace custom css and js in static/css + js
+  # custom_css = ["css/custom.css"]
+  # custom_js = ["js/custom.js"]
 
   # Metadata mostly used in document's head
   description = "Éist is an internet radio station based in Cork, Ireland."
@@ -99,21 +100,26 @@ expiryDate = ["expiryDate"]
 [menu]
 
   [[menu.main]]
+    name = "Listen"
+    url = "listen/"
+    weight = 1
+
+  [[menu.main]]
     name = "About"
     url = "about/"
-    weight = 1
+    weight = 2
 
   [[menu.main]]
     name = "Schedule"
     url = "schedule/"
-    weight = 2
+    weight = 3
 
   [[menu.main]]
     name = "Events"
     url = "events/"
-    weight = 3
+    weight = 4
 
   [[menu.main]]
     name = "Support"
     url = "support/"
-    weight = 4
+    weight = 5
