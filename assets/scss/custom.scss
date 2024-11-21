@@ -1,7 +1,23 @@
+.front-page-img {
+max-width:100%;
+height: auto; 
+}
+
+.slideOutDown {
+  max-height: 100% !important;
+}
+
+table th, table td {
+    padding: 1.5%;
+    border: unset !important;
+    text-align: left !important;
+}
+
+table {
+  width: 90% !important;
+}
+
 .content a {
-    word-wrap: break-word;
-    border: none;
     box-shadow: unset !important;
-    transition-property: box-shadow;
-    transition-duration: .1s;
+    text-decoration: underline !important;
 }

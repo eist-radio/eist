@@ -3,9 +3,7 @@
 @import "syntax.scss";
 @import "scroll.scss";
 @import "socialshare.scss";
-{{ if (fileExists "assets/scss/custom.scss") }}
 @import "custom.scss";
-{{ end }}
 
 /* text selection */
 ::-moz-selection {
@@ -973,13 +971,4 @@ a.footnote-ref {
 .human{
   display: flex;
   justify-content: flex-end;
-}
-
-.front-page-img {
-max-width:100%;
-height: auto; 
-}
-
-.slideOutDown {
-  max-height: 100% !important;
 }
