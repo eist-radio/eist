@@ -7,30 +7,30 @@
 
 /* text selection */
 ::-moz-selection {
-  background: $sulphur;
+  background: $eist;
 }
 
 ::selection {
-  background: $sulphur;
+  background: $eist;
 }
 
 /* Webkit Scrollbar Customize */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background: $sulphur;
+  background: $eist;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #888;
 
   &:hover {
-    background: $text;
+    color: $eist-highlight;
   }
 }
 
 html {
-  background: $sulphur;
+  background: $eist;
   line-height: 1.6;
   letter-spacing: .06em;
   scroll-behavior: smooth;
@@ -107,8 +107,7 @@ a {
   transition-timing-function: ease-out;
 
   &:hover {
-    color: #fa54ff;
-    text-shadow: 0 0 1px #fff;
+    color: $eist-highlight;
   }
 }
 
@@ -243,7 +242,7 @@ table {
   top: 0;
   width: 100%;
   box-sizing: border-box;
-  background-color: $sulphur;
+  background-color: $eist;
   animation-duration: .8s;
 }
 
@@ -320,7 +319,7 @@ table {
   padding: .6em 1.8em;
   z-index: 1;
   box-sizing: border-box;
-  background-color: $sulphur;
+  background-color: $eist;
 
   ul {
     list-style: none;
@@ -395,7 +394,7 @@ p.img-404 {
       }
 
       &:hover {
-        border-color: #fff;
+        color: $eist-highlight;
       }
 
       svg {

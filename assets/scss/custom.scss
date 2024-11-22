@@ -21,3 +21,17 @@ table {
     box-shadow: unset !important;
     text-decoration: underline !important;
 }
+
+.header-logo {
+  width: 120px;
+}
+
+.hdr-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 1.2rem;
+    flex-direction: row;
+}

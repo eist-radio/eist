@@ -80,6 +80,7 @@ expiryDate = ["expiryDate"]
   # siteNoIndex = false
   noIndexPages = ["404 Page not found"]
   # footerHideThemeName = false
+  logo = "eist-logo-brat-small.png"
 
   [[params.socialLinks]]
     name = "email"
