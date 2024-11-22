@@ -23,14 +23,15 @@ table {
 }
 
 .header-logo {
-  width: 120px;
+    width: 120px;
+    margin-top: 12px;
 }
 
 .hdr-wrapper {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 20px;
+    padding-top: 70px;
     padding-bottom: 20px;
     font-size: 1.2rem;
     flex-direction: row;

@@ -3,7 +3,7 @@
 {{ end }}
 {{ define "main" }}
 <main class="site-main section-inner thin">
-<!--     <div id="spotlight">
+    <!--     <div id="spotlight">
         <p id="home-subtitle">
             <a href="#" onclick="
                 if (!window.currentAudio) {
@@ -26,6 +26,21 @@
             </a>
         </p>
     </div> -->
+    <iframe title="Éist Radio audio player" src="https://app.radiocult.fm/embed/player/eist-radio?theme=midnight&primaryColor=%23AFFC41&corners=rounded&playerDisplay=event" width="100%" height="144px" scrolling="no" frameborder="0" seamless allowtransparency="true" style="
+    background-color: transparent;
+    border-radius: 0.75rem;
+  "></iframe>
+    <!-- Embed a custom radio player cos this default one is ick.
+
+https://www.radiocult.fm/features/embeddable-components
+
+Maybe:
+
+https://github.com/jailsonsb2/RadioPlayer
+
+https://github.com/SH20RAJ/soundwave
+-->
+<!-- Embed an automatically updating radio schedule by using the Radiocult API. https://www.radiocult.fm/docs/api#schedule -->
 </main>
 {{ end }}
 {{ define "footer" }}
