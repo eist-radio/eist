@@ -80,6 +80,7 @@ expiryDate = ["expiryDate"]
   # siteNoIndex = false
   noIndexPages = ["404 Page not found"]
   # footerHideThemeName = false
+  logo = "eist-logo-brat-small.png"
 
   [[params.socialLinks]]
     name = "email"
@@ -100,8 +101,8 @@ expiryDate = ["expiryDate"]
 [menu]
 
   [[menu.main]]
-    name = "Listen"
-    url = "listen/"
+    name = "Schedule"
+    url = "schedule/"
     weight = 1
 
   [[menu.main]]
@@ -110,16 +111,11 @@ expiryDate = ["expiryDate"]
     weight = 2
 
   [[menu.main]]
-    name = "Schedule"
-    url = "schedule/"
-    weight = 3
-
-  [[menu.main]]
     name = "Events"
     url = "events/"
-    weight = 4
+    weight = 3
 
   [[menu.main]]
     name = "Support"
     url = "support/"
-    weight = 5
+    weight = 4
