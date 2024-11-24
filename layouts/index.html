@@ -26,11 +26,14 @@
             </a>
         </p>
     </div> -->
-    <div ></div>
-    <iframe title="Éist Radio audio player" class="player-iframe" src="https://app.radiocult.fm/embed/player/eist-radio?theme=midnight&primaryColor=%23AFFC41&corners=rounded&playerDisplay=event" width="100%" height="144px" scrolling="no" frameborder="0" seamless allowtransparency="true" style="
-    background-color: transparent;
-    border-radius: 0.75rem;
-  "></iframe>
+    <div id="spotlight">
+    <div class="player-iframe">
+        <iframe title="Éist Radio audio player" src="https://app.radiocult.fm/embed/player/eist-radio?theme=midnight&primaryColor=%23AFFC41&corners=rounded&playerDisplay=event" width="100%" height="144px" scrolling="no" frameborder="0" seamless allowtransparency="true" style="
+        background-color: transparent;
+        border-radius: 0.75rem;">
+        </iframe>
+    </div>
+    </div>
     <!-- Embed a custom radio player cos this default one is ick.
 
 https://www.radiocult.fm/features/embeddable-components
@@ -41,7 +44,7 @@ https://github.com/jailsonsb2/RadioPlayer
 
 https://github.com/SH20RAJ/soundwave
 -->
-<!-- Embed an automatically updating radio schedule by using the Radiocult API. https://www.radiocult.fm/docs/api#schedule -->
+    <!-- Embed an automatically updating radio schedule by using the Radiocult API. https://www.radiocult.fm/docs/api#schedule -->
 </main>
 {{ end }}
 {{ define "footer" }}
