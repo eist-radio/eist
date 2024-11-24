@@ -41,3 +41,15 @@ table {
   position: fixed;
   bottom: 20px;
 }
+
+.player-iframe {
+  transform: rotate(-3deg);
+  margin-top: 200px;
+}
+
+@media (max-width: 760px) {
+    .player-iframe {
+      transform: rotate(-3deg);
+      margin-top: 25px;
+    }
+}
