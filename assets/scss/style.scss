@@ -331,8 +331,12 @@ table {
 }
 
 #site-footer {
+  position: relative;
+  top: 50vh;
+  align-content: start;
   text-align: center;
   font-size: 1em;
+  padding-bottom: 100px;
 
   p {
     margin: 0;
@@ -419,7 +423,7 @@ p.img-404 {
 #home-subtitle {
   margin-top: 0;
   margin-bottom: 1.5em;
-  text-align: center;
+  /*  text-align: center;*/
   line-height: normal;
   font-size: .7em;
   font-style: italic;
@@ -910,10 +914,6 @@ a.footnote-ref {
 }
 
 @media (max-width: 760px) {
-
-  #site-footer {
-    margin-top: 20vh;
-  }
 
   body.with-header {
     padding-top: 125px;

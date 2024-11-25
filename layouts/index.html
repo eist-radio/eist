@@ -3,37 +3,30 @@
 {{ end }}
 {{ define "main" }}
 <main class="site-main section-inner thin">
-    <!--     <div id="spotlight">
+     <div id="spotlight">
         <p id="home-subtitle">
             <a href="#" onclick="
                 if (!window.currentAudio) {
                     window.currentAudio = new Audio('http://stream-relay-geo.ntslive.net/stream');
                     window.currentAudio.play();
-                    document.querySelector('#home-subtitle img').style.filter = 'grayscale(0%)';
+                    document.querySelector('#home-subtitle img').src = 'pause.svg';
                 } else if (window.currentAudio.paused) {
                     window.currentAudio.play();
-                    document.querySelector('#home-subtitle img').style.filter = 'grayscale(0%)';
+                    document.querySelector('#home-subtitle img').src = 'pause.svg';
                 } else {
                     window.currentAudio.pause();
-                    document.querySelector('#home-subtitle img').style.filter = 'grayscale(100%)';
+                    document.querySelector('#home-subtitle img').src = 'play.svg';
                 }
                 return false;">
                 <img 
-                    src="dayglo.png" 
-                    style="filter: grayscale(100%); transition: filter 0.3s;" 
-                    onmouseover="this.style.filter = 'grayscale(0%)';" 
-                    onmouseout="if (!window.currentAudio || window.currentAudio.paused) this.style.filter = 'grayscale(100%)';" class="front-page-img" />
+                    src="play.svg" 
+                    class="front-page-img" />
             </a>
         </p>
-    </div> -->
-    <div id="spotlight">
-    <div class="player-iframe">
-        <iframe title="Éist Radio audio player" src="https://app.radiocult.fm/embed/player/eist-radio?theme=midnight&primaryColor=%23AFFC41&corners=rounded&playerDisplay=event" width="100%" height="144px" scrolling="no" frameborder="0" seamless allowtransparency="true" style="
-        background-color: transparent;
-        border-radius: 0.75rem;">
-        </iframe>
+        <!-- Use the API to populate some HTML elements here, pull artist image, etc -->
+        <p id="home-subtitle">You are listening to Éist (broadcasting live)</p>
     </div>
-    </div>
+
     <!-- Embed a custom radio player cos this default one is ick.
 
 https://www.radiocult.fm/features/embeddable-components

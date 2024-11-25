@@ -1,5 +1,6 @@
 .front-page-img {
-max-width:100%;
+width: 10vh;
+max-width:50px;
 height: auto; 
 }
 
@@ -37,12 +38,7 @@ table {
     flex-direction: row;
 }
 
-#site-footer {
-  position: fixed;
-  bottom: 20px;
-}
-
-.player-iframe {
+/*.player-iframe {
   transform: rotate(-3deg);
   margin-top: 200px;
 }
@@ -52,4 +48,4 @@ table {
       transform: rotate(-3deg);
       margin-top: 25px;
     }
-}
+}*/
