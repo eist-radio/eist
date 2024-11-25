@@ -43,6 +43,7 @@ select,
 textarea {
   color: $text;
   font-family: $fonts;
+  font-size: 1.2em;
 }
 
 pre,
@@ -257,12 +258,12 @@ table {
   .site-branding {
     display: inline-block;
     margin-right: .8em;
-    font-size: 1.2em;
+    font-size: 1.6em;
   }
 
   .site-nav {
     display: inline-block;
-    font-size: 1.1em;
+    font-size: 1.5em;
     opacity: .8;
 
     .has-children {
@@ -311,7 +312,7 @@ table {
 #mobile-menu {
   position: fixed;
   top: 75px;
-  bottom: 0.2em;
+  bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
@@ -331,8 +332,12 @@ table {
 }
 
 #site-footer {
+  position: relative;
+  top: 50vh;
+  align-content: start;
   text-align: center;
   font-size: 1em;
+  padding-bottom: 100px;
 
   p {
     margin: 0;
@@ -419,7 +424,7 @@ p.img-404 {
 #home-subtitle {
   margin-top: 0;
   margin-bottom: 1.5em;
-  text-align: center;
+  /*  text-align: center;*/
   line-height: normal;
   font-size: .7em;
   font-style: italic;
@@ -591,7 +596,7 @@ hr.post-end {
     text-align: center;
 
     p {
-      font-size: .8em;
+      font-size: 1.2em;
       font-style: italic;
       @include dimmed;
     }
@@ -910,10 +915,6 @@ a.footnote-ref {
 }
 
 @media (max-width: 760px) {
-
-  #site-footer {
-    margin-top: 20vh;
-  }
 
   body.with-header {
     padding-top: 125px;

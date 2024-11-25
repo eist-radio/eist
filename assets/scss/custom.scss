@@ -1,6 +1,10 @@
-.front-page-img {
-max-width:100%;
-height: auto; 
+.hdr-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1rem;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
 .slideOutDown {
@@ -37,19 +41,123 @@ table {
     flex-direction: row;
 }
 
-#site-footer {
-  position: fixed;
-  bottom: 20px;
+/* Parent container styling */
+#player {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-content: stretch;
+    align-items: stretch;
 }
 
-.player-iframe {
-  transform: rotate(-3deg);
-  margin-top: 200px;
+.broadcast-status {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-content: right;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.broadcast-status-indicator {
+    width: 0.8em;
+    padding: 0.4em;
+    margin-top: 0.1em;
+}
+
+.broadcasting-live-text-status {
+    /* go grey when offline? */
+    font-size: 1em;
+}
+
+.player-headshot {
+    flex: 2;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-headshot img {
+    width: 100%;
+    height: 100%;
+}
+
+.player-now-playing {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+/* Metadata and play button section */
+.player-metadata-play {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: stretch;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+/* Play button styling */
+#player-button {
+    margin-bottom: 0.1em;
+    display: flex;
+    justify-content: right;
+    margin-right: 10px;
+}
+
+#player-button img {
+    width: 3em;
+    height: 3em;
+}
+
+/* Metadata styling */
+.player-metadata {
+    align-items: top;
+    align-items: top;
+    text-align: right;
+    margin-right: 10px;
+}
+
+#player-metadata-show {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #AFFC41;
+}
+
+#player-metadata-dj-name {
+    font-size: 1.4rem;
+    color: #AFFC41;
+}
+
+#dj-name {
+    padding-bottom: 15px;
+    font-size: xxx-large;
+}
+
+#player-metadata-show-desc {
+    font-size: 1rem;
+    color: #AFFC41;
 }
 
 @media (max-width: 760px) {
-    .player-iframe {
-      transform: rotate(-3deg);
-      margin-top: 25px;
+    #player {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .player-now-playing {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 }

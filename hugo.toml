@@ -101,19 +101,24 @@ expiryDate = ["expiryDate"]
 [menu]
 
   [[menu.main]]
+    name = "Listen"
+    url = "/"
+    weight = 1
+
+  [[menu.main]]
     name = "Schedule"
     url = "schedule/"
-    weight = 1
+    weight = 2
 
   [[menu.main]]
     name = "About"
     url = "about/"
-    weight = 2
+    weight = 3
 
   [[menu.main]]
     name = "Events"
     url = "events/"
-    weight = 3
+    weight = 4
 
   [[menu.main]]
     name = "Support"
