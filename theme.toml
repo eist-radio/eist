@@ -1,7 +1,7 @@
 name = "Éist"
 license = "MIT"
-licenselink = "https://github.com/1bl4z3r/hermit-V2/blob/main/LICENSE"
-description = "Éist is an online radio station based in Cork"
+licenselink = "https://github.com/eist-radio/eist/blob/main/LICENSE"
+description = "Éist is an online radio station based in Cork, Ireland"
 
 [module]
   [module.hugoVersion]
@@ -10,7 +10,7 @@ description = "Éist is an online radio station based in Cork"
 
 [author]
   name = "Aidan Reilly"
-  homepage = "https://github.com/aidanreilly/eist"
+  homepage = "https://github.com/aidanreilly"
 [original]
   name = "eist"
-  repo = "https://github.com/aidanreilly/eist"
+  repo = "https://github.com/eist-radio/eist"
