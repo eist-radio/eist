@@ -1,6 +1,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="max-age=31536000">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 {{- if (or (in .Page.RelPermalink "404") (or .Site.Params.siteNoIndex .Params.noIndex) (in .Site.Params.noIndexPages .Title)) -}}
 <meta name="robots" content="{{ .Site.Params.denyRobots | default "noindex, nofollow, noarchive" }}">
@@ -40,11 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Geist+Mono:wght@100..900&family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+<script type="text/javascript">
+  var radiocultApiKey = "{{ os.Getenv "API_KEY" }}";
+</script>
 {{- end -}}
-<!-- custom css + js -->
-{{ range .Site.Params.custom_css -}}
-    <link rel="stylesheet" href="{{ . | absURL }}">
-{{- end }}
-{{ range .Site.Params.custom_js -}}
-    <script type="text/javascript" src="{{ . | absURL }}"></script>
-{{- end }}

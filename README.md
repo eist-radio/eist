@@ -23,16 +23,24 @@ Start typing...
 
 # Checking your build locally
 
+Get the API key from RadioCult and save it in a `.env` file locally, for example:
+
 ```cmd
+cat .env
+API_KEY=<REDACTED>
+```
+Then:
+
+```cmd
+source .env
+export API_KEY
 $ hugo server
 ```
 
 # Deploying previews with Surge
 
-PR previews are live at `https://overt-stop.surge.sh`. You might need to modify `.github/workflows/preview.yml` ¯\_(ツ)_/¯
+PR previews are live at `https://overt-stop.surge.sh`. You might need to modify `.github/workflows/preview.yml`
 
+# Hugo template
 
-# Based on
-
-https://github.com/1bl4z3r/hermit-V2.
-
+https://github.com/1bl4z3r/hermit-V2

@@ -8,13 +8,12 @@
         <div id="player">
             <div class="broadcast-status">
                 <div class="broadcasting-live-text-status">
-                    <p id="live-text">live</p>
-                    <!-- <p id="live-text">offline</p> -->
+                    <p id="live-text"></p>
                 </div>
                 <img src="live.svg" class="broadcast-status-indicator" />
             </div>
             <div class="player-headshot">
-                <img src="test-dj-2.png" alt="DJ Headshot" class="headshot" />
+                <img src="" class="headshot" id="dj-image" />
             </div>
             <div class="player-now-playing">
                 <div id="player-button">
@@ -35,30 +34,26 @@
                     </a>
                 </div>
                 <div class="player-metadata-dj-name">
-                    <p id="dj-name">Dj Test</p>
+                    <p id="dj-name">offline</p>
                 </div>
             </div>
             <div class="player-metadata-play">
                 <div class="player-metadata">
-                    <p id="player-metadata-show">The DJ Test Show</p>
-                    <p id="player-metadata-show-desc">Testing testing one two three testing testing one two three </p>
+                    <p id="player-metadata-show-title"></p>
+                    <p id="player-metadata-show-desc"></p>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Embed a custom radio player cos this default one is ick.
-
-https://www.radiocult.fm/features/embeddable-components
-
-Maybe:
-
-https://github.com/jailsonsb2/RadioPlayer
-
-https://github.com/SH20RAJ/soundwave
--->
-    <!-- Embed an automatically updating radio schedule by using the Radiocult API. https://www.radiocult.fm/docs/api#schedule -->
 </main>
 {{ end }}
 {{ define "footer" }}
 {{ partialCached "footer.html" . }}
+<!-- custom css + js -->
+{{ range .Site.Params.custom_css -}}
+<link rel="stylesheet" href="{{ . | absURL }}">
+{{- end }}
+{{ range .Site.Params.custom_js -}}
+<script type="text/javascript" src="{{ . | absURL }}"></script>
+{{- end }}
 {{ end }}

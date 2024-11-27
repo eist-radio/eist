@@ -264,7 +264,6 @@ table {
   .site-nav {
     display: inline-block;
     font-size: 1.5em;
-    opacity: .8;
 
     .has-children {
       padding-right: .5em;
@@ -288,10 +287,9 @@ table {
 
 .hdr-links {
   display: inline-block;
-  margin-left: .6em;
 
   &>a {
-    margin-left: .4em;
+    margin: .3em;
   }
 }
 
@@ -372,43 +370,6 @@ p.img-404 {
   }
 }
 
-.banner-404 {
-  margin-left: 2em;
-
-  h1 {
-    font-size: 3em;
-    margin: .5rem 0;
-  }
-
-  p {
-    margin-top: 0;
-  }
-
-  .btn-404 {
-    font-size: .8em;
-
-    a {
-      display: inline-block;
-      border: 2px solid $text;
-      border-radius: 5px;
-      padding: 5px;
-      transition-property: color, border-color;
-
-      &:first-child {
-        margin-right: 1em;
-      }
-
-      &:hover {
-        color: $eist-highlight;
-      }
-
-      svg {
-        margin-right: .5em;
-      }
-    }
-  }
-}
-
 #home-center {
   display: flex;
   flex-grow: 1;
@@ -459,79 +420,6 @@ p.img-404 {
 
   p {
     margin-top: 0;
-  }
-}
-
-// list.html
-//
-.posts-group {
-  display: flex;
-  margin-bottom: 1.9em;
-  line-height: normal;
-
-  .post-year {
-    padding-top: 6px;
-    margin-right: 1.8em;
-    font-size: 1.6em;
-    @include dimmed;
-
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  .posts-list {
-    flex-grow: 1;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .post-item {
-    border-bottom: 1px $highlight-grey dashed;
-
-    a {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 12px 0;
-    }
-  }
-
-  .post-day {
-    flex-shrink: 0;
-    margin-left: 1em;
-    @include dimmed;
-  }
-  .post-description {
-    font-size:x-small;
-    flex-shrink: 0;
-    @include dimmed;
-  }
-}
-
-.pinned-posts-group {
-  display: flex;
-  margin-bottom: 1.9em;
-  line-height: normal;
-  border-bottom: 2px $highlight-grey solid;
-
-  .pinned-posts-list {
-    flex-grow: 1;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .pinned-post-item {
-    display: flex;
-    justify-content: start;
-    align-items: baseline;
-    padding: 12px 0;
-
-    a {
-      padding-left: 12px;
-    }
   }
 }
 

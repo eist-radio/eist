@@ -30,10 +30,6 @@
 <script async src="{{ $script.Permalink }}" {{ printf "integrity=%q" $script.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
 {{- if and (not (eq .Site.Params.shareSocial nil)) (.Site.Params.shareSocial) -}}
 {{- end -}}
-{{- range .Params.custom_js -}}
-{{ $c_js := resources.Get . | minify | fingerprint -}}
-<script defer src="{{ $c_js.Permalink }}" {{ printf "integrity=%q" $c_js.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
-{{- end }}
 {{- if templates.Exists "partials/extra-foot.html" -}}{{- partial "extra-foot.html" . -}}{{- end }}
 </body>
 

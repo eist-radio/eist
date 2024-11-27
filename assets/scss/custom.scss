@@ -7,18 +7,27 @@
     flex-wrap: nowrap;
 }
 
+
 .slideOutDown {
   max-height: 100% !important;
 }
 
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
 table th, table td {
-    padding: 1.5%;
+    padding: unset !important;
     border: unset !important;
     text-align: left !important;
 }
 
-table {
-  width: 90% !important;
+table caption {
+    text-align: left !important;
+    font-size: small;
+    font-style: italic;
 }
 
 .content a {
@@ -67,8 +76,8 @@ table {
 }
 
 .broadcasting-live-text-status {
-    /* go grey when offline? */
     font-size: 1em;
+    text-transform: lowercase;
 }
 
 .player-headshot {
@@ -77,11 +86,23 @@ table {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .player-headshot img {
     width: 100%;
-    height: 100%;
+    height: auto;
+}
+
+.player-headshot::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, #AFFC41 0%, #4733FF 40%, #00000000 100%);
+  pointer-events: none;
 }
 
 .player-now-playing {
@@ -125,20 +146,19 @@ table {
     margin-right: 10px;
 }
 
-#player-metadata-show {
-    font-size: 1.8rem;
-    font-weight: bold;
+#player-metadata-show-title {
+    font-size: 1.2rem;
     color: #AFFC41;
 }
 
 #player-metadata-dj-name {
-    font-size: 1.4rem;
     color: #AFFC41;
 }
 
 #dj-name {
     padding-bottom: 15px;
-    font-size: xxx-large;
+    font-weight: bold;
+    font-size: large;
 }
 
 #player-metadata-show-desc {
@@ -160,4 +180,11 @@ table {
         flex-wrap: wrap;
         justify-content: space-between;
     }
+}
+
+.banner-404 {
+    margin: unset !important;
+    margin-top: 8em;
+    font-size: 5em;
+    text-align: center;
 }

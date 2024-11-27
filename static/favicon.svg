@@ -22,10 +22,10 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="18.163805"
-     inkscape:cx="5.5880362"
-     inkscape:cy="19.434254"
-     inkscape:window-width="1920"
-     inkscape:window-height="1011"
+     inkscape:cx="5.5605089"
+     inkscape:cy="19.461781"
+     inkscape:window-width="1728"
+     inkscape:window-height="1003"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -41,4 +41,8 @@
      height="16"
      x="4.5507573e-08"
      y="0" />
+  <path
+     style="fill:#affc41;stroke:#affc41;stroke-width:1;stroke-linejoin:bevel"
+     d="M 0.02752727,8.0104361 V 0.02752727 H 8.0104361 15.993345 V 8.0104361 15.993345 H 8.0104361 0.02752727 Z"
+     id="path1" />
 </svg>
