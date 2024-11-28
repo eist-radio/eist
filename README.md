@@ -40,9 +40,9 @@ hugo server
 
 # Deploying previews with Surge
 
-PR previews are live at `https://overt-stop.surge.sh`. You might need to modify `.github/workflows/preview.yml`
+PR previews are deployed using Surge. Preview links are posted in the PR.
 
 
 # Open source :)
 
-Website based on https://github.com/1bl4z3r/hermit-V2
+Website is based on this Hugo template: https://github.com/1bl4z3r/hermit-V2
