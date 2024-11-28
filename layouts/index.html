@@ -17,19 +17,7 @@
             </div>
             <div class="player-now-playing">
                 <div id="player-button">
-                    <a href="#" onclick="
-                    if (!window.currentAudio) {
-                        window.currentAudio = new Audio('https://eist-radio.radiocult.fm/stream');
-                        window.currentAudio.play();
-                        document.querySelector('#player-button img').src = 'pause.svg';
-                    } else if (window.currentAudio.paused) {
-                        window.currentAudio.play();
-                        document.querySelector('#player-button img').src = 'pause.svg';
-                    } else {
-                        window.currentAudio.pause();
-                        document.querySelector('#player-button img').src = 'play.svg';
-                    }
-                    return false;">
+                    <a href="#" id="player-control">
                         <img src="play.svg" class="play-button" />
                     </a>
                 </div>

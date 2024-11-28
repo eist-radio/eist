@@ -150,7 +150,32 @@ async function getArtistDetails(artistId) {
     }
 }
 
+// Function to handle playing audio and updating the play button controls
+function toggleAudio() {
+    const playButtonImg = document.querySelector('#player-button img');
+
+    if (!window.currentAudio) {
+        window.currentAudio = new Audio('https://eist-radio.radiocult.fm/stream');
+        window.currentAudio.play();
+        playButtonImg.src = 'pause.svg';
+    } else if (window.currentAudio.paused) {
+        window.currentAudio.play();
+        playButtonImg.src = 'pause.svg';
+    } else {
+        window.currentAudio.pause();
+        playButtonImg.src = 'play.svg';
+    }
+    return false; // Prevent the default link behavior
+}
+
 // Update the player when the page is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    const playerControl = document.getElementById('player-control');
+    if (playerControl) {
+        playerControl.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            toggleAudio();
+        });
+    }
     updatePlayerDetails();
 });

@@ -29,18 +29,20 @@ Get the API key from RadioCult and save it in a `.env` file locally, for example
 cat .env
 API_KEY=<REDACTED>
 ```
+
 Then:
 
 ```cmd
 source .env
 export API_KEY
-$ hugo server
+hugo server
 ```
 
 # Deploying previews with Surge
 
 PR previews are live at `https://overt-stop.surge.sh`. You might need to modify `.github/workflows/preview.yml`
 
-# Hugo template
 
-https://github.com/1bl4z3r/hermit-V2
+# Open source :)
+
+Website based on https://github.com/1bl4z3r/hermit-V2
