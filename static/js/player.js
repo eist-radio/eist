@@ -126,33 +126,25 @@ function toggleAudio() {
 
     if (!window.currentAudio) {
         window.currentAudio = new Audio('https://eist-radio.radiocult.fm/stream');
-        window.currentAudio.play().then(() => {
-            setMediaSession(); // Set MediaSession metadata when audio starts
-        }).catch(error => {
-            console.error('Audio playback failed:', error);
-        });
+        window.currentAudio.play();
         playButtonImg.src = 'pause.svg';
     } else if (window.currentAudio.paused) {
-        window.currentAudio.play().then(() => {
-            setMediaSession(); // Update MediaSession metadata on resume
-        }).catch(error => {
-            console.error('Audio playback failed:', error);
-        });
+        window.currentAudio.play();
         playButtonImg.src = 'pause.svg';
     } else {
         window.currentAudio.pause();
         playButtonImg.src = 'play.svg';
     }
-    return false; // Prevent the default link behavior
+    setMediaSession();
+    return false // Prevent the default link behavior
 }
 
 function setMediaSession() {
-    // Lock screen audio controls
-    if ("mediaSession" in navigator) {
+    if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: 'Éist',
-            artist: artistName,
-            album: showTitle,
+            artist: artistName, // Replace with dynamic data if needed
+            album: showDesc, // Replace with dynamic data if needed
             artwork: [
                 { src: '/gradient-96x96.png', sizes: '96x96', type: 'image/png' },
                 { src: '/gradient-128x128.png', sizes: '128x128', type: 'image/png' },
@@ -163,29 +155,27 @@ function setMediaSession() {
             ]
         });
 
-        // Set playback controls
-        navigator.mediaSession.setActionHandler('play', () => {
-            if (window.currentAudio && window.currentAudio.paused) {
-                window.currentAudio.play();
-            }
-        });
+        navigator.mediaSession.playbackState = window.currentAudio.paused ? 'paused' : 'playing';
 
+        // Optionally handle media session actions
+        navigator.mediaSession.setActionHandler('play', () => {
+            window.currentAudio.play();
+        });
         navigator.mediaSession.setActionHandler('pause', () => {
-            if (window.currentAudio && !window.currentAudio.paused) {
-                window.currentAudio.pause();
-            }
+            window.currentAudio.pause();
         });
     }
 }
 
+
 // Update the player when the page is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    updatePlayerDetails();
     const playerControl = document.getElementById('player-control');
     if (playerControl) {
         playerControl.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default link behavior
             toggleAudio();
         });
-    }
+    };
+    updatePlayerDetails()
 });
