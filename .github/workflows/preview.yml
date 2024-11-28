@@ -36,7 +36,6 @@ jobs:
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
-          HUGO_ENVIRONMENT: development
           TZ: Europe/Dublin
         run: |
           hugo \

@@ -44,13 +44,17 @@ jobs:
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
-          HUGO_ENVIRONMENT: development
           TZ: Europe/Dublin
         run: |
           hugo \
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website output folder
+          path: public/
+
 
   deploy:
     environment:
