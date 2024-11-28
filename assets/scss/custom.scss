@@ -7,7 +7,6 @@
     flex-wrap: nowrap;
 }
 
-
 .slideOutDown {
   max-height: 100% !important;
 }
@@ -116,6 +115,7 @@ table caption {
     align-content: center;
     align-items: center;
     flex-wrap: nowrap;
+    height: 3em;
 }
 
 /* Metadata and play button section */
@@ -127,6 +127,7 @@ table caption {
     align-content: stretch;
     align-items: flex-end;
     flex-wrap: wrap;
+    height: 3em;
 }
 
 /* Play button styling */
@@ -151,8 +152,9 @@ table caption {
 }
 
 #player-metadata-show-title {
-    font-size: x-large;
+    font-size: large;
     font-weight: bold;
+    line-height: 1em;
     color: #AFFC41;
 }
 
@@ -167,7 +169,8 @@ table caption {
 }
 
 #player-metadata-show-desc {
-    font-size: large;
+    font-size: medium;
+    line-height: 1em;
     color: #AFFC41;
 }
 
