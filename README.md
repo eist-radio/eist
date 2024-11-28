@@ -8,7 +8,7 @@ Install Hugo: https://gohugo.io/installation/
 
 # Adding content and building docs
 
-Add a new markdown file with a TOML format header into the content/ folder:
+Add a new markdown file with a TOML format header into the `content/` folder:
 
 ```markdown
 +++
@@ -17,7 +17,7 @@ date = 2024-11-19T20:23:18Z
 draft = false
 +++
 
-Start typing...
+Add some text!
 
 ```
 
