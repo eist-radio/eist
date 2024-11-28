@@ -12,7 +12,7 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write # allow surge-preview to create/update PR comments
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4

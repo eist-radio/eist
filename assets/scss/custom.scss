@@ -37,7 +37,7 @@ table caption {
 }
 
 .header-logo {
-    width: 120px;
+    width: 200px;
     margin-top: 12px;
 }
 
@@ -66,14 +66,15 @@ table caption {
     flex-direction: row;
     justify-content: flex-end;
     align-content: right;
+    height: 60px;
     align-items: center;
     flex-wrap: nowrap;
 }
 
 .broadcast-status-indicator {
-    width: 0.8em;
+    width: 0.5em;
     padding: 0.4em;
-    margin-top: 0.1em;
+    margin-top: 0.2em;
 }
 
 .broadcasting-live-text-status {
@@ -150,7 +151,7 @@ table caption {
 }
 
 #player-metadata-show-title {
-    font-size: medium;
+    font-size: x-large;
     font-weight: bold;
     color: #AFFC41;
 }
@@ -162,18 +163,18 @@ table caption {
 #dj-name {
     padding-bottom: 15px;
     font-weight: bold;
-    font-size: large;
+    font-size: x-large;
 }
 
 #player-metadata-show-desc {
-    font-size: medium;
+    font-size: large;
     color: #AFFC41;
 }
 
 .index-footer {
     display: flex;
     text-align: end;
-    font-size: small;
+    font-size: large;
     position: relative;
     bottom: 5;
     align-items: center;
@@ -181,10 +182,30 @@ table caption {
     flex-direction: row-reverse;
 }
 
+.banner-404 {
+    margin: unset !important;
+    margin-top: 8em;
+    font-size: xxx-large;
+    text-align: center;
+}
+
+body {
+    -webkit-user-select: unset !important;
+    -moz-user-select: unset !important;
+    -ms-user-select: unset !important; 
+    user-select: unset !important;
+}
+
+
 @media (max-width: 760px) {
     #player {
         flex-direction: column;
         height: auto;
+    }
+
+    .header-logo {
+        width: 125px;
+        margin-top: 5px;
     }
 
     .player-headshot {
@@ -212,26 +233,28 @@ table caption {
         justify-content: space-between;
     }
 
+    #dj-name {
+        padding-bottom: 15px;
+        font-weight: bold;
+        font-size: large;
+    }
+
     #player-metadata-show-desc {
         font-size: small;
     }
 
     #player-metadata-show-title {
-        font-size: small;
+        font-size: medium;
     }
 
-}
-
-.banner-404 {
-    margin: unset !important;
-    margin-top: 8em;
-    font-size: xxx-large;
-    text-align: center;
-}
-
-body {
-    -webkit-user-select: unset !important;
-    -moz-user-select: unset !important;
-    -ms-user-select: unset !important; 
-    user-select: unset !important;
+    .index-footer {
+        display: flex;
+        text-align: end;
+        font-size: medium;
+        position: relative;
+        bottom: 5;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row-reverse;
+    }
 }
