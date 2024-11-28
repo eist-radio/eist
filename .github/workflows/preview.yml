@@ -9,8 +9,10 @@ on:
       - closed
 
 jobs:
-  deploy-preview:
-    runs-on: ubuntu-20.04
+  preview:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # allow surge-preview to create/update PR comments
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,7 +35,6 @@ jobs:
           fetch-depth: 0
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-
       - name: Set and export the RadioCult API key
         run: |
           echo "API_KEY=${{ secrets.RADIOCULT_API_KEY }}" >> $GITHUB_ENV
@@ -47,11 +48,11 @@ jobs:
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
-
-      - name: Deploy to overt-stop.surge.sh
-        uses: dswistowski/surge-sh-action@v1
+      - uses: afc163/surge-preview@v1
+        id: preview_step
         with:
-          domain: 'overt-stop.surge.sh'
-          project: './public'
-          login: ${{ secrets.SURGE_LOGIN }}
-          token: ${{ secrets.SURGE_TOKEN }}
+          surge_token: ${{ secrets.SURGE_TOKEN }}
+          dist: public
+          build: ls
+      - name: Get the preview_url
+        run: echo "url => ${{ steps.preview_step.outputs.preview_url }}"

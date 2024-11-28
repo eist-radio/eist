@@ -5,15 +5,6 @@
 @import "socialshare.scss";
 @import "custom.scss";
 
-/* text selection */
-::-moz-selection {
-  background: $eist;
-}
-
-::selection {
-  background: $eist;
-}
-
 /* Webkit Scrollbar Customize */
 ::-webkit-scrollbar {
   width: 8px;
