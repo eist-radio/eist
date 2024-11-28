@@ -147,7 +147,8 @@ function toggleAudio() {
 }
 
 function setMediaSession() {
-    if ('mediaSession' in navigator) {
+    // Lock screen audio controls
+    if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: 'Éist',
             artist: artistName,
@@ -162,14 +163,17 @@ function setMediaSession() {
             ]
         });
 
-        navigator.mediaSession.playbackState = window.currentAudio.paused ? 'paused' : 'playing';
-
-        // Handle media session actions
+        // Set playback controls
         navigator.mediaSession.setActionHandler('play', () => {
-            window.currentAudio.play();
+            if (window.currentAudio && window.currentAudio.paused) {
+                window.currentAudio.play();
+            }
         });
+
         navigator.mediaSession.setActionHandler('pause', () => {
-            window.currentAudio.pause();
+            if (window.currentAudio && !window.currentAudio.paused) {
+                window.currentAudio.pause();
+            }
         });
     }
 }
