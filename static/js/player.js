@@ -12,6 +12,7 @@ let broadcastStatus = 'null'
 let artistName = 'null'
 let artistBio = 'null'
 let artistImage = 'null'
+let showTitle ='null'
 let url = `https://api.radiocult.fm/api/station/${stationId}/schedule/live`;
 let artistUrl=`https://api.radiocult.fm/api/station/${stationId}/artists/${artistId}`
 
@@ -67,19 +68,50 @@ async function updatePlayerDetails() {
         if (artistImageElement) {
             artistImageElement.src = artistDetails.artistImage || 'null';
         } else {
+           // this not actually needed
            artistImageElement.src = 'offline.png'; 
         }
 
         const broadcastStatusElement = document.getElementById('live-text');
         const broadcastStatusIndicatorElement = document.getElementsByClassName('broadcast-status-indicator');
         if (broadcastStatus == "schedule") {
-            broadcastStatusElement.textContent = "live" || 'null';
+            broadcastStatusElement.textContent = "we are live" || 'null';
         } else {
             broadcastStatusElement.textContent = "offline" || 'null';
         }
 
     } catch (error) {
         console.error('Error fetching show details:', error);
+    }
+
+    // Lock screen audio controls
+    if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: 'Éist',
+            artist: artistName,
+            album: showTitle,
+            artwork: [
+                { src: '/gradient-96x96.png', sizes: '96x96', type: 'image/png' },
+                { src: '/gradient-128x128.png', sizes: '128x128', type: 'image/png' },
+                { src: '/gradient-192x192.png', sizes: '192x192', type: 'image/png' },
+                { src: '/gradient-256x256.png', sizes: '256x256', type: 'image/png' },
+                { src: '/gradient-384x384.png', sizes: '384x384', type: 'image/png' },
+                { src: '/gradient-512x512.png', sizes: '512x512', type: 'image/png' },
+            ]
+        });
+
+        // Set playback controls
+        navigator.mediaSession.setActionHandler('play', () => {
+            if (window.currentAudio && window.currentAudio.paused) {
+                window.currentAudio.play();
+            }
+        });
+
+        navigator.mediaSession.setActionHandler('pause', () => {
+            if (window.currentAudio && !window.currentAudio.paused) {
+                window.currentAudio.pause();
+            }
+        });
     }
 }
 
@@ -100,11 +132,11 @@ async function getArtistDetails(artistId) {
 
         const data = await response.json();
 
-        const artistName = data.artist?.name || 'Unknown artist name';
-        const artistBio =
+        artistName = data.artist?.name || 'Unknown artist name';
+        artistBio =
             data.artist?.description?.content?.[0]?.content?.[0]?.text ||
             'No bio available';
-        const artistImage = data.artist?.logo?.['256x256'] || 'offline.png';
+        artistImage = data.artist?.logo?.['256x256'] || 'offline.png';
 
         return { artistName, artistBio, artistImage };
 

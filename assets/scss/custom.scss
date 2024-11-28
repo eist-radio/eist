@@ -22,6 +22,7 @@ table th, table td {
     padding: unset !important;
     border: unset !important;
     text-align: left !important;
+    font-size: small;
 }
 
 table caption {
@@ -187,4 +188,11 @@ table caption {
     margin-top: 8em;
     font-size: 5em;
     text-align: center;
+}
+
+body {
+    -webkit-user-select: unset !important;
+    -moz-user-select: unset !important;
+    -ms-user-select: unset !important; 
+    user-select: unset !important;
 }
