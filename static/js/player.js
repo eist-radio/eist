@@ -136,15 +136,17 @@ function toggleAudio() {
         playButtonImg.src = 'play.svg';
     }
     setMediaSession();
+    updatePlayerDetails;
     return false // Prevent the default link behavior
 }
 
-function setMediaSession() {
+// Fight with mobile lock screens
+async function setMediaSession() {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: 'Éist',
-            artist: artistName, // Replace with dynamic data if needed
-            album: showDesc, // Replace with dynamic data if needed
+            artist: artistName,
+            album: showDesc,
             artwork: [
                 { src: '/gradient-96x96.png', sizes: '96x96', type: 'image/png' },
                 { src: '/gradient-128x128.png', sizes: '128x128', type: 'image/png' },
@@ -157,7 +159,7 @@ function setMediaSession() {
 
         navigator.mediaSession.playbackState = window.currentAudio.paused ? 'paused' : 'playing';
 
-        // Optionally handle media session actions
+        // Handle media session actions
         navigator.mediaSession.setActionHandler('play', () => {
             window.currentAudio.play();
         });
@@ -166,7 +168,6 @@ function setMediaSession() {
         });
     }
 }
-
 
 // Update the player when the page is loaded
 document.addEventListener('DOMContentLoaded', () => {
