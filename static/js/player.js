@@ -83,36 +83,6 @@ async function updatePlayerDetails() {
     } catch (error) {
         console.error('Error fetching show details:', error);
     }
-
-    // Lock screen audio controls
-    if ("mediaSession" in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: 'Éist',
-            artist: artistName,
-            album: showTitle,
-            artwork: [
-                { src: '/gradient-96x96.png', sizes: '96x96', type: 'image/png' },
-                { src: '/gradient-128x128.png', sizes: '128x128', type: 'image/png' },
-                { src: '/gradient-192x192.png', sizes: '192x192', type: 'image/png' },
-                { src: '/gradient-256x256.png', sizes: '256x256', type: 'image/png' },
-                { src: '/gradient-384x384.png', sizes: '384x384', type: 'image/png' },
-                { src: '/gradient-512x512.png', sizes: '512x512', type: 'image/png' },
-            ]
-        });
-
-        // Set playback controls
-        navigator.mediaSession.setActionHandler('play', () => {
-            if (window.currentAudio && window.currentAudio.paused) {
-                window.currentAudio.play();
-            }
-        });
-
-        navigator.mediaSession.setActionHandler('pause', () => {
-            if (window.currentAudio && !window.currentAudio.paused) {
-                window.currentAudio.pause();
-            }
-        });
-    }
 }
 
 // Fetch and update the currently playing artist details
@@ -150,16 +120,24 @@ async function getArtistDetails(artistId) {
     }
 }
 
-// Function to handle playing audio and updating the play button controls
+// Handle playing audio and updating the play button controls
 function toggleAudio() {
     const playButtonImg = document.querySelector('#player-button img');
 
     if (!window.currentAudio) {
         window.currentAudio = new Audio('https://eist-radio.radiocult.fm/stream');
-        window.currentAudio.play();
+        window.currentAudio.play().then(() => {
+            setMediaSession(); // Set MediaSession metadata when audio starts
+        }).catch(error => {
+            console.error('Audio playback failed:', error);
+        });
         playButtonImg.src = 'pause.svg';
     } else if (window.currentAudio.paused) {
-        window.currentAudio.play();
+        window.currentAudio.play().then(() => {
+            setMediaSession(); // Update MediaSession metadata on resume
+        }).catch(error => {
+            console.error('Audio playback failed:', error);
+        });
         playButtonImg.src = 'pause.svg';
     } else {
         window.currentAudio.pause();
@@ -168,8 +146,37 @@ function toggleAudio() {
     return false; // Prevent the default link behavior
 }
 
+function setMediaSession() {
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: 'Éist',
+            artist: artistName,
+            album: showTitle,
+            artwork: [
+                { src: '/gradient-96x96.png', sizes: '96x96', type: 'image/png' },
+                { src: '/gradient-128x128.png', sizes: '128x128', type: 'image/png' },
+                { src: '/gradient-192x192.png', sizes: '192x192', type: 'image/png' },
+                { src: '/gradient-256x256.png', sizes: '256x256', type: 'image/png' },
+                { src: '/gradient-384x384.png', sizes: '384x384', type: 'image/png' },
+                { src: '/gradient-512x512.png', sizes: '512x512', type: 'image/png' },
+            ]
+        });
+
+        navigator.mediaSession.playbackState = window.currentAudio.paused ? 'paused' : 'playing';
+
+        // Handle media session actions
+        navigator.mediaSession.setActionHandler('play', () => {
+            window.currentAudio.play();
+        });
+        navigator.mediaSession.setActionHandler('pause', () => {
+            window.currentAudio.pause();
+        });
+    }
+}
+
 // Update the player when the page is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    updatePlayerDetails();
     const playerControl = document.getElementById('player-control');
     if (playerControl) {
         playerControl.addEventListener('click', (event) => {
@@ -177,5 +184,4 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleAudio();
         });
     }
-    updatePlayerDetails();
 });
