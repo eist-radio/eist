@@ -32,11 +32,18 @@
                 </div>
             </div>
         </div>
+        <div class="index-footer">
+            {{- with .Site.Params.socialLinks -}}
+            <span class="hdr-links">{{- partialCached "social-icons.html" . -}}</span>
+            {{- end -}}
+            <p>
+                &copy; {{ now.Format "2006" }} <a href="{{ .Site.BaseURL }}">{{ .Site.Params.author.name }}</a>
+            </p>
+        </div>
     </div>
 </main>
 {{ end }}
 {{ define "footer" }}
-{{ partialCached "footer.html" . }}
 <!-- custom css + js -->
 {{ range .Site.Params.custom_css -}}
 <link rel="stylesheet" href="{{ . | absURL }}">

@@ -2,7 +2,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: 1rem;
+    font-size: medium;
     flex-direction: row;
     flex-wrap: nowrap;
 }
@@ -85,14 +85,16 @@ table caption {
     flex: 2;
     overflow: hidden;
     display: flex;
+    max-height: 20em;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     position: relative;
 }
 
 .player-headshot img {
-    width: 100%;
-    height: auto;
+    height: 1200px;
+    overflow: hidden;
+    margin-top: 500px;
 }
 
 .player-headshot::after {
@@ -135,8 +137,8 @@ table caption {
 }
 
 #player-button img {
-    width: 3em;
-    height: 3em;
+    width: 2em;
+    height: 2em;
 }
 
 /* Metadata styling */
@@ -148,7 +150,8 @@ table caption {
 }
 
 #player-metadata-show-title {
-    font-size: 1.2rem;
+    font-size: medium;
+    font-weight: bold;
     color: #AFFC41;
 }
 
@@ -163,14 +166,41 @@ table caption {
 }
 
 #player-metadata-show-desc {
-    font-size: 1rem;
+    font-size: medium;
     color: #AFFC41;
+}
+
+.index-footer {
+    display: flex;
+    text-align: end;
+    font-size: small;
+    position: relative;
+    bottom: 5;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
 }
 
 @media (max-width: 760px) {
     #player {
         flex-direction: column;
         height: auto;
+    }
+
+    .player-headshot {
+        flex: 2;
+        overflow: hidden;
+        display: flex;
+        max-height: 8em;
+        align-items: center;
+        justify-content: flex-end;
+        position: relative;
+    }
+
+    .player-headshot img {
+        height: 600px;
+        overflow: hidden;
+        margin-top: 300px;
     }
 
     .player-now-playing {
@@ -181,12 +211,21 @@ table caption {
         flex-wrap: wrap;
         justify-content: space-between;
     }
+
+    #player-metadata-show-desc {
+        font-size: small;
+    }
+
+    #player-metadata-show-title {
+        font-size: small;
+    }
+
 }
 
 .banner-404 {
     margin: unset !important;
     margin-top: 8em;
-    font-size: 5em;
+    font-size: xxx-large;
     text-align: center;
 }
 
