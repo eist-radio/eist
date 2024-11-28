@@ -22,15 +22,11 @@ defaultContentLanguageInSubdir = false
     [languages.en.params]
       homeSubtitle = "Éist is a radio station"
     weight = 1
- 
-languageCode = "en-us"
 
-pygmentsCodefences  = true
-pygmentsUseClasses  = true
+languageCode = "en-us"
 
 rssLimit = 10
 
-copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
 enableEmoji = true
 
 [frontmatter]
@@ -38,6 +34,10 @@ date = ["lastmod", "date", "publishDate"]
 lastmod = ["date", "lastmod", ":git", "publishDate"]
 publishDate = ["publishDate", "date"]
 expiryDate = ["expiryDate"]
+
+[security]
+  [security.funcs]
+    getenv = ['^API_KEY$']
 
 [params.author]
   name = "Éist"
@@ -52,14 +52,14 @@ expiryDate = ["expiryDate"]
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04 -0700"
 
-  # PLace custom css and js in static/css + js
-  # custom_css = ["css/custom.css"]
-  # custom_js = ["js/custom.js"]
+  # Place custom js and css in static/js and static/css
+  # custom_css = ["custom.css"]
+  custom_js = ["js/player.js"]
+
 
   # Metadata mostly used in document's head
   description = "Éist is an internet radio station based in Cork, Ireland."
-  themeColor = "#2c3e50"
-  footerCopyright = ' <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+  themeColor = "#4733FF"
 
   justifyContent = false
 
@@ -68,10 +68,6 @@ expiryDate = ["expiryDate"]
 
   homeSubtitlePrinter = true
   scrollToTop = true 
-  global_mathjax = false
-  readTime = true
-  readTimeSeparator = "\u2026 \u23F2 Reading Time:"
-  shareSocial = true
   pinned = "Pinned Posts"
   descriptionInPosts = true
   human = ["single","posts"]
@@ -101,21 +97,26 @@ expiryDate = ["expiryDate"]
 [menu]
 
   [[menu.main]]
-    name = "Schedule"
-    url = "schedule/"
+    name = "listen"
+    url = "/"
     weight = 1
 
   [[menu.main]]
-    name = "About"
-    url = "about/"
+    name = "schedule"
+    url = "schedule/"
     weight = 2
 
   [[menu.main]]
-    name = "Events"
-    url = "events/"
+    name = "about"
+    url = "about/"
     weight = 3
 
   [[menu.main]]
-    name = "Support"
-    url = "support/"
+    name = "events"
+    url = "events/"
     weight = 4
+
+  [[menu.main]]
+    name = "support"
+    url = "support/"
+    weight = 5
