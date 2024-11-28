@@ -50,10 +50,11 @@ jobs:
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
-      - uses: actions/upload-artifact@v4
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: website output folder
-          path: public/
+          name: Deploy to GitHub Pages
+          path: public
 
 
   deploy:
