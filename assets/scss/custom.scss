@@ -85,16 +85,17 @@ table caption {
     flex: 2;
     overflow: hidden;
     display: flex;
-    max-height: 20em;
+    max-height: 22em;
     align-items: center;
     justify-content: flex-end;
     position: relative;
 }
 
 .player-headshot img {
-    height: 1200px;
+    height: 1000px;
     overflow: hidden;
-    margin-top: 500px;
+    opacity: 20%;
+    margin-top: 400px;
 }
 
 .player-headshot::after {
@@ -104,7 +105,16 @@ table caption {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to top, #AFFC41 0%, #4733FF 40%, #00000000 100%);
+  background-image: linear-gradient(
+    to top,
+    rgba(175, 252, 65, 1) 0%,
+    rgba(175, 252, 65, 0.3) 50%,
+    rgba(175, 252, 65, 0.15) 65%,
+    rgba(175, 252, 65, 0.075) 75.5%,
+    rgba(175, 252, 65, 0.037) 82.85%,
+    rgba(175, 252, 65, 0.019) 88%,
+    #00000000 120%
+  );
   pointer-events: none;
 }
 
@@ -215,7 +225,7 @@ body {
         flex: 2;
         overflow: hidden;
         display: flex;
-        max-height: 8em;
+        max-height: 11em;
         align-items: center;
         justify-content: flex-end;
         position: relative;
