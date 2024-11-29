@@ -116,10 +116,10 @@ table caption {
     flex-wrap: nowrap;
     height: 3em;
     position: absolute;
-    bottom: 110px;
-    left: 15px;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
     z-index: 2;
-    padding: 10px;
 }
 
 /* Metadata and play button section */
@@ -247,9 +247,10 @@ body {
         flex-wrap: nowrap;
         height: 3em;
         position: absolute;
-        bottom: 80px;
+        bottom: 0;
+        left: 0;
+        padding: 20px;
         z-index: 2;
-        padding: 10px;
     }
 
     #dj-name {
