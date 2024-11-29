@@ -1,4 +1,4 @@
-baseURL = "https://eist-radio.github.io/eist/"
+baseURL = "https://eist.radio/"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 
@@ -84,7 +84,7 @@ expiryDate = ["expiryDate"]
 
   [[params.socialLinks]]
     name = "discord"
-    url = "https://discord.com/channels/1292547227289387018/1297937382309630005"
+    url = "https://discord.com/channels/1292547227289387018/1305240813869072414"
 
   [[params.socialLinks]]
     name = "instagram"
