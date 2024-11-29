@@ -77,7 +77,7 @@ async function updatePlayerDetails() {
         if (broadcastStatus == "schedule") {
             broadcastStatusElement.textContent = "we are live" || 'null';
         } else {
-            broadcastStatusElement.textContent = "offline" || 'null';
+            broadcastStatusElement.textContent = "off air" || 'null';
         }
 
     } catch (error) {
@@ -127,13 +127,13 @@ function toggleAudio() {
     if (!window.currentAudio) {
         window.currentAudio = new Audio('https://eist-radio.radiocult.fm/stream');
         window.currentAudio.play();
-        playButtonImg.src = 'pause.svg';
+        playButtonImg.src = 'pause-alt.svg';
     } else if (window.currentAudio.paused) {
         window.currentAudio.play();
-        playButtonImg.src = 'pause.svg';
+        playButtonImg.src = 'pause-alt.svg';
     } else {
         window.currentAudio.pause();
-        playButtonImg.src = 'play.svg';
+        playButtonImg.src = 'play-alt.svg';
     }
     setMediaSession();
     updatePlayerDetails();
