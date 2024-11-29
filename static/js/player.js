@@ -136,7 +136,7 @@ function toggleAudio() {
         playButtonImg.src = 'play.svg';
     }
     setMediaSession();
-    updatePlayerDetails;
+    updatePlayerDetails();
     return false // Prevent the default link behavior
 }
 
@@ -177,6 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault(); // Prevent default link behavior
             toggleAudio();
         });
-    };
-    updatePlayerDetails()
+    }
+    updatePlayerDetails();
 });
