@@ -1,12 +1,3 @@
-.hdr-wrapper {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    font-size: medium;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-
 .slideOutDown {
   max-height: 100% !important;
 }
@@ -38,16 +29,6 @@ table caption {
 .header-logo {
     width: 200px;
     margin-top: 12px;
-}
-
-.hdr-wrapper {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 70px;
-    padding-bottom: 20px;
-    font-size: 1.2rem;
-    flex-direction: row;
 }
 
 /* Parent container styling */
