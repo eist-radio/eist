@@ -119,3 +119,8 @@ if (header !== null) {
     }
   }, 250));
 }
+
+// Check if the current page is the index page and hide overflow
+if (window.location.pathname === '/eist/') {
+    document.body.classList.add('index-page');
+}
