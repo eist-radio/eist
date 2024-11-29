@@ -148,12 +148,12 @@ async function setMediaSession() {
             artist: artistName,
             album: showDesc,
             artwork: [
-                { src: '/gradient-96x96.png', sizes: '96x96', type: 'image/png' },
-                { src: '/gradient-128x128.png', sizes: '128x128', type: 'image/png' },
-                { src: '/gradient-192x192.png', sizes: '192x192', type: 'image/png' },
-                { src: '/gradient-256x256.png', sizes: '256x256', type: 'image/png' },
-                { src: '/gradient-384x384.png', sizes: '384x384', type: 'image/png' },
-                { src: '/gradient-512x512.png', sizes: '512x512', type: 'image/png' },
+                { src: './gradient-96x96.png', sizes: '96x96', type: 'image/png' },
+                { src: './gradient-128x128.png', sizes: '128x128', type: 'image/png' },
+                { src: './gradient-192x192.png', sizes: '192x192', type: 'image/png' },
+                { src: './gradient-256x256.png', sizes: '256x256', type: 'image/png' },
+                { src: './gradient-384x384.png', sizes: '384x384', type: 'image/png' },
+                { src: './gradient-512x512.png', sizes: '512x512', type: 'image/png' },
             ]
         });
 
