@@ -240,7 +240,7 @@ table {
 
 .hdr-wrapper {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -793,7 +793,7 @@ a.footnote-ref {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
 
   body.with-header {
     padding-top: 90px;
