@@ -79,7 +79,7 @@ table caption {
 }
 
 .player-headshot img {
-    height: 1000px;
+    width: -webkit-fill-available;
     overflow: hidden;
     opacity: 20%;
     margin-top: 400px;
@@ -224,9 +224,10 @@ body {
     }
 
     .player-headshot img {
-        height: 600px;
+        width: -webkit-fill-available;
         overflow: hidden;
-        margin-top: 300px;
+        opacity: 20%;
+        margin-top: 100px;
     }
 
     .player-now-playing {
