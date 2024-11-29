@@ -45,6 +45,7 @@ table caption {
     justify-content: center;
     align-content: stretch;
     align-items: stretch;
+    position: relative;
 }
 
 .broadcast-status {
@@ -76,6 +77,7 @@ table caption {
     align-items: center;
     justify-content: flex-end;
     position: relative;
+    z-index: 1;
 }
 
 .player-headshot img {
@@ -113,6 +115,11 @@ table caption {
     align-items: center;
     flex-wrap: nowrap;
     height: 3em;
+    position: absolute;
+    bottom: 110px;
+    left: 15px;
+    z-index: 2;
+    padding: 10px;
 }
 
 /* Metadata and play button section */
@@ -136,8 +143,8 @@ table caption {
 }
 
 #player-button img {
-    width: 2em;
-    height: 2em;
+    width: 2.5em;
+    height: 2.5em;
 }
 
 /* Metadata styling */
@@ -160,6 +167,7 @@ table caption {
 }
 
 #dj-name {
+    color: #4733FF;
     padding-bottom: 15px;
     font-weight: bold;
     font-size: x-large;
@@ -233,10 +241,16 @@ body {
     .player-now-playing {
         display: flex;
         flex-direction: row;
+        justify-content: space-between;
         align-content: center;
         align-items: center;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        flex-wrap: nowrap;
+        height: 3em;
+        position: absolute;
+        bottom: 90px;
+        left: 10px;
+        z-index: 2;
+        padding: 10px;
     }
 
     #dj-name {
