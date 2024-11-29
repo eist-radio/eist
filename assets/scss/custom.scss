@@ -197,6 +197,11 @@ body {
         height: auto;
     }
 
+    .hdr-wrapper {
+        display: flex;
+        justify-content: space-between !important;
+    }
+
     .header-logo {
         width: 125px;
         margin-top: 5px;
