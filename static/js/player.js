@@ -36,8 +36,7 @@ async function updatePlayerDetails() {
         broadcastStatus = data.result.status || 'offAir';
 
         // Extract artist ID and show description
-        // TODO - Created an offline artist in RadioCult. Eeeew. Do this properly! 
-        artistId = data.result.content.artistIds?.[0] || '22e7b0ff-538c-4a7f-9d5b-e0ca890d6775';
+        artistId = data.result.content.artistIds?.[0] || ' ';
         artistUrl = `https://api.radiocult.fm/api/station/${stationId}/artists/${artistId}`;
         showDesc = data.result.content.description?.content?.[0]?.content?.[0]?.text ||
             ' ';
@@ -51,7 +50,9 @@ async function updatePlayerDetails() {
 
         const artistNameElement = document.getElementById('dj-name');
         if (artistNameElement) {
-            artistNameElement.textContent = artistDetails.artistName || 'offline';
+            artistNameElement.textContent = artistDetails.artistName || ' ';
+        } else {
+           artistNameElement.textContent = ' '; 
         }
 
         const showDescElement = document.getElementById('player-metadata-show-desc');
@@ -68,8 +69,7 @@ async function updatePlayerDetails() {
         if (artistImageElement) {
             artistImageElement.src = artistDetails.artistImage || 'null';
         } else {
-           // this not actually needed
-           artistImageElement.src = 'offline.png'; 
+           artistImageElement.src = 'eist_offline.png'; 
         }
 
         const broadcastStatusElement = document.getElementById('live-text');
@@ -102,20 +102,20 @@ async function getArtistDetails(artistId) {
 
         const data = await response.json();
 
-        artistName = data.artist?.name || 'Unknown artist name';
+        artistName = data.artist?.name || ' ';
         artistBio =
             data.artist?.description?.content?.[0]?.content?.[0]?.text ||
             'No bio available';
-        artistImage = data.artist?.logo?.['256x256'] || 'offline.png';
+        artistImage = data.artist?.logo?.['256x256'] || 'eist_offline.png';
 
         return { artistName, artistBio, artistImage };
 
     } catch (error) {
         console.error('Error fetching artist details:', error);
         return {
-            artistName: 'offline',
-            artistBio: 'offline',
-            artistImage: 'offline'
+            artistName: ' ',
+            artistBio: ' ',
+            artistImage: ' '
         };
     }
 }

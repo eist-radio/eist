@@ -4,6 +4,18 @@
     overflow: hidden;
   }
 
+h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav, {
+    font-family: $heading-fonts;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+#site-header > div > div.hdr-left > nav, {
+    font-family: $heading-fonts;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+}
+
 .slideOutDown {
   max-height: 100% !important;
 }
@@ -87,7 +99,7 @@ table caption {
     margin-top: 400px;
 }
 
-.player-headshot::after {
+.player-headshot::before {
   content: "";
   position: absolute;
   top: 0;
@@ -224,7 +236,7 @@ body {
         flex: 2;
         overflow: hidden;
         display: flex;
-        max-height: 11em;
+        max-height: 15em;
         align-items: center;
         justify-content: flex-end;
         position: relative;
