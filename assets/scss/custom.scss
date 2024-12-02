@@ -130,8 +130,9 @@ table caption {
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 20px;
+    padding-left: 30px;
     z-index: 2;
+    padding-bottom: 20px;
 }
 
 /* Metadata and play button section */
@@ -260,7 +261,8 @@ body {
         position: absolute;
         bottom: 0;
         left: 0;
-        padding: 20px;
+        padding-left: 30px;
+        padding-bottom: 20px;
         z-index: 2;
     }
 
