@@ -178,9 +178,10 @@ table caption {
 
 #dj-name {
     color: #4733FF;
-    padding-bottom: 15px;
-    font-weight: bold;
-    font-size: x-large;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    font-weight: 700;
+    font-size: xx-large;
 }
 
 #player-metadata-show-desc {
@@ -265,9 +266,11 @@ body {
     }
 
     #dj-name {
-        padding-bottom: 15px;
-        font-weight: bold;
-        font-size: large;
+        color: #4733FF;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        font-weight: 700;
+        font-size: xx-large;
     }
 
     #player-metadata-show-desc {
