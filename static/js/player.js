@@ -67,7 +67,7 @@ async function updatePlayerDetails() {
 
         const artistImageElement = document.getElementById('dj-image');
         if (artistImageElement) {
-            artistImageElement.src = artistDetails.artistImage || 'null';
+            artistImageElement.src = 'eist_online.png';
         } else {
            artistImageElement.src = 'eist_offline.png'; 
         }
