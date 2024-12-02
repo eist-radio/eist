@@ -66,18 +66,14 @@ async function updatePlayerDetails() {
         }
 
         const artistImageElement = document.getElementById('dj-image');
-        if (artistImageElement) {
-            artistImageElement.src = 'eist_online.png';
-        } else {
-           artistImageElement.src = 'eist_offline.png'; 
-        }
-
         const broadcastStatusElement = document.getElementById('live-text');
         const broadcastStatusIndicatorElement = document.getElementsByClassName('broadcast-status-indicator');
         if (broadcastStatus == "schedule") {
             broadcastStatusElement.textContent = "we are live" || 'null';
+            artistImageElement.src = 'eist_online.png';
         } else {
             broadcastStatusElement.textContent = "off air" || 'null';
+            artistImageElement.src = 'eist_offline.png';
         }
 
     } catch (error) {
