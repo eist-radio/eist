@@ -75,7 +75,6 @@ expiryDate = ["expiryDate"]
   # allowRobots = "index, follow"
   # siteNoIndex = false
   noIndexPages = ["404 Page not found"]
-  # footerHideThemeName = false
   logo = "eist-logo-small.png"
 
   [[params.socialLinks]]
@@ -84,7 +83,7 @@ expiryDate = ["expiryDate"]
 
   [[params.socialLinks]]
     name = "discord"
-    url = "https://discord.com/channels/1292547227289387018/1305240813869072414"
+    url = "https://discord.gg/j3ZGzfUK"
 
   [[params.socialLinks]]
     name = "instagram"
