@@ -81,7 +81,7 @@ table caption {
     text-transform: lowercase;
 }
 
-.player-headshot {
+.player-background {
     flex: 2;
     overflow: hidden;
     display: flex;
@@ -90,16 +90,17 @@ table caption {
     justify-content: flex-end;
     position: relative;
     z-index: 1;
+    border-radius: 8px;
 }
 
-.player-headshot img {
+.player-background img {
     width: -webkit-fill-available;
+    width: 100%;
     overflow: hidden;
     opacity: 20%;
-    margin-top: 400px;
 }
 
-.player-headshot::before {
+.player-background::before {
   content: "";
   position: absolute;
   top: 0;
@@ -201,6 +202,74 @@ table caption {
     text-overflow: ellipsis;
 }
 
+/* Artist page */
+.artist {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    padding: 4rem;
+    background-color: #AFFC41;
+}
+
+.artist-image-container {
+    display: flex;
+    justify-content: left;
+    border-radius: 8px;
+    position: relative; /* For positioning the gradient overlay */
+}
+
+.artist-image {
+    border-radius: 8px;
+    filter: grayscale(100%); /* Makes the image greyscale */
+    opacity: 0.5; /* Slight transparency */
+    transition: filter 0.3s ease, opacity 0.5s ease; /* Smooth transition on hover */
+}
+
+/* Gradient overlay */
+.artist-image-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px; /* Matches the image's border-radius */
+    background: linear-gradient(transparent, #4733FF);
+    pointer-events: none; /* Ensures it doesn't block interactions with the image */
+    opacity: 0.8; /* Adjust transparency of the gradient */
+}
+
+/* Optional: On hover, remove grayscale and opacity for the image */
+.artist-image-container:hover .artist-image {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+.artist-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.artist-content h3 {
+    color: #4733FF;
+    margin-block-end: unset !important;
+}
+
+.artist-desc {
+    color: #4733FF;
+}
+
+.artist-desc a {
+    font-weight: bold;
+    color: #4733FF;
+}
+
+.artist-desc a:hover {
+    text-decoration: underline;
+    color: #4733FF;
+}
 
 .index-footer {
     display: flex;
@@ -245,21 +314,19 @@ body {
         margin-top: 5px;
     }
 
-    .player-headshot {
+    .player-background {
         flex: 2;
         overflow: hidden;
         display: flex;
-        max-height: 15em;
         align-items: center;
         justify-content: flex-end;
         position: relative;
     }
 
-    .player-headshot img {
+    .player-background img {
         width: -webkit-fill-available;
         overflow: hidden;
         opacity: 20%;
-        margin-top: 100px;
     }
 
     .player-now-playing {
@@ -304,4 +371,19 @@ body {
         justify-content: space-between;
         flex-direction: row-reverse;
     }
+
+    .artist {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        padding: 1rem;
+        background-color: #AFFC41;
+    }
+
+    .artist-content {
+        flex: 1;
+    }
+
 }
