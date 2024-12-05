@@ -116,6 +116,11 @@ expiryDate = ["expiryDate"]
     weight = 4
 
   [[menu.main]]
+    name = "artists"
+    url = "artists/"
+    weight = 5
+
+  [[menu.main]]
     name = "support"
     url = "support/"
-    weight = 5
+    weight = 6

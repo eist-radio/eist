@@ -1,0 +1,3 @@
+{{- $artists := resources.Get "js/artists.js" -}}
+{{- $script := $artists | minify | fingerprint -}}
+<script type="text/javascript" src="{{ $script.Permalink }}"></script>
