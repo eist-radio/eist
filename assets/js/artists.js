@@ -1,116 +1,141 @@
-// TODO modify this for artists
-// Pull artists details from the API on page load
-
+// Pull the list of artists on page load
 // Running locally
-// source .env
-// export API_KEY
-// Note need to restart the hugo server when you make changes
+// source .env && export API_KEY
+// Note: need to restart the hugo server when you make changes
 
 let apiKey = radiocultApiKey;
 let stationId = 'eist-radio';
-let url = `https://api.radiocult.fm/api/station/${stationId}/schedule/live`;
+let artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
 
-// Get the system timezone using the `Intl.DateTimeFormat` API
-let timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-// Calculate start and end dates
-let today = new Date();
-let endDate = new Date(today);
-
-endDate.setDate(today.getDate() + 7); // 7 days from today
-
-// Format the start and end dates as needed
-// Start of today in ISO format
-let startDate = today.toISOString().split('T')[0] + 'T00:00:00Z';
-
-// End of the 7th day in ISO format
-let endDateFormatted = endDate.toISOString().split('T')[0] + 'T23:59:59Z'; 
-
-// Build the API URL
-let scheduleUrl = `https://api.radiocult.fm/api/station/${stationId}/schedule?startDate=${startDate}&endDate=${endDateFormatted}&timezone=${timeZone}`;
-
-async function updateSchedule() {
-    // Fetch the schedule data
-    fetch(scheduleUrl, {
-        method: 'GET',
-        headers: {
-            'x-api-key': apiKey,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Extract and group schedules by day
-        const groupedSchedules = data.schedules.reduce((acc, item) => {
-            const date = new Date(item.startDateUtc).toISOString().split('T')[0];
-            if (!acc[date]) {
-                acc[date] = [];
+async function updateArtists() {
+    try {
+        // Fetch the artist data
+        const response = await fetch(artistsURL, {
+            method: 'GET',
+            headers: {
+                'x-api-key': apiKey,
+                'Content-Type': 'application/json'
             }
-            acc[date].push(item);
-            return acc;
-        }, {});
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch artists: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // Extract artist details
+        const artists = data.artists || [];
+        if (artists.length === 0) {
+            console.warn('No artists found.');
+            return;
+        }
 
         // Get the container element
-        const container = document.getElementById('schedule-output');
+        const container = document.getElementById('artists-output');
 
         // Clear any existing content
         container.innerHTML = '';
 
-        // Generate a table for each day
-        for (const [date, schedules] of Object.entries(groupedSchedules)) {
-            // Format the day header
-            const dayHeader = new Date(date).toLocaleString('en-US', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                timeZone: 'UTC'
-            });
+        // Generate div for each artist
+        artists.forEach(artist => {
+            const artistDiv = document.createElement('div');
+            artistDiv.classList.add('artist'); // Main container for an artist
 
-            // Create a table and add a header
-            const table = document.createElement('table');
-            table.style.marginBottom = '20px';
+            // Create and append the image container
+            if (artist.logo && artist.logo.default) {
+                const imageDiv = document.createElement('div');
+                imageDiv.classList.add('artist-image-container');
 
-            const caption = document.createElement('caption');
-            caption.textContent = dayHeader;
-            caption.classList.add('table-day-caption-header');
-            table.appendChild(caption);
+                const artistImage = document.createElement('img');
+                artistImage.src = artist.logo.default;
+                artistImage.alt = `${artist.name} Logo`;
+                artistImage.classList.add('artist-image');
 
-            const headerRow = document.createElement('tr');
-            headerRow.innerHTML = `
-                <th>Start time</th>
-                <th>Show</th>
-            `;
-            table.appendChild(headerRow);
+                imageDiv.appendChild(artistImage);
+                artistDiv.appendChild(imageDiv);
+            }
 
-            // Add rows for the schedule
-            schedules.forEach(item => {
-                const startDate = new Date(item.startDateUtc);
-                const friendlyTime = startDate.toLocaleString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true,
-                    timeZone: 'UTC'
-                });
+            // Create and append the content container
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('artist-content');
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${friendlyTime}</td>
-                    <td>${item.title}</td>
-                `;
-                table.appendChild(row);
-            });
+            // Set artist name as a h3
+            const artistName = document.createElement('h3');
+            artistName.textContent = artist.name;
+            contentDiv.appendChild(artistName);
 
-            // Append the table to the container
-            container.appendChild(table);
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching schedule:', error);
-        document.getElementById('schedule-output').innerHTML = '<p>Error fetching schedule.</p>';
-    });
+            // Artist Description
+            const artistDescription = document.createElement('p');
+            artistDescription.classList.add('artist-desc');
+            artistDescription.innerHTML = extractTextFromDescription(artist.description);
+
+            // Add social media links at the end of the description
+            const socialLink = getSocialLink(artist.socials);
+            if (socialLink) {
+                artistDescription.innerHTML += `<br><a href="${socialLink.url}" target="_blank">${socialLink.label}</a>`;
+            }
+
+            contentDiv.appendChild(artistDescription);
+
+            artistDiv.appendChild(contentDiv);
+
+            // Append artist div to container
+            container.appendChild(artistDiv);
+        });
+    } catch (error) {
+        console.error('Error updating artists:', error);
+    }
 }
 
-// Update the schedule when the page is loaded
+// Helper function to extract text from the description field
+function extractTextFromDescription(description) {
+    if (!description || !description.content) {
+        return '';
+    }
+
+    return description.content
+        .map(paragraph => {
+            if (paragraph.content) {
+                return paragraph.content
+                    .map(contentItem => contentItem.text || '')
+                    .join('');
+            }
+            return '';
+        })
+        .join('<br>');
+}
+
+// Helper function to generate the first social media link
+function getSocialLink(socials) {
+    if (!socials || Object.keys(socials).length === 0) {
+        return null; // No socials provided
+    }
+
+    if (socials.soundcloud) {
+        return { url: `https://www.soundcloud.com/${socials.soundcloud}`, label: "SoundCloud" };
+    }
+
+    if (socials.instagramHandle) {
+        return { url: `https://www.instagram.com/${socials.instagramHandle}`, label: "Instagram" };
+    }
+
+    if (socials.facebook) {
+        return { url: `https://www.facebook.com/${socials.facebook}`, label: "Facebook" };
+    }
+
+    if (socials.mixcloud) {
+        return { url: `https://www.mixcloud.com/${socials.mixcloud}`, label: "Mixcloud" };
+    }
+
+    if (socials.site) {
+        return { url: `${socials.site}`, label: "Website" };
+    }
+
+    return null;
+}
+
+// Update the artists when the page is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    updateSchedule();
+    updateArtists();
 });
