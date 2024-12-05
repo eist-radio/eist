@@ -10,6 +10,8 @@ STATION_ID="eist-radio"
 
 URL="https://api.radiocult.fm/api/station/${STATION_ID}/schedule/live"
 
+ARTISTS_URL="https://api.radiocult.fm/api/station/${STATION_ID}/artists"
+
 TIMEZONE=$(timedatectl | awk '/Time zone/ {print $3}')
 
 SCHEDULE_URL="https://api.radiocult.fm/api/station/${STATION_ID}/schedule?startDate=$(date -I)T00:00:00Z&endDate=$(date -I -d '+7 days')T23:59:59Z&timezone=${TIMEZONE}"
@@ -23,6 +25,10 @@ ARTIST_ID=$(curl -s -X GET "$URL" \
   -H "Content-Type: application/json" | jq -r '.result.content.artistIds[0]')
 
 ARTIST_URL="https://api.radiocult.fm/api/station/${STATION_ID}/artists/${ARTIST_ID}"
+
+ARTISTS_ARRAY=$(curl -s -X GET "$ARTISTS_URL" \
+  -H "x-api-key: $API_KEY" \
+  -H "Content-Type: application/json" | jq)
 
 SHOW_DESC=$(curl -s -X GET "$URL" \
   -H "x-api-key: $API_KEY" \
@@ -64,5 +70,7 @@ echo "${ARTIST_NAME}"
 echo "${ARTIST_BIO}"
 
 echo "${ARTIST_LOGO_URL}"
+
+echo "${ARTISTS_ARRAY}"
 
 echo "${SCHEDULE}"
