@@ -4,7 +4,7 @@ date = 2024-11-13T15:53:32Z
 draft = false
 +++
 
-[Send us an email](mailto:eistcork@gmail.com?subject=I'd%20like%20to%20receive%20occasional%20emails%20from%20Éist&body=Thanks! "I'd like to receive occasional updates about Éist and upcoming events") if you would like to receive occasional updates about news and upcoming events.
+[Send us an email](mailto:info@eist.radio?subject=I'd%20like%20to%20receive%20occasional%20emails%20from%20Éist&body=Thanks! "I'd like to receive occasional updates about Éist and upcoming events") if you would like to receive occasional updates about news and upcoming events.
 
 ### Support us with a monthly subscription of just €5
 
@@ -42,4 +42,4 @@ Thank you! 🤟
 ### Support us with a one time donation
 
 Alternatively, you can support what we do by making a [one time donation](https://www.paypal.com/ncp/payment/25VW6TA5ZNS6C).
-Whatever you can spare helps to stay on air and is greatly appreciated.
+Whatever you can spare helps us to stay on air and is greatly appreciated.

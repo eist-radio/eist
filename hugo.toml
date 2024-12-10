@@ -72,14 +72,14 @@ expiryDate = ["expiryDate"]
   descriptionInPosts = true
   human = ["single","posts"]
   denyRobots = "noindex, nofollow, noarchive"
-  # allowRobots = "index, follow"
-  # siteNoIndex = false
+  allowRobots = "index, follow"
+  siteNoIndex = false
   noIndexPages = ["404 Page not found"]
   logo = "eist-logo-small.png"
 
   [[params.socialLinks]]
     name = "email"
-    url = "mailto:eistcork@gmail.com"
+    url = "mailto:info@eist.radio"
 
   [[params.socialLinks]]
     name = "discord"
