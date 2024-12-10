@@ -49,6 +49,10 @@ table caption {
     margin-top: 12px;
 }
 
+.eist-event {
+    float:left;
+}
+
 /* Parent container styling */
 #player {
     display: flex;
@@ -297,6 +301,8 @@ body {
 
 #pp {
     width: 100%;
+    position: relative;
+    z-index: 0;
 }
 
 @media (max-width: 760px) {
