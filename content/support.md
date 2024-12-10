@@ -42,4 +42,4 @@ Thank you! 🤟
 ### Support us with a one time donation
 
 Alternatively, you can support what we do by making a [one time donation](https://www.paypal.com/ncp/payment/25VW6TA5ZNS6C).
-Whatever you can spare helps to stay on air and is greatly appreciated.
+Whatever you can spare helps us to stay on air and is greatly appreciated.
