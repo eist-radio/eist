@@ -78,11 +78,13 @@ table caption {
     width: 0.5em;
     padding: 0.4em;
     margin-top: 0.2em;
+    z-index: 2;
 }
 
 .broadcasting-live-text-status {
     font-size: 1em;
     text-transform: lowercase;
+    z-index: 2;
 }
 
 .player-background {
