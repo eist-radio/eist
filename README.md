@@ -38,6 +38,9 @@ export API_KEY
 hugo server
 ```
 
+On Windows:
+set API_KEY=xxxxx
+
 # Deploying previews with Surge
 
 PR previews are deployed using Surge. Preview links are posted in the PR.
