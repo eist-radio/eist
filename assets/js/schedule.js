@@ -3,8 +3,8 @@
 // source .env && export API_KEY
 // Note: need to restart the hugo server when you make changes
 
-let apiKey = radiocultApiKey;
-let stationId = 'eist-radio';
+apiKey = radiocultApiKey;
+stationId = 'eist-radio';
 
 // Get the system timezone
 let timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -12,10 +12,11 @@ let timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 // Calculate start and end dates
 let today = new Date();
 let endDate = new Date(today);
-endDate.setDate(today.getDate() + 7); // 7 days from today
+endDate.setDate(today.getDate() + 7); // 2 days from today
 
 // Format the start and end dates
-let startDate = today.toISOString().split('T')[0] + 'T00:00:00Z';
+let startDate = today.toISOString().split('T')[0] + 'T23:59:59Z';
+console.log(startDate);
 let endDateFormatted = endDate.toISOString().split('T')[0] + 'T23:59:59Z';
 
 // Build the schedule API URL

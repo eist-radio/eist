@@ -1,9 +1,9 @@
 /* Hide overflow on the listen home page */
-.index-page {
+/*.index-page {
     height: 100%;
-    overflow: hidden;
+    overflow: scroll;
   }
-
+*/
 h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav, {
     font-family: $heading-fonts;
     font-weight: 700;
@@ -69,7 +69,7 @@ table caption {
     flex-direction: row;
     justify-content: flex-end;
     align-content: right;
-    height: 60px;
+    height: 80px;
     align-items: center;
     flex-wrap: nowrap;
 }
@@ -152,6 +152,7 @@ table caption {
     align-items: flex-end;
     flex-wrap: wrap;
     height: 3em;
+    gap: 1rem;
 }
 
 /* Play button styling */
@@ -197,7 +198,7 @@ table caption {
 }
 
 #player-metadata-show-desc {
-    font-size: x-small;
+    font-size: small;
     line-height: 1em;
     text-align: left;
     color: #AFFC41;
@@ -206,6 +207,15 @@ table caption {
     -webkit-box-orient: vertical;
     overflow: visible;
     text-overflow: ellipsis;
+}
+
+.player-front-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-player-schedule {
+
 }
 
 .artist {
@@ -323,6 +333,10 @@ body {
         margin-top: 10px;
     }
 
+    .player-metadata-play {
+      flex-direction: column;
+    }
+
     .player-background {
         flex: 2;
         overflow: hidden;
@@ -360,10 +374,6 @@ body {
         padding-left: 20px;
         font-weight: 700;
         font-size: xx-large;
-    }
-
-    #player-metadata-show-desc {
-        display: none;
     }
 
     #player-metadata-show-title {

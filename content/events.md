@@ -17,6 +17,6 @@ We’ll have a raffle and merch for sale on the night to help raise funds for eq
 
 Come along, enjoy a boogie, buy a raffle ticket if you're feeling lucky...
 
-Thanks to @[corkcitycouncil](https://www.instagram.com/corkcitycouncil) for their support through the Night Economy Funding, our neighbours and co-conspirators at @testsiteproject](https://www.instagram.com/@testsiteproject) and @[bloomers.art](https://www.instagram.com/art) for their assistance and collaboration, and to @[pludgrecords](https://www.instagram.com/pludgrecords) for giving this project a home.
+Thanks to @[corkcitycouncil](https://www.instagram.com/corkcitycouncil) for their support through the Night Economy Funding, our neighbours and co-conspirators at @[testsiteproject](https://www.instagram.com/@testsiteproject) and @[bloomers.art](https://www.instagram.com/art) for their assistance and collaboration, and to @[pludgrecords](https://www.instagram.com/pludgrecords) for giving this project a home.
 
 _Poster design by @[_unalucy](https://www.instagram.com/_unalucy) and @[alannah_matthews](https://www.instagram.com/alannah_matthews)_
