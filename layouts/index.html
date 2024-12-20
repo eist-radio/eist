@@ -26,10 +26,17 @@
                 </div>
             </div>
         </div>
-        <div class="player-metadata-play">
-            <div class="player-metadata">
-                <p id="player-metadata-show-title"></p>
-                <p id="player-metadata-show-desc"></p>
+        <div class="player-front-page">
+            <div class="player-metadata-play">
+                <div class="player-metadata">
+                    <p id="player-metadata-show-title"></p>
+                    <p id="player-metadata-show-desc"></p>
+                </div>
+            </div>
+            <div class="home-player-schedule">
+                <h3>Schedule</h3>
+                <table id="schedule-output" class="schedule">
+                </table>
             </div>
         </div>
         <div class="index-footer">
@@ -44,6 +51,9 @@
 </main>
 {{ end }}
 {{ define "footer" }}
+{{- $schedule := resources.Get "js/schedule.js" -}}
+{{- $script := $schedule | minify | fingerprint -}}
+<script type="text/javascript" src="{{ $script.Permalink }}"></script>
 <!-- custom css + js -->
 {{ range .Site.Params.custom_css -}}
 <link rel="stylesheet" href="{{ . | absURL }}">
