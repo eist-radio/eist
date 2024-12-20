@@ -15,8 +15,7 @@ let endDate = new Date(today);
 endDate.setDate(today.getDate() + 7); // 2 days from today
 
 // Format the start and end dates
-let startDate = today.toISOString().split('T')[0] + 'T23:59:59Z';
-console.log(startDate);
+let startDate = today.toISOString().split('T')[0] + 'T06:00:59Z';
 let endDateFormatted = endDate.toISOString().split('T')[0] + 'T23:59:59Z';
 
 // Build the schedule API URL
