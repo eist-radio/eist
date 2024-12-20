@@ -120,12 +120,17 @@ expiryDate = ["expiryDate"]
     url = "artists/"
     weight = 3
 
-  [[menu.main]]
-    name = "chat"
-    url = "chat/"
-    weight = 5
+#   [[menu.main]]
+#     name = "chat"
+#     url = "chat/"
+#     weight = 5
 
   [[menu.main]]
     name = "support us"
     url = "support/"
     weight = 4
+
+  [[menu.main]]
+    name = "get involved"
+    url = "get-involved/"
+    weight = 6
