@@ -209,6 +209,19 @@ table caption {
     text-overflow: ellipsis;
 }
 
+.player-discord {
+    border-top:1px solid #AFFC41;
+    font-size: small;
+    line-height: 1em;
+    text-align: left;
+    color: #AFFC41;
+}
+
+.discord-logo {
+    height: 28px;
+    margin-bottom: -9px;
+}
+
 .player-front-page {
     display: flex;
     flex-direction: column;
