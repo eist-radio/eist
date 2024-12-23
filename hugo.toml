@@ -74,7 +74,8 @@ expiryDate = ["expiryDate"]
   denyRobots = "noindex, nofollow, noarchive"
   allowRobots = "index, follow"
   siteNoIndex = false
-  noIndexPages = ["404 Page not found"]
+  enableRobotsTXT = true
+  # noIndexPages = ["404 Page not found"]
   logo = "eist-logo-small.png"
 
   [[params.socialLinks]]
@@ -133,4 +134,4 @@ expiryDate = ["expiryDate"]
   [[menu.main]]
     name = "get involved"
     url = "get-involved/"
-    weight = 6
+    weight = 5
