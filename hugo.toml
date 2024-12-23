@@ -74,6 +74,7 @@ expiryDate = ["expiryDate"]
   denyRobots = "noindex, nofollow, noarchive"
   allowRobots = "index, follow"
   siteNoIndex = false
+  enableRobotsTXT = true
   # noIndexPages = ["404 Page not found"]
   logo = "eist-logo-small.png"
 
