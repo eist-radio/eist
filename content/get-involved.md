@@ -4,7 +4,7 @@ date = 2024-11-13T15:53:32Z
 draft = false
 +++
 
-We are now looking to build our first radio schedule for Spring/Imbolc that will run from February through to the end of April 2025.
+We are now looking to build our first radio schedule for Spring/Earrach that will run from February through to the end of April 2025.
 
 Please submit your idea for a show with the form below. Shows will be streamed and credited on Éist radio. Shows can be 1 or 2 hours long and are scheduled on a weekly or monthly basis.
 
