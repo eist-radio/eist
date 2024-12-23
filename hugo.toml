@@ -56,7 +56,6 @@ expiryDate = ["expiryDate"]
   # custom_css = ["custom.css"]
   custom_js = ["js/player.js"]
 
-
   # Metadata mostly used in document's head
   description = "Éist is an internet radio station based in Cork, Ireland."
   themeColor = "#4733FF"
@@ -74,7 +73,6 @@ expiryDate = ["expiryDate"]
   denyRobots = "noindex, nofollow, noarchive"
   allowRobots = "index, follow"
   siteNoIndex = false
-  enableRobotsTXT = true
   # noIndexPages = ["404 Page not found"]
   logo = "eist-logo-small.png"
 
