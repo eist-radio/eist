@@ -1,8 +1,3 @@
 {{ range . -}}
-    <li>
-        <a href = "{{ .url | safeURL }}" target = "_blank" rel = "noopener me" title = "{{ .name | humanize }}">
-            {{ partial "svg.html" . }}
-            <span class = "sr-only">{{ .name | humanize }} [Link opens in a new tab]</span>
-        </a>
-    </li>
+<a href="{{ .url | safeURL }}" target="_blank" rel="noopener me" title="{{ .name | humanize }}">{{ partial "svg.html" . }}</a>
 {{- end -}}
