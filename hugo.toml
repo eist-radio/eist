@@ -88,9 +88,9 @@ expiryDate = ["expiryDate"]
     name = "instagram"
     url = "https://www.instagram.com/eistradio"
 
-  [[params.socialLinks]]
-    name = "github"
-    url = "https://github.com/eist-radio/eist"
+#   [[params.socialLinks]]
+#     name = "github"
+#     url = "https://github.com/eist-radio/eist"
 
 [menu]
 
@@ -99,10 +99,10 @@ expiryDate = ["expiryDate"]
     url = "about/"
     weight = 1
 
-#   [[menu.main]]
-#     name = "listen"
-#     url = "/"
-#     weight = 1
+  [[menu.main]]
+    name = "listen"
+    url = "/"
+    weight = 2
 
 #   [[menu.main]]
 #     name = "schedule"
@@ -114,10 +114,10 @@ expiryDate = ["expiryDate"]
     url = "events/"
     weight = 2
 
-  [[menu.main]]
-    name = "artists"
-    url = "artists/"
-    weight = 3
+#   [[menu.main]]
+#     name = "artists"
+#     url = "artists/"
+#     weight = 3
 
 #   [[menu.main]]
 #     name = "chat"
@@ -127,9 +127,9 @@ expiryDate = ["expiryDate"]
   [[menu.main]]
     name = "support us"
     url = "support/"
-    weight = 4
+    weight = 3
 
   [[menu.main]]
     name = "get involved"
     url = "get-involved/"
-    weight = 5
+    weight = 4

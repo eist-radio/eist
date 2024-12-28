@@ -1,8 +1,4 @@
-# Éist radio
-
-Hacking a website together one kludge at a time. 
-
-# Getting started
+# Éist radio source
 
 Install Hugo: https://gohugo.io/installation/
 
@@ -39,7 +35,10 @@ hugo server
 ```
 
 On Windows:
+
+```cmd
 set API_KEY=xxxxx
+```
 
 # Deploying previews with Surge
 
