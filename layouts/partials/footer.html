@@ -1,8 +1,12 @@
-<footer id="site-footer" class="section-inner thin">
+<footer id = "site-footer" class = "index-footer section-inner thin">
+    <small>
+        &copy; {{ now.Format "2006" }} <a href = "{{ .Site.BaseURL }}">{{ .Site.Params.author.name }}</a>
+    </small>
+    
     {{- with .Site.Params.socialLinks -}}
-    <span class="hdr-links">{{- partialCached "social-icons.html" . -}}</span>
+        <ul class = "hdr-links">
+            {{- partialCached "social-icons.html" . -}}
+        </ul>
     {{- end -}}
-    <p>
-        &copy; {{ now.Format "2006" }} <a href="{{ .Site.BaseURL }}">{{ .Site.Params.author.name }}</a>
-    </p>
+    
 </footer>

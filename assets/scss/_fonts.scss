@@ -1,10 +1,13 @@
 // Default Fonts
 
+@import url("https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
 @font-face {
     font-family: "Nimbus Sans L";
-    src: url('/fonts/NimbusSanL-Reg.otf') format('opentype');
+    src:
+        url("/fonts/NimbusSanL-Reg.otf") format("opentype");
 }
 
-$heading-fonts: Nimbus Sans L, Noto Sans Thai Looped, Tahoma, Verdana, "Verdana Ref", Candara, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Trebuchet MS", sans-serif;
-$fonts: Funnel Sans, Tahoma, Verdana, "Verdana Ref", Candara, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Trebuchet MS", sans-serif;
-$code-fonts: Consolas, "Andale Mono WT", "Andale Mono", Menlo, Monaco, "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Courier New", Courier, "YaHei Consolas Hybrid", monospace, "Segoe UI Emoji", "PingFang SC", "Microsoft YaHei";
+$fonts: "Funnel Sans", "Verdana", "Trebuchet MS", system-ui, sans-serif;
+$heading-fonts: "Nimbus Sans L", $fonts, sans-serif;
+$code-fonts: "Consolas", "Lucida Console", $fonts, monospace;

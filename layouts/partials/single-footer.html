@@ -1,3 +1,6 @@
-<p>
-    {{ now.Format "2006" }} <a href="{{ .Site.BaseURL }}">{{ .Site.Params.author.name }}</a>
-</p>
+<small>
+    {{ now.Format "2006" }}
+    <a href = "{{ .Site.BaseURL }}">
+        {{ .Site.Params.author.name }}
+    </a>
+</small>

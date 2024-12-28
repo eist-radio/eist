@@ -1,11 +1,14 @@
 {{ define "header" }}
 {{ partialCached "header.html" . }}
 {{ end }}
+
+
+
 {{ define "main" }}
-<main class="site-main section-inner thin">
-    <div id="spotlight">
+<main class = "site-main section-inner thin">
+    <div id = "spotlight">
         <!-- Use the API to populate some HTML elements here, pull artist image, etc -->
-        <div id="player">
+        <div id = "player">
             <div class="broadcast-status">
                 <div class="broadcasting-live-text-status">
                     <p id="live-text"></p>
@@ -44,18 +47,15 @@
                 </table>
             </div>
         </div>
-        <div class="index-footer">
-            {{- with .Site.Params.socialLinks -}}
-            <span class="hdr-links">{{- partialCached "social-icons.html" . -}}</span>
-            {{- end -}}
-            <p>
-                &copy; {{ now.Format "2006" }} <a href="{{ .Site.BaseURL }}">{{ .Site.Params.author.name }}</a>
-            </p>
-        </div>
     </div>
 </main>
 {{ end }}
+
+
+
 {{ define "footer" }}
+{{ partialCached "footer.html" . }}
+
 {{- $schedule := resources.Get "js/schedule.js" -}}
 {{- $script := $schedule | minify | fingerprint -}}
 <script type="text/javascript" src="{{ $script.Permalink }}"></script>

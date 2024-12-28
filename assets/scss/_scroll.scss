@@ -14,19 +14,24 @@
     }
 
     position: fixed;
+    
+    opacity: 0;
+
     bottom: 10%;
     right: 2%;
     z-index: 1;
-    opacity: 0;
+    
     transition: all 0.5s ease;
 }
 
 .hide {
     opacity: 0;
+
     transform: translateY(20px);
 }
 
 .show {
     opacity: 1;
+    
     transform: translateY(0);
 }

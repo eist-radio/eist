@@ -4,6 +4,140 @@
     overflow: scroll;
   }
 */
+
+@charset "UTF-8";
+
+
+* {
+    box-sizing: border-box;
+    
+    padding: 0px;
+    margin: 0px;
+}
+    
+img {
+    display: block;
+    font-style: italic; /* Sets the alt text to italitcs to differentiate it on the page */
+}
+
+
+main {
+    display: flex;
+        flex-direction: column;
+    
+        width: 90%;
+        max-width: 1550px;
+        gap: var(--spacing-x3, 15px);
+        margin-inline: auto;
+      }
+    
+      noscript {
+        font-style: italic; /* Sets the noscript text to italitcs to differentiate it on the page */
+      }
+    
+      p {
+        margin: 0px;
+        padding: 0px;
+      }
+    
+      section {
+        break-inside: avoid;
+        width: 100%;
+      }
+    
+      small {
+        font-size: 0.5rem;
+      }
+
+    ul { /* Main nav menu container */
+        display: flex;
+        justify-content: space-between;
+    
+        gap: var(--spacing-x1); /* fatfingers support */
+        padding: 0px; /* Weird default to over ride */
+      }
+    
+     li {
+        display: flex;
+        align-items: center;
+        
+        list-style: none;
+    
+        gap: var(--spacing-x2, 10px);
+    
+        transition: var(--transition, all 0.5s ease-in-out);
+      }
+
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    scroll-behavior: smooth;
+
+    background-color: var(--background-color);
+
+    font-size: 12px;
+
+    min-height: 100vh;
+    gap: var(--spacing-x6, 30px);
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* --- Scrollbar customisation --- */
+  ::-webkit-scrollbar {
+    width: var(--spacing-x2, 10px);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--messyng-pink, #FF00EE);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--messyng-green, #00FF4F);
+  }
+
+  /* --- selection customisation --- */
+  ::selection {
+    background: var(--messyng-pink, #FF00EE);
+    color: var(--messyng-green, #00FF4F);
+  }
+
+  /* --- Focus for tab navigation --- */
+  *:focus {
+    outline: 1px solid var(--messyng-green, #00FF4F);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.sr-only {
+    position: absolute;
+    z-index: -1;
+    left: 0px;
+    bottom: 0px;
+    visibility: hidden;
+}
+
+
+
+
+
+
+
 h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav, {
     font-family: $heading-fonts;
     font-weight: 700;
