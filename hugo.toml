@@ -95,13 +95,12 @@ expiryDate = ["expiryDate"]
 [menu]
 
   [[menu.main]]
-    name = "about"
-    url = "about/"
-    weight = 1
-
-  [[menu.main]]
     name = "listen"
     url = "/"
+    weight = 1
+
+    name = "about"
+    url = "about/"
     weight = 2
 
 #   [[menu.main]]
@@ -112,7 +111,7 @@ expiryDate = ["expiryDate"]
   [[menu.main]]
     name = "events"
     url = "events/"
-    weight = 2
+    weight = 3
 
 #   [[menu.main]]
 #     name = "artists"
@@ -127,9 +126,9 @@ expiryDate = ["expiryDate"]
   [[menu.main]]
     name = "support us"
     url = "support/"
-    weight = 3
+    weight = 4
 
   [[menu.main]]
     name = "get involved"
     url = "get-involved/"
-    weight = 4
+    weight = 5
