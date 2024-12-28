@@ -321,13 +321,16 @@ table {
 }
 
 #site-footer {
-  position: relative;
-  top: 50vh;
-  align-content: start;
-  text-align: center;
-  font-size: 1em;
-  padding-bottom: 100px;
-  clear: both;
+    position: relative;
+    top: 50vh;
+    align-content: start;
+    text-align: center;
+    font-size: 1em;
+    padding-bottom: 100px;
+    clear: both;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
 
   p {
     margin: 0;
