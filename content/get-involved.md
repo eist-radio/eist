@@ -6,7 +6,7 @@ draft = false
 
 We are now looking to build our first radio schedule for Spring/Earrach that will run from February through to the end of April 2025.
 
-Submit your idea for a show with the form below. Shows will be streamed and credited on Éist radio. Shows can be 1 or 2 hours long and are scheduled on a weekly or monthly basis. Éist is an entirely volunteer run radio. As such, we cannot pay you for your show.
+Submit your idea for a show with the form below. Shows will be streamed and credited on Éist radio. Shows can be 1 or 2 hours long and are scheduled on a weekly or monthly basis. Éist is an entirely volunteer run community arts project. As such, we cannot pay you for your show.
 
 We are currently building out the Éist studio where we hope to do the majority of our live broadcasting. We can also help you to submit pre-record shows or live broadcasts from your home as required, should you prefer.
 
