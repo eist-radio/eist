@@ -4,7 +4,13 @@ date = 2024-11-13T15:53:33Z
 draft = false
 +++
 
-Éist is a collective based in Cork city, Ireland.
+<div class="artist">
+    <div class="artist-image-container">
+        <img src="team-1024x1024.jpeg" alt="Éist DJs Logo" class="artist-image">
+    </div>
+</div>
+
+Éist is a volunteer run collective based in Cork city, Ireland.
 
 We are dedicated to fostering creativity, collaboration, and community engagement through **DIGITAL RADIO**.
 

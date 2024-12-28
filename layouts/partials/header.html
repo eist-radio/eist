@@ -1,37 +1,26 @@
-<header id = "site-header" {{- if .Site.Params.usesAnimation }} class = "animated slideInUp" {{- end -}}>
-    <div class="hdr-wrapper section-inner">
-        <div class="site-branding">
-            <a href = "{{.Site.BaseURL}}">
-                <img src = "{{.Site.BaseURL}}{{ .Site.Params.logo }}" class = "header-logo" alt = "Éist Radio logo"><!-- is there a way to call a site's name using Go? -->
-            </a>
-        </div><!-- site-branding -->
-        
-        <div class = "hdr-left">
-            <nav class = "site-nav hide-in-mobile">
-                {{- partialCached "menu.html" . -}}
-            </nav>
-        </div><!-- hdr-left -->
-        
-        <div class="hdr-right hdr-icons">
-            {{ if (or .Params.images .Params.featuredImg) -}}
-            <button id="img-btn" class="hdr-btn" title="{{i18n "featuredImage"}}">{{- partial "svg.html" (dict "context" . "name" "featuredImg") -}}</button>
-            {{- end }}
-            
-            {{- with .Params.toc -}}
-            <button id="toc-btn" class="hdr-btn desktop-only-ib" title="{{i18n "tableOfContents"}}">{{- partial "svg.html" (dict "context" . "name" "toc") -}}</button>
-            {{- end -}}
-            
-            <button id="menu-btn" class="hdr-btn" title="{{i18n "menu"}}">{{- partial "svg.html" (dict "context" . "name" "menuBtn") -}}</button>
+    <header id="site-header" {{- if .Site.Params.usesAnimation }} class="animated slideInUp" {{- end -}}>
+        <div class="hdr-wrapper section-inner">
+                <div class="site-branding">
+                    <a href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" class="header-logo"/></a>
+                </div>
+            <div class="hdr-left">
+                <nav class="site-nav hide-in-mobile">{{- partialCached "menu.html" . -}}</nav>
+            </div>
+            <div class="hdr-right hdr-icons">
+                {{ if (or .Params.images .Params.featuredImg) -}}
+                <button id="img-btn" class="hdr-btn" title="{{i18n "featuredImage"}}">{{- partial "svg.html" (dict "context" . "name" "featuredImg") -}}</button>
+                {{- end }}
+                {{- with .Params.toc -}}
+                <button id="toc-btn" class="hdr-btn desktop-only-ib" title="{{i18n "tableOfContents"}}">{{- partial "svg.html" (dict "context" . "name" "toc") -}}</button>
+                {{- end -}}
+                <button id="menu-btn" class="hdr-btn" title="{{i18n "menu"}}">{{- partial "svg.html" (dict "context" . "name" "menuBtn") -}}</button>
+            </div>
         </div>
-    </div><!-- hdr-wrapper section-inner -->
-</header>
-
-<div id="mobile-menu" {{- if ne false .Site.Params.usesAnimation }} class="animated fast" {{- end -}}>
-    <ul>
-        {{- range .Site.Menus.main }}
-        <li>
-            <a href="{{ .URL | absLangURL }}">{{ .Name }}</a>
-        </li>
-        {{- end }}
-    </ul>
-</div>
+    </header>
+    <div id="mobile-menu" {{- if ne false .Site.Params.usesAnimation }} class="animated fast" {{- end -}}>
+        <ul>
+            {{- range .Site.Menus.main }}
+            <li><a href="{{ .URL | absLangURL }}">{{ .Name }}</a></li>
+            {{- end }}
+        </ul>
+    </div>

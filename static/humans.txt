@@ -11,6 +11,3 @@ Name: Éist
 Last update: 2024/07/11
 Standards: HTML5, CSS3, JS13
 Software: Hugo
-
-/* HELLOS */
-Hi Aidan 👋

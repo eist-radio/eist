@@ -1,15 +1,13 @@
 {{ $rootCtx := . }}
-<!DOCTYPE html>
 
-<html lang = "{{.Site.LanguageCode}}">
-    
+<!DOCTYPE html>
+<html lang="{{.Site.LanguageCode}}">
 <head>
-    {{- partial "site-meta.html" . -}}
-    {{ $author := (.Params.author | default .Site.Params.author.name) -}}<meta name="author" content="{{ $author }}">
-    {{- with .Page.Params.description | default .Site.Params.description -}}<meta name="description" content="{{.}}">{{- end -}}
-    {{- partial "webschema.html" . -}}
-    
-    <title>{{.Title}}</title>
+{{- partial "site-meta.html" . -}}
+{{ $author := (.Params.author | default .Site.Params.author.name) -}}<meta name="author" content="{{ $author }}">
+{{- with .Page.Params.description | default .Site.Params.description -}}<meta name="description" content="{{.}}">{{- end -}}
+{{- partial "webschema.html" . -}}
+<title>{{.Title}}</title>
 {{ range .AlternativeOutputFormats -}}
 {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Title | safeHTML }}
 {{ end -}}
@@ -19,37 +17,17 @@
 {{ $c_css := resources.Get . | resources.ExecuteAsTemplate "css/style.css" $rootCtx | toCSS | minify | fingerprint -}}
 <link rel="stylesheet preload prefetch" as="style" href="{{ $c_css.Permalink }}" {{ printf "integrity=%q" $c_css.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous">
 {{- end -}}
-    
-    {{- block "head" . -}}
-    {{- end -}}
-
-    {{- if templates.Exists "partials/extra-head.html" -}}<!-- This doesn't exists but not going to delete -->
-    {{- partial "extra-head.html" . -}}
-    {{- end -}}
-
+{{- block "head" . -}}{{- end -}}
+{{- if templates.Exists "partials/extra-head.html" -}}{{- partial "extra-head.html" . -}}{{- end -}}
 </head>
-
-<body id = "page">
-    {{- block "header" . -}}<!-- Insert page header -->
-    {{ end -}}
-
-    <noscript><!-- Accessibility warning, as some users may be opting to run the page without JS which would render the RadioCult module useless -->
-        Sorry, but Javascript is quite fundamental to the experience of this site.
-        Please get in touch with us if you are affected by this, as we would love to sort alternative arrangements for you.
-    </noscript>
-    
-    {{- block "main" . -}}
-    {{ end -}}
-    
-    {{- block "footer" . -}}
-    {{ end }}
-    
-    {{- partial "scroll-to-top.html" . }}
-    
-    {{- $main := resources.Get "js/main.js" -}}
-    
-    {{ $script := $main | minify | fingerprint -}}
-    <script async src = "{{ $script.Permalink }}" {{ printf "integrity=%q" $script.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
+<body id="page">
+{{- block "header" . -}}{{ end -}}
+{{- block "main" . -}}{{ end -}}
+{{- block "footer" . -}}{{ end }}
+{{- partial "scroll-to-top.html" . }}
+{{- $main := resources.Get "js/main.js" -}}
+{{ $script := $main | minify | fingerprint -}}
+<script async src="{{ $script.Permalink }}" {{ printf "integrity=%q" $script.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
 {{- if and (not (eq .Site.Params.shareSocial nil)) (.Site.Params.shareSocial) -}}
 {{- end -}}
 {{- if templates.Exists "partials/extra-foot.html" -}}{{- partial "extra-foot.html" . -}}{{- end }}
