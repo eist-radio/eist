@@ -17,7 +17,7 @@ Thank you! 🤟
 <script src="https://www.paypal.com/sdk/js?client-id=Adk-qQ6gWzOPrhHNH4t17wDcW0kcNfGTU1aopr_7-ly-Ldiz03Sh5i5Vc77cZwS5RAyLDxS-u6GqsQKn&vault=true&intent=subscription" data-sdk-integration-source="button-factory">
 </script>
 
-#### Complete and utter legend (€25 subscription)
+#### €25 monthly subscription
 
 <!-- €25 -->
 <div id="paypal-button-container-P-6FT77188G00234201M5QWIPA" class="pp"></div>
@@ -43,7 +43,7 @@ Thank you! 🤟
   }).render('#paypal-button-container-P-6FT77188G00234201M5QWIPA'); // Renders the PayPal button
 </script>
 
-#### Absolute hero (€20 subscription)
+#### €20 monthly subscription
 
 <!-- €20 -->
 <div id="paypal-button-container-P-68M300014D406603RM5QWH3Y" class="pp"></div>
@@ -69,7 +69,7 @@ Thank you! 🤟
   }).render('#paypal-button-container-P-68M300014D406603RM5QWH3Y'); // Renders the PayPal button
 </script>
 
-#### Sound as a pound (€15 subscription)
+#### €15 monthly subscription
 
 <!-- €15 -->
 <div id="paypal-button-container-P-9C680684FB4914228M5QWHKI" class="pp"></div>
@@ -95,7 +95,7 @@ Thank you! 🤟
   }).render('#paypal-button-container-P-9C680684FB4914228M5QWHKI'); // Renders the PayPal button
 </script>
 
-#### Total champ (€10 subscription)
+#### €10 monthly subscription
 
 <!-- €10 -->
 <div id="paypal-button-container-P-91H63288A7013042MM5QWGYQ" class="pp"></div>
@@ -121,7 +121,7 @@ Thank you! 🤟
   }).render('#paypal-button-container-P-91H63288A7013042MM5QWGYQ'); // Renders the PayPal button
 </script>
 
-#### Best friend (€5 subscription)
+#### €5 monthly subscription
 
 <!-- €5 -->
 <div id="paypal-button-container-P-7SS93634TC7532301M5QWF5A" class="pp"></div>
