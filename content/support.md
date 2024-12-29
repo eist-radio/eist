@@ -4,6 +4,12 @@ date = 2024-11-13T15:53:32Z
 draft = false
 +++
 
+<div class="artist">
+    <div class="artist-image-container">
+        <img src="images/support-1024x1024.jpeg" alt="Support Éist" class="artist-image">
+    </div>
+</div>
+
 [Send us an email](mailto:info@eist.radio?subject=I'd%20like%20to%20receive%20occasional%20emails%20from%20Éist&body=Thanks! "I'd like to receive occasional updates about Éist and upcoming events") if you would like to receive occasional updates about news and upcoming events.
 
 ## Support us with a monthly subscription
