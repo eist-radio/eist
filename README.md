@@ -21,7 +21,7 @@ Add some text!
 
 ```
 
-Add `noindex = true` if you don't want the page to be indexed by the Goog.
+Add `noindex = true` if you don't want the page to be indexed by the Googles.
 
 # Checking your build locally
 
