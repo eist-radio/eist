@@ -1,4 +1,8 @@
-# Éist radio source
+# Éist radio website
+
+Source files for the https://eist.radio website.
+
+# Getting started
 
 Install Hugo: https://gohugo.io/installation/
 
@@ -16,6 +20,8 @@ draft = false
 Add some text!
 
 ```
+
+Add `noindex = true` if you don't want the page to be indexed by the Goog.
 
 # Checking your build locally
 
