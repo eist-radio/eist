@@ -4,7 +4,7 @@ Source files for the https://eist.radio website.
 
 # Getting started
 
-Install Hugo: https://gohugo.io/installation/
+Install Hugo, see: https://gohugo.io/installation/
 
 # Adding content and building docs
 
