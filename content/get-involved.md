@@ -22,4 +22,4 @@ Please note that due to the large number of submissions we receive, we might not
 
 <strike>Complete [this Google form](https://forms.gle/hBzSwgGBKBHwUwVh9 "Submit an idea for an Éist radio show") to submit your idea.</strike>
 
-**Submission form is now closed**
+**Submission form is now closed.**
