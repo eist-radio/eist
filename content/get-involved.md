@@ -20,6 +20,6 @@ We're looking for new voices and fresh ideas. We want to hear music and sounds t
 
 Please note that due to the large number of submissions we receive, we might not be able to program your show.
 
-~Complete [this Google form](https://forms.gle/hBzSwgGBKBHwUwVh9 "Submit an idea for an Éist radio show") to submit your idea.~
+<strike>Complete [this Google form](https://forms.gle/hBzSwgGBKBHwUwVh9 "Submit an idea for an Éist radio show") to submit your idea.</strike>
 
 **Submission form is now closed**
