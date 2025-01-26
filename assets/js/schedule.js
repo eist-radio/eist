@@ -7,13 +7,16 @@
 apiKey = radiocultApiKey;
 stationId = 'eist-radio';
 
+// Get numDays from the parent page
+numSchedDays = numDays;
+
 // Get the system timezone
 let timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 // Calculate start and end dates
 let today = new Date();
 let endDate = new Date(today);
-endDate.setDate(today.getDate() + 7); // 7 days from today
+endDate.setDate(today.getDate() + numSchedDays); // x days from today
 
 // Format the start and end dates
 let startDate = today.toISOString().split('T')[0] + 'T06:00:59Z';
