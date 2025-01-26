@@ -1,3 +1,7 @@
+<!--Include schedule.js and set the number of days to fetch  -->
+<script>
+  var numDays = 7;
+</script>
 {{- $schedule := resources.Get "js/schedule.js" -}}
 {{- $script := $schedule | minify | fingerprint -}}
 <script type="text/javascript" src="{{ $script.Permalink }}"></script>
