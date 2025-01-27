@@ -1,29 +1,24 @@
-// Update 7 day schedule on page load
-// Running locally
-// source .env && export API_KEY
-// Note: need to restart the hugo server when you make changes
-// Timezone calculation is not great :/
+// Update the schedule on page load. Use localStorage to reduce subsequent page load times.
+// Running locally - source .env && export apiKey. Restart the hugo server when you make changes
 
-apiKey = radiocultApiKey;
-stationId = 'eist-radio';
+// Constants
+const apiKey = radiocultApiKey;
+const stationId = 'eist-radio';
+const cacheKey = 'artistCache';
+const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-// Get the system timezone
-let timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+// Initialize artist cache from localStorage or create a new Map
+const artistCache = new Map(JSON.parse(localStorage.getItem(cacheKey)) || []);
 
-// Calculate start and end dates
-let today = new Date();
-let endDate = new Date(today);
-endDate.setDate(today.getDate() + 7); // 7 days from today
+// Save artist cache to localStorage
+function saveArtistCache() {
+    localStorage.setItem(cacheKey, JSON.stringify([...artistCache]));
+}
 
-// Format the start and end dates
-let startDate = today.toISOString().split('T')[0] + 'T06:00:59Z';
-let endDateFormatted = endDate.toISOString().split('T')[0] + 'T23:59:59Z';
-
-// Build the schedule API URL
-let scheduleUrl = `https://api.radiocult.fm/api/station/${stationId}/schedule?startDate=${startDate}&endDate=${endDateFormatted}&timezone=${timeZone}`;
-
-// Cache artist names to minimize redundant API calls
-const artistCache = new Map();
+// Format date to API-compatible string
+function formatDate(date, time = '06:00:59Z') {
+    return date.toISOString().split('T')[0] + `T${time}`;
+}
 
 // Fetch artist name using artist ID with caching
 async function fetchArtistName(artistId) {
@@ -44,6 +39,7 @@ async function fetchArtistName(artistId) {
             const data = await response.json();
             const artistName = data.artist?.name || 'Unknown Host';
             artistCache.set(artistId, artistName); // Cache the result
+            saveArtistCache(); // Persist cache
             return artistName;
         } else {
             console.warn(`Failed to fetch artist: ${response.statusText}`);
@@ -55,8 +51,10 @@ async function fetchArtistName(artistId) {
     }
 }
 
-// Process and render the schedule
-async function updateSchedule() {
+// Fetch schedule data from the API
+async function fetchSchedule(startDate, endDate) {
+    const scheduleUrl = `https://api.radiocult.fm/api/station/${stationId}/schedule?startDate=${startDate}&endDate=${endDate}&timeZone=${timeZone}`;
+
     try {
         const response = await fetch(scheduleUrl, {
             method: 'GET',
@@ -70,82 +68,102 @@ async function updateSchedule() {
             throw new Error(`Failed to fetch schedule: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching schedule:', error);
+        throw error;
+    }
+}
 
-        // Group schedules by day
-        const groupedSchedules = data.schedules.reduce((acc, item) => {
-            const date = new Date(item.startDateUtc).toISOString().split('T')[0];
-            if (!acc[date]) {
-                acc[date] = [];
-            }
-            acc[date].push(item);
-            return acc;
-        }, {});
+// Render the schedule into the DOM
+async function renderSchedule(schedules) {
+    const container = document.getElementById('schedule-output');
+    container.innerHTML = ''; // Clear existing content
 
-        // Get the container element
-        const container = document.getElementById('schedule-output');
+    if (!schedules || schedules.length === 0) {
+        container.innerHTML = `
+            <tr>
+                <td colspan="3" style="text-align: center;"><a href="/schedule" target="_blank">No shows scheduled today - check the weekly schedule.</a></td>
+            </tr>
+        `;
+        return;
+    }
 
-        // Clear any existing content
-        container.innerHTML = '';
+    // Group schedules by day
+    const groupedSchedules = schedules.reduce((acc, item) => {
+        const date = new Date(item.startDateUtc).toISOString().split('T')[0];
+        acc[date] = acc[date] || [];
+        acc[date].push(item);
+        return acc;
+    }, {});
 
-        // Generate tables for each day
-        for (const [date, schedules] of Object.entries(groupedSchedules)) {
-            // Format the day header
-            const dayHeader = new Date(date).toLocaleString('en-US', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                timeZone: 'UTC',
-            });
+    // Generate tables for each day
+    for (const [date, items] of Object.entries(groupedSchedules)) {
+        const dayHeader = new Date(date).toLocaleString('en-US', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            timeZone: 'UTC',
+        });
 
-            // Create a table and add a header
-            const table = document.createElement('table');
-            table.style.marginBottom = '20px';
+        const table = document.createElement('table');
+        table.style.marginBottom = '20px';
 
-            const caption = document.createElement('caption');
-            caption.textContent = dayHeader;
-            caption.classList.add('table-day-caption-header');
-            table.appendChild(caption);
+        const caption = document.createElement('caption');
+        caption.textContent = dayHeader;
+        caption.classList.add('table-day-caption-header');
+        table.appendChild(caption);
 
-            const headerRow = document.createElement('tr');
-            headerRow.innerHTML = `
-                <th>Start</th>
-                <th>Host</th>
-                <th>Show</th>
-            `;
-            table.appendChild(headerRow);
+        const headerRow = document.createElement('tr');
+        headerRow.innerHTML = `
+            <th>Start</th>
+            <th>Host</th>
+            <th>Show</th>
+        `;
+        table.appendChild(headerRow);
 
-            // Fetch and render each schedule row
-            const rows = await Promise.all(
-                schedules.map(async (item) => {
-                    const startDate = new Date(item.startDateUtc);
-                    const friendlyTime = startDate.toLocaleString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true,
-                        timeZone: 'UTC',
-                    });
+        // Fetch and render each schedule row
+        const rows = await Promise.all(
+            items.map(async (item) => {
+                const startDate = new Date(item.startDateUtc);
+                const friendlyTime = startDate.toLocaleString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true,
+                    timeZone: 'UTC',
+                });
 
-                    const hostName = item.artistIds?.length
-                        ? await fetchArtistName(item.artistIds[0])
-                        : 'Unknown Host';
+                const hostName = item.artistIds?.length
+                    ? await fetchArtistName(item.artistIds[0])
+                    : 'Unknown Host';
 
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${friendlyTime}</td>
-                        <td>${hostName}</td>
-                        <td>${item.title}</td>
-                    `;
-                    return row;
-                })
-            );
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${friendlyTime}</td>
+                    <td>${hostName}</td>
+                    <td>${item.title}</td>
+                `;
+                return row;
+            })
+        );
 
-            // Append rows to the table
-            rows.forEach((row) => table.appendChild(row));
+        rows.forEach((row) => table.appendChild(row));
+        container.appendChild(table);
+    }
+}
 
-            // Append the table to the container
-            container.appendChild(table);
-        }
+// Main function to update the schedule
+async function updateSchedule() {
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + numDays); // numDays from the parent page
+
+    const startDateFormatted = formatDate(today, '06:00:59Z');
+    const endDateFormatted = formatDate(endDate, '23:59:59Z');
+
+    try {
+        const scheduleData = await fetchSchedule(startDateFormatted, endDateFormatted);
+        await renderSchedule(scheduleData.schedules);
     } catch (error) {
         console.error('Error updating schedule:', error);
         document.getElementById('schedule-output').innerHTML = '<p>Error fetching schedule.</p>';
@@ -153,6 +171,4 @@ async function updateSchedule() {
 }
 
 // Update the schedule when the page is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    updateSchedule();
-});
+document.addEventListener('DOMContentLoaded', updateSchedule);

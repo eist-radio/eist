@@ -39,7 +39,7 @@
                 <p>
             </div>
             <div class="home-player-schedule">
-                <h3>Schedule</h3>
+                <h5>Schedule</h5>
                 <table id="schedule-output" class="schedule">
                 </table>
             </div>
@@ -56,6 +56,10 @@
 </main>
 {{ end }}
 {{ define "footer" }}
+<!--Include schedule.js and set the number of days to fetch  -->
+<script>
+  var numDays = 1;
+</script>
 {{- $schedule := resources.Get "js/schedule.js" -}}
 {{- $script := $schedule | minify | fingerprint -}}
 <script type="text/javascript" src="{{ $script.Permalink }}"></script>
