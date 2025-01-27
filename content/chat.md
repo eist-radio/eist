@@ -5,4 +5,4 @@ draft = false
 noindex = true
 +++
 
-Please get in the [Discord chatbox](https://discord.com/invite/cxE66pEt) right now.
+Please get in the [Discord chatbox](https://discord.gg/4eHnAAUmFN) right now.
