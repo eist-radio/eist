@@ -5,16 +5,16 @@ var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
 var apiUrl = `https://api.radiocult.fm/api/station/${stationId}`;
 var streamUrl = 'https://eist-radio.radiocult.fm/stream';
-var defaultImage = 'eist_offline.png';
+var defaultOfflineImage = 'eist_offline.png';
+var defaultOnlineImage = 'eist_online.png';
 var defaultText = ' ';
 
 // Global State
 let currentAudio = null;
-let globalShowDesc = defaultText;
 let artistDetails = {
     name: defaultText,
     bio: defaultText,
-    image: defaultImage
+    image: defaultOfflineImage
 };
 
 // Fetch and update the currently playing show details
@@ -35,7 +35,6 @@ async function updatePlayerDetails() {
 
         const artistId = content.artistIds?.[0] || defaultText;
         const showDesc = content.description?.content?.[0]?.content?.[0]?.text || defaultText;
-        globalShowDesc = content.description?.content?.[0]?.content?.[0]?.text || defaultText;
         const showTitle = content.title || defaultText;
 
         // Fetch artist details
@@ -51,7 +50,7 @@ async function updatePlayerDetails() {
 
 // Fetch artist details
 async function getArtistDetails(artistId) {
-    if (!artistId) return { name: defaultText, bio: defaultText, image: defaultImage };
+    if (!artistId) return { name: defaultText, bio: defaultText, image: defaultOnlineImage };
 
     try {
         const response = await fetch(`${apiUrl}/artists/${artistId}`, {
@@ -70,12 +69,12 @@ async function getArtistDetails(artistId) {
         return {
             name: artist.name || defaultText,
             bio: artist.description?.content?.[0]?.content?.[0]?.text || 'No bio available',
-            image: artist.logo?.['256x256'] || defaultImage
+            image: artist.logo?.['256x256'] || defaultOnlineImage
         };
 
     } catch (error) {
         console.error('Error fetching artist details:', error);
-        return { name: defaultText, bio: defaultText, image: defaultImage };
+        return { name: defaultText, bio: defaultText, image: defaultOnlineImage };
     }
 }
 
@@ -93,10 +92,10 @@ function updateDOM({ broadcastStatus, showDesc, showTitle, artistDetails }) {
 
     if (broadcastStatus === "schedule") {
         broadcastStatusElement.textContent = "we are live";
-        artistImageElement.src = 'eist_online.png';
+        artistImageElement.src = artistDetails.image || DefaultOnlineImage; //'eist_online.png';
     } else {
         broadcastStatusElement.textContent = "off air";
-        artistImageElement.src = defaultImage;
+        artistImageElement.src = defaultOfflineImage;
     }
 }
 
@@ -116,7 +115,7 @@ function toggleAudio() {
         playButtonImg.src = 'play-alt.svg';
     }
 
-    setMediaSession(globalShowDesc);
+    setMediaSession(defaultText);
     updatePlayerDetails();
     return false; // Prevent default link behavior
 }
