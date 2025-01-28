@@ -10,6 +10,7 @@ var defaultText = ' ';
 
 // Global State
 let currentAudio = null;
+let globalShowDesc = defaultText;
 let artistDetails = {
     name: defaultText,
     bio: defaultText,
@@ -34,6 +35,7 @@ async function updatePlayerDetails() {
 
         const artistId = content.artistIds?.[0] || defaultText;
         const showDesc = content.description?.content?.[0]?.content?.[0]?.text || defaultText;
+        globalShowDesc = content.description?.content?.[0]?.content?.[0]?.text || defaultText;
         const showTitle = content.title || defaultText;
 
         // Fetch artist details
@@ -114,13 +116,13 @@ function toggleAudio() {
         playButtonImg.src = 'play-alt.svg';
     }
 
-    setMediaSession();
+    setMediaSession(globalShowDesc);
     updatePlayerDetails();
     return false; // Prevent default link behavior
 }
 
 // Set media session metadata
-function setMediaSession() {
+function setMediaSession(showDesc) {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: 'Éist',
