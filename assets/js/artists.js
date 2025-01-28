@@ -5,6 +5,7 @@ var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
 var artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
 var cacheKey = 'artistsCache';
+var defaultOnlineImage = 'no-artist.png'; // Fallback image
 
 // Initialize artists cache from localStorage or create a new Map
 const artistsCache = new Map(JSON.parse(localStorage.getItem(cacheKey)) || []);
@@ -97,18 +98,17 @@ function renderArtists(artists) {
         artistDiv.classList.add('artist'); // Main container for an artist
 
         // Create and append the image container
-        if (artist.logo?.default) {
-            const imageDiv = document.createElement('div');
-            imageDiv.classList.add('artist-image-container');
+        const imageDiv = document.createElement('div');
+        imageDiv.classList.add('artist-image-container');
 
-            const artistImage = document.createElement('img');
-            artistImage.src = artist.logo.default;
-            artistImage.alt = `${artist.name} Logo`;
-            artistImage.classList.add('artist-image');
+        const artistImage = document.createElement('img');
+        // Use fallback image if no artist image is available
+        artistImage.src = artist.logo?.default || defaultOnlineImage;
+        artistImage.alt = `${artist.name} Logo`;
+        artistImage.classList.add('artist-image');
 
-            imageDiv.appendChild(artistImage);
-            artistDiv.appendChild(imageDiv);
-        }
+        imageDiv.appendChild(artistImage);
+        artistDiv.appendChild(imageDiv);
 
         // Create and append the content container
         const contentDiv = document.createElement('div');
