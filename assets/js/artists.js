@@ -1,10 +1,16 @@
-// Pull the list of artists on page load. Use localStorage to reduce subsequent page load times.
+// Pull a paginated list of artists on page load. Use localStorage to reduce subsequent page load times.
 // Running locally - source .env && export API_KEY. Restart the hugo server when you make changes
 
 var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
 var artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
 var cacheKey = 'artistsCache';
+var defaultOnlineImage = 'no-artist.png'; // Fallback image
+
+// Pagination variables
+let currentPage = 1;
+const artistsPerPage = 10; // Number of artists to display per page
+let allArtists = []; // Store all fetched artists
 
 // Initialize artists cache from localStorage or create a new Map
 const artistsCache = new Map(JSON.parse(localStorage.getItem(cacheKey)) || []);
@@ -14,8 +20,8 @@ function saveArtistsCache() {
     localStorage.setItem(cacheKey, JSON.stringify([...artistsCache]));
 }
 
-// Fetch artist data from the API
-async function fetchArtists() {
+// Fetch all artist data from the API
+async function fetchAllArtists() {
     try {
         const response = await fetch(artistsURL, {
             method: 'GET',
@@ -78,7 +84,7 @@ function getSocialLink(socials) {
     return null;
 }
 
-// Render artist data into the DOM
+// Render artist data into the DOM for the current page
 function renderArtists(artists) {
     const container = document.getElementById('artists-output');
     container.innerHTML = ''; // Clear existing content
@@ -97,18 +103,16 @@ function renderArtists(artists) {
         artistDiv.classList.add('artist'); // Main container for an artist
 
         // Create and append the image container
-        if (artist.logo?.default) {
-            const imageDiv = document.createElement('div');
-            imageDiv.classList.add('artist-image-container');
+        const imageDiv = document.createElement('div');
+        imageDiv.classList.add('artist-image-container');
 
-            const artistImage = document.createElement('img');
-            artistImage.src = artist.logo.default;
-            artistImage.alt = `${artist.name} Logo`;
-            artistImage.classList.add('artist-image');
+        const artistImage = document.createElement('img');
+        artistImage.src = artist.logo?.default || defaultOnlineImage; // Use fallback image if no artist image is available
+        artistImage.alt = `${artist.name} Logo`;
+        artistImage.classList.add('artist-image');
 
-            imageDiv.appendChild(artistImage);
-            artistDiv.appendChild(imageDiv);
-        }
+        imageDiv.appendChild(artistImage);
+        artistDiv.appendChild(imageDiv);
 
         // Create and append the content container
         const contentDiv = document.createElement('div');
@@ -141,11 +145,61 @@ function renderArtists(artists) {
     container.appendChild(fragment);
 }
 
+// Get paginated subset of artists
+function getPaginatedArtists(artists, page, limit) {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    return artists.slice(startIndex, endIndex);
+}
+
+// Render pagination controls with only Previous and Next buttons
+function renderPagination(totalArtists) {
+    const paginationContainer = document.getElementById('pagination');
+    if (!paginationContainer) return;
+
+    paginationContainer.innerHTML = ''; // Clear existing pagination controls
+
+    const totalPages = Math.ceil(totalArtists / artistsPerPage);
+
+    // Previous Button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Previous';
+    prevButton.disabled = currentPage === 1; // Disable if on the first page
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateArtists();
+        }
+    });
+    paginationContainer.appendChild(prevButton);
+
+    // Next Button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.disabled = currentPage === totalPages; // Disable if on the last page
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updateArtists();
+        }
+    });
+    paginationContainer.appendChild(nextButton);
+}
+
+
 // Main function to update the artists
 async function updateArtists() {
     try {
-        const artists = await fetchArtists();
-        renderArtists(artists);
+        if (allArtists.length === 0) {
+            allArtists = await fetchAllArtists(); // Fetch all artists if not already fetched
+        }
+
+        // Get paginated subset of artists
+        const paginatedArtists = getPaginatedArtists(allArtists, currentPage, artistsPerPage);
+        renderArtists(paginatedArtists);
+
+        // Render pagination controls
+        renderPagination(allArtists.length);
     } catch (error) {
         console.error('Error updating artists:', error);
         document.getElementById('artists-output').innerHTML = '<p>Error fetching artists.</p>';

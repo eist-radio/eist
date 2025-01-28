@@ -335,6 +335,39 @@ body {
     z-index: 0;
 }
 
+#pagination {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-family: inherit;
+}
+
+#pagination button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#pagination button:hover:not(:disabled) {
+    opacity: .4;
+}
+
+#pagination button:disabled {
+    font-weight: bold;
+}
+
+#pagination button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 @media (max-width: 760px) {
     #player {
         flex-direction: column;
