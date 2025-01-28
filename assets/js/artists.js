@@ -1,11 +1,10 @@
 // Pull the list of artists on page load. Use localStorage to reduce subsequent page load times.
-// Running locally - source .env && export apiKey. Restart the hugo server when you make changes
+// Running locally - source .env && export API_KEY. Restart the hugo server when you make changes
 
-// Constants
-const apiKey = radiocultApiKey;
-const stationId = 'eist-radio';
-const artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
-const cacheKey = 'artistsCache';
+var apiKey = radiocultApiKey;
+var stationId = 'eist-radio';
+var artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
+var cacheKey = 'artistsCache';
 
 // Initialize artists cache from localStorage or create a new Map
 const artistsCache = new Map(JSON.parse(localStorage.getItem(cacheKey)) || []);
