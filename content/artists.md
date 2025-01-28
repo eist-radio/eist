@@ -7,5 +7,6 @@ noindex = true
 
 <div id="artists-output">
 </div>
+<div id="pagination"></div>
 
 {{< artists >}}
