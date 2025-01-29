@@ -125,7 +125,7 @@ expiryDate = ["expiryDate"]
 #     weight = 5
 
   [[menu.main]]
-    name = "support us"
+    name = "support"
     url = "support/"
     weight = 6
 
