@@ -191,20 +191,21 @@ function renderPagination(totalArtists) {
 async function updateArtists() {
     try {
         if (allArtists.length === 0) {
-            allArtists = await fetchAllArtists(); // Fetch all artists if not already fetched
+            allArtists = await fetchAllArtists();
         }
 
-        // Get paginated subset of artists
         const paginatedArtists = getPaginatedArtists(allArtists, currentPage, artistsPerPage);
         renderArtists(paginatedArtists);
-
-        // Render pagination controls
         renderPagination(allArtists.length);
+
+        // Scroll to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
         console.error('Error updating artists:', error);
         document.getElementById('artists-output').innerHTML = '<p>Error fetching artists.</p>';
     }
 }
+
 
 // Update the artists when the page is loaded
 document.addEventListener('DOMContentLoaded', updateArtists);
