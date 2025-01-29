@@ -82,7 +82,7 @@ async function renderSchedule(schedules) {
     if (!schedules || schedules.length === 0) {
         container.innerHTML = `
             <tr>
-                <td colspan="3" style="text-align: center;"><a href="/schedule" target="_blank">No shows scheduled today - check the weekly schedule.</a></td>
+                <td colspan="3" style="text-align: center;"><a href="/schedule">No shows scheduled today - check the weekly schedule.</a></td>
             </tr>
         `;
         return;
