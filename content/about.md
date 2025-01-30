@@ -10,11 +10,11 @@ draft = false
     </div>
 </div>
 
-Éist is a volunteer run collective based in Cork city, Ireland.
+Éist is a volunteer-run internet radio collective based in Cork city, Ireland.
 
 We are dedicated to fostering creativity, collaboration, and community engagement through **DIGITAL RADIO**.
 
-We aim to promote and support community-driven digital radio initiatives and provide resources, knowledge-sharing, skill-sharing, and networking opportunities.
+We aim to promote and support community-driven digital radio initiatives, provide resources, knowledge sharing, skill sharing, and networking opportunities.
 
 We want to encourage the production and dissemination of a diverse variety of audio content, and foster a sense of community among members through collaboration and shared projects.
 
