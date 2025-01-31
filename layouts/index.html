@@ -58,7 +58,7 @@
 {{ define "footer" }}
 <!--Include schedule.js and set the number of days to fetch  -->
 <script>
-  var numDays = 1;
+  var numDays = 0;
 </script>
 {{- $schedule := resources.Get "js/schedule.js" -}}
 {{- $script := $schedule | minify | fingerprint -}}

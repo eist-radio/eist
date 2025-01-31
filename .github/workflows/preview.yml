@@ -33,6 +33,10 @@ jobs:
       - name: Set and export the RadioCult API key
         run: |
           echo "API_KEY=${{ secrets.RADIOCULT_API_KEY }}" >> $GITHUB_ENV
+      - name: Generate artist pages
+        run: |
+          sudo chmod +x ./generate-artist-pages.sh
+          ./generate-artist-pages.sh
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache

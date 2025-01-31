@@ -131,15 +131,19 @@ async function renderSchedule(schedules) {
                     hour12: true,
                     timeZone: 'UTC',
                 });
-
-                const hostName = item.artistIds?.length
+                // Don't render links on the /listen page (numDays=0)
+                const artistName = item.artistIds?.length
                     ? await fetchArtistName(item.artistIds[0])
                     : 'Unknown Host';
+
+                const artistLink = (numDays !== 0 && item.artistIds?.length)
+                    ? `<a href="/artists/${artistName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-').toLowerCase()}">${artistName}</a>`
+                    : artistName;
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${friendlyTime}</td>
-                    <td>${hostName}</td>
+                    <td>${artistLink}</td>
                     <td>${item.title}</td>
                 `;
                 return row;
