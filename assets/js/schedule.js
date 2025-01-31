@@ -3,16 +3,7 @@
 
 var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
-var cacheKey = 'artistCache';
 var timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-// Initialize artist cache from localStorage or create a new Map
-const artistCache = new Map(JSON.parse(localStorage.getItem(cacheKey)) || []);
-
-// Save artist cache to localStorage
-function saveArtistCache() {
-    localStorage.setItem(cacheKey, JSON.stringify([...artistCache]));
-}
 
 // Format date to API-compatible string
 function formatDate(date, time = '06:00:59Z') {
@@ -21,10 +12,6 @@ function formatDate(date, time = '06:00:59Z') {
 
 // Fetch artist name using artist ID with caching
 async function fetchArtistName(artistId) {
-    if (artistCache.has(artistId)) {
-        return artistCache.get(artistId);
-    }
-
     try {
         const response = await fetch(`https://api.radiocult.fm/api/station/${stationId}/artists/${artistId}`, {
             method: 'GET',
@@ -37,8 +24,6 @@ async function fetchArtistName(artistId) {
         if (response.ok) {
             const data = await response.json();
             const artistName = data.artist?.name || 'Unknown Host';
-            artistCache.set(artistId, artistName); // Cache the result
-            saveArtistCache(); // Persist cache
             return artistName;
         } else {
             console.warn(`Failed to fetch artist: ${response.statusText}`);
