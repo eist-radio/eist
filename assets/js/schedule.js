@@ -139,7 +139,7 @@ async function renderSchedule(schedules) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${friendlyTime}</td>
-                    <td>${hostName}</td>
+                    <td><a href="/artists/${hostName.replace(/\s+/g, '-').toLowerCase()}">${hostName}</a></td>
                     <td>${item.title}</td>
                 `;
                 return row;

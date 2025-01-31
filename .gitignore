@@ -1,5 +1,7 @@
 # Generated files by hugo
-/public/
+contents/artists/*
+!contents/artists/no-artist.png
+public/
 resources/
 .hugo_build.lock
 .env
