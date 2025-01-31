@@ -1,5 +1,5 @@
-# Generated files by hugo
-/public/
+content/artists/*
+public/
 resources/
 .hugo_build.lock
 .env

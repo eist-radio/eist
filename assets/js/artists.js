@@ -5,7 +5,7 @@ var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
 var artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
 var cacheKey = 'artistsCache';
-var defaultOnlineImage = 'no-artist.png'; // Fallback image
+var defaultOnlineImage = 'images/no-artist.png'; // Fallback image
 
 // Pagination variables
 let currentPage = 1;
