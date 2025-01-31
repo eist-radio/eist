@@ -5,6 +5,7 @@ var defaultOnlineImage = '/no-artist.png';
 let allArtists = [];
 
 // Get the artist name from JSON-LD script tag
+// Didn't want to render the Artist name in a h tag cos it looks a bit bum.
 target="application/ld+json";
 function getArtistNameFromJsonLd() {
     const scriptTag = document.querySelector('script[type="application/ld+json"]');
