@@ -1,7 +1,7 @@
 var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
 var artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
-var defaultOnlineImage = '/no-artist.png';
+var defaultImage = '/no-artist.png'; // Fallback image
 let allArtists = [];
 
 // Get the artist name from JSON-LD script tag
@@ -97,7 +97,7 @@ function renderArtist(artist) {
     imageDiv.classList.add('artist-image-container');
 
     const artistImage = document.createElement('img');
-    artistImage.src = artist.logo?.default || defaultOnlineImage;
+    artistImage.src = artist.logo?.default || defaultImage;
     artistImage.alt = `${artist.name} Logo`;
     artistImage.classList.add('artist-image');
 

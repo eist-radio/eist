@@ -5,7 +5,7 @@ var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
 var artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
 var cacheKey = 'artistsCache';
-var defaultOnlineImage = 'images/no-artist.png'; // Fallback image
+var defaultImage = '/no-artist.png'; // Fallback image
 
 // Pagination variables
 let currentPage = 1;
@@ -107,7 +107,7 @@ function renderArtists(artists) {
         imageDiv.classList.add('artist-image-container');
 
         const artistImage = document.createElement('img');
-        artistImage.src = artist.logo?.default || defaultOnlineImage; // Use fallback image if no artist image is available
+        artistImage.src = artist.logo?.default || defaultImage; // Use fallback image if no artist image is available
         artistImage.alt = `${artist.name} Logo`;
         artistImage.classList.add('artist-image');
 
@@ -186,7 +186,6 @@ function renderPagination(totalArtists) {
     paginationContainer.appendChild(nextButton);
 }
 
-
 // Main function to update the artists
 async function updateArtists() {
     try {
@@ -205,7 +204,6 @@ async function updateArtists() {
         document.getElementById('artists-output').innerHTML = '<p>Error fetching artists.</p>';
     }
 }
-
 
 // Update the artists when the page is loaded
 document.addEventListener('DOMContentLoaded', updateArtists);
