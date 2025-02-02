@@ -151,7 +151,7 @@ table caption {
     align-content: flex-start;
     align-items: flex-end;
     flex-wrap: wrap;
-    height: 3em;
+    height: fit-content;
     gap: 1rem;
 }
 
@@ -202,11 +202,9 @@ table caption {
     line-height: 1em;
     text-align: left;
     color: #AFFC41;
-    display: -webkit-box;
+    display: flex;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .player-discord {
