@@ -35,8 +35,10 @@
             </div>
             <div class="player-discord">
                 <p class="discord">
-                    <a href="https://discord.gg/4eHnAAUmFN">Get in the Discord chatbox <img src="discord.svg" class="discord-logo"/></a>
-                <p>
+                    <a href = "https://discord.gg/4eHnAAUmFN">
+                        Get in the Discord chatbox <img src = "discord.svg" class = "discord-logo"/>
+                    </a>
+                </p>
             </div>
             <div class="home-player-schedule">
                 <h5>Schedule</h5>
@@ -44,18 +46,11 @@
                 </table>
             </div>
         </div>
-        <div class="index-footer">
-            {{- with .Site.Params.socialLinks -}}
-            <span class="hdr-links">{{- partialCached "social-icons.html" . -}}</span>
-            {{- end -}}
-            <p>
-                &copy; {{ now.Format "2006" }} <a href="{{ .Site.BaseURL }}">{{ .Site.Params.author.name }}</a>
-            </p>
-        </div>
     </div>
 </main>
 {{ end }}
 {{ define "footer" }}
+{{ partialCached "footer.html" . }}
 <!--Include schedule.js and set the number of days to fetch  -->
 <script>
   var numDays = 0;
