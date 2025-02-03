@@ -1,5 +1,5 @@
 +++
-title = "Weekly schedule"
+title = "7 day schedule"
 date = 2024-11-19T20:23:18Z
 draft = false
 noindex = true
