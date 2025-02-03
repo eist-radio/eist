@@ -154,4 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     updatePlayerDetails();
+    // Auto-play if the URL slug is "/listen"
+    if (window.location.pathname === '/listen') {
+        toggleAudio();
+    }
 });
