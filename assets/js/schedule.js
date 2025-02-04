@@ -121,7 +121,7 @@ async function renderSchedule(schedules) {
                     : 'Unknown Host';
 
                 // Don't render links on the /listen page (numDays=0)
-                const artistLink = (numDays !== 0 && item.artistIds?.length)? `<a href="/artists/${artistName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s']/g, '-').toLowerCase()}">${artistName}</a>`
+                const artistLink = (numDays !== 0 && item.artistIds?.length)? `<a href="/artists/${artistName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s']/g, '-').replace(/[\.]/g, '').toLowerCase()}">${artistName}</a>`
                     : artistName;
 
                 const row = document.createElement('tr');
