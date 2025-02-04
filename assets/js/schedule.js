@@ -1,4 +1,3 @@
-// Update the schedule on page load. Use localStorage to reduce subsequent page load times.
 // Running locally - source .env && export API_KEY. Restart the hugo server when you make changes
 
 var apiKey = radiocultApiKey;
@@ -23,8 +22,7 @@ async function fetchArtistName(artistId) {
 
         if (response.ok) {
             const data = await response.json();
-            const artistName = data.artist?.name || 'Unknown Host';
-            return artistName;
+            return data.artist?.name || 'Unknown Host';
         } else {
             console.warn(`Failed to fetch artist: ${response.statusText}`);
             return 'Unknown Host';
@@ -106,6 +104,16 @@ async function renderSchedule(schedules) {
         `;
         table.appendChild(headerRow);
 
+        // Normalize artist name slug
+        const normalizeArtistSlug = (name) => {
+            return name.normalize("NFD") // Decompose Unicode characters
+                .replace(/[\u0300-\u036f]/g, "") // Replace diacritics
+                .replace(/[^a-zA-Z0-9]/g, "-") // Replace non-alphanumeric with '-'
+                .replace(/-+$/g, "") // Remove trailing hyphens
+                .replace(/--/g, "-") // Remove dupe hyphens
+                .toLowerCase();
+        };
+
         // Fetch and render each schedule row
         const rows = await Promise.all(
             items.map(async (item) => {
@@ -116,12 +124,14 @@ async function renderSchedule(schedules) {
                     hour12: true,
                     timeZone: 'UTC',
                 });
+
                 const artistName = item.artistIds?.length
                     ? await fetchArtistName(item.artistIds[0])
                     : 'Unknown Host';
 
-                // Don't render links on the /listen page (numDays=0)
-                const artistLink = (numDays !== 0 && item.artistIds?.length)? `<a href="/artists/${artistName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s']/g, '-').replace(/[\.]/g, '').toLowerCase()}">${artistName}</a>`
+                const artistSlug = normalizeArtistSlug(artistName);
+                const artistLink = (numDays !== 0 && item.artistIds?.length) 
+                    ? `<a href="/artists/${artistSlug}">${artistName}</a>` 
                     : artistName;
 
                 const row = document.createElement('tr');
@@ -141,9 +151,15 @@ async function renderSchedule(schedules) {
 
 // Main function to update the schedule
 async function updateSchedule() {
+    if (typeof numDays === 'undefined') {
+        // numDays is set in the HTML page where the JS is called
+        console.error("Error: numDays is not defined.");
+        return;
+    }
+
     const today = new Date();
     const endDate = new Date(today);
-    endDate.setDate(today.getDate() + numDays); // numDays from the parent page
+    endDate.setDate(today.getDate() + numDays);
 
     const startDateFormatted = formatDate(today, '06:00:59Z');
     const endDateFormatted = formatDate(endDate, '23:59:59Z');
