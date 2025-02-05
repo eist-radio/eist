@@ -1,0 +1,3 @@
+{{- $share := resources.Get "js/share.js" -}}
+{{- $script := $share | minify | fingerprint -}}
+<script type="text/javascript" src="{{ $script.Permalink }}"></script>

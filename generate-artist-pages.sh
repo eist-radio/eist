@@ -41,7 +41,10 @@ noindex = false
 <div id="artists-output">
 </div>
 <div id="pagination"></div>
-
+<img id="shareImage" src="https://d4mt18vwj73wk.cloudfront.net/artistImage/2025-01-23T11:00:08Z-1024x1024.jpeg" alt="Sample Image"">
+<button onclick="shareImageAsset()">Share to Instagram Stories</button>
 {{< artist >}}
+
+{{< share >}}
 EOF
 done
