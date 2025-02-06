@@ -88,6 +88,13 @@ expiryDate = ["expiryDate"]
     name = "instagram"
     url = "https://www.instagram.com/eistradio"
 
+  [params.shareButtons]
+    size = "small"
+    icon = "solid"
+    FontSize = "0.4em"
+    buttonMargin = "0.2em"
+    networks = ["whatsapp", "telegram", "email"]
+
 #   [[params.socialLinks]]
 #     name = "github"
 #     url = "https://github.com/eist-radio/eist"
