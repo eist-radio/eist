@@ -88,6 +88,10 @@ expiryDate = ["expiryDate"]
     name = "instagram"
     url = "https://www.instagram.com/eistradio"
 
+  [[params.socialLinks]]
+    name = "soundcloud"
+    url = "https://soundcloud.com/eistcork"
+
 #   [[params.socialLinks]]
 #     name = "github"
 #     url = "https://github.com/eist-radio/eist"
