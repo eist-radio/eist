@@ -36,12 +36,9 @@ date = $(date +%Y-%m-%d)
 draft = false
 noindex = false
 +++
-
+{{< artist >}}
 
 <div id="artists-output">
 </div>
-<div id="pagination"></div>
-
-{{< artist >}}
 EOF
 done
