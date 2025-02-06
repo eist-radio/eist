@@ -33,10 +33,24 @@ TIMEZONE=$(timedatectl | awk '/Time zone/ {print $3}')
 # Construct the URL for the schedule API
 SCHEDULE_URL="https://api.radiocult.fm/api/station/${STATION_ID}/schedule?startDate=${TARGET_DATE}T00:00:00Z&endDate=${TARGET_DATE}T23:59:59Z&timezone=${TIMEZONE}"
 
-# Fetch the schedule and extract the show titles
+# Fetch the schedule and format the output
 SCHEDULE=$(curl -s -X GET "$SCHEDULE_URL" \
-  -H "Content-Type: application/json" | jq -r '.schedules[]?.title // "No title available"')
+  -H "Content-Type: application/json" | jq -r '
+  .schedules[]? | 
+    select(.start and .end and .title) | 
+    (.start | sub("\\.\\d+Z$"; "Z") | fromdate | strftime("%-I%p")) + "-" +
+    (.end | sub("\\.\\d+Z$"; "Z") | fromdate | strftime("%-I%p")) + " " +
+    .title')
 
-# Print the show titles for the specified day
-echo "Shows for $DAY_OF_WEEK, ${TARGET_DATE}:"
-echo "$SCHEDULE"
+# Print the formatted schedule
+echo -e "\n${DAY_OF_WEEK^^}"
+echo -e "$SCHEDULE" | while IFS= read -r line; do
+  # Format show titles with the correct padding
+  title=$(echo "$line" | sed 's/\([A-Za-z0-9 -]*\)\([0-9:APM]*\)$/\1/')
+  timeslot=$(echo "$line" | sed 's/.*\([0-9:APM]*\)$/\1/')
+  
+  # Remove ':00' from times
+  timeslot=$(echo "$timeslot" | sed 's/:00//')
+  
+  printf "%-40s %s\n" "$title" "$timeslot"
+done
