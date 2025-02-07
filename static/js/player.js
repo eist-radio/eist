@@ -39,8 +39,6 @@ async function updatePlayerDetails() {
 
         // Fetch artist details
         artistDetails = await getArtistDetails(artistId);
-
-        // Update the DOM
         updateDOM({ broadcastStatus: status, showDesc, showTitle, artistDetails });
 
     } catch (error) {
@@ -48,7 +46,6 @@ async function updatePlayerDetails() {
     }
 }
 
-// Fetch artist details
 async function getArtistDetails(artistId) {
     if (!artistId) return { name: defaultText, bio: defaultText, image: defaultOnlineImage };
 
@@ -78,7 +75,6 @@ async function getArtistDetails(artistId) {
     }
 }
 
-// Update the DOM with show and artist details
 function updateDOM({ broadcastStatus, showDesc, showTitle, artistDetails }) {
     const artistNameElement = document.getElementById('dj-name');
     const showDescElement = document.getElementById('player-metadata-show-desc');
@@ -99,12 +95,14 @@ function updateDOM({ broadcastStatus, showDesc, showTitle, artistDetails }) {
     }
 }
 
-// Toggle audio playback
 function toggleAudio() {
     const playButtonImg = document.querySelector('#player-button img');
 
     if (!currentAudio) {
         currentAudio = new Audio(streamUrl);
+        currentAudio.preload = 'auto';
+        currentAudio.setAttribute('playsinline', '');
+        currentAudio.setAttribute('muted', 'false');
         currentAudio.play();
         playButtonImg.src = 'pause-alt.svg';
     } else if (currentAudio.paused) {
@@ -116,11 +114,9 @@ function toggleAudio() {
     }
 
     setMediaSession(defaultText);
-    updatePlayerDetails();
     return false; // Prevent default link behavior
 }
 
-// Set media session metadata
 function setMediaSession(showDesc) {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -141,6 +137,7 @@ function setMediaSession(showDesc) {
 
         navigator.mediaSession.setActionHandler('play', () => currentAudio.play());
         navigator.mediaSession.setActionHandler('pause', () => currentAudio.pause());
+        navigator.mediaSession.setActionHandler('stop', () => currentAudio.pause());
     }
 }
 
