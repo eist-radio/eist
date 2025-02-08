@@ -1,3 +1,6 @@
+// Pull artist details on page load.
+// Running locally - source .env && export API_KEY. Restart the hugo server when you make changes
+
 var apiKey = radiocultApiKey;
 var stationId = 'eist-radio';
 var artistsURL = `https://api.radiocult.fm/api/station/${stationId}/artists`;
@@ -5,8 +8,6 @@ var defaultImage = '/no-artist.png'; // Fallback image
 let allArtists = [];
 
 // Get the artist name from JSON-LD script tag
-// Didn't want to render the Artist name in a h tag cos it looks a bit bum.
-target="application/ld+json";
 function getArtistNameFromJsonLd() {
     const scriptTag = document.querySelector('script[type="application/ld+json"]');
     if (scriptTag) {
@@ -60,8 +61,9 @@ function extractTextFromDescription(description) {
     }).join('<br>');
 }
 
-// Get the first social media link
-function getSocialLink(socials) {
+// Get all social media links
+// Get all social media links with a line break before the first link
+function getAllSocialLinks(socials) {
     if (!socials || Object.keys(socials).length === 0) {
         return null;
     }
@@ -72,12 +74,16 @@ function getSocialLink(socials) {
         { key: 'mixcloud', url: `https://www.mixcloud.com/${socials.mixcloud}`, label: 'Mixcloud' },
         { key: 'site', url: socials.site, label: 'Website' },
     ];
-    for (const platform of socialPlatforms) {
-        if (socials[platform.key]) {
-            return { url: platform.url, label: platform.label };
-        }
-    }
-    return null;
+    const links = socialPlatforms
+        .filter(platform => socials[platform.key])
+        .map((platform, index) => {
+            // Add a <br> before the first link
+            if (index === 0) {
+                return `<br><a href="${platform.url}" target="_blank">${platform.label}</a>`;
+            }
+            return `<a href="${platform.url}" target="_blank">${platform.label}</a>`;
+        });
+    return links.join(' / ');
 }
 
 // Render a single artist
@@ -115,9 +121,9 @@ function renderArtist(artist) {
     artistDescription.classList.add('artist-desc');
     artistDescription.innerHTML = extractTextFromDescription(artist.description);
 
-    const socialLink = getSocialLink(artist.socials);
-    if (socialLink) {
-        artistDescription.innerHTML += `<br><a href="${socialLink.url}" target="_blank">${socialLink.label}</a>`;
+    const socialLinks = getAllSocialLinks(artist.socials);
+    if (socialLinks) {
+        artistDescription.innerHTML += `<br>${socialLinks}`;
     }
 
     contentDiv.appendChild(artistDescription);
