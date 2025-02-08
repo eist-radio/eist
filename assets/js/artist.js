@@ -61,7 +61,6 @@ function extractTextFromDescription(description) {
     }).join('<br>');
 }
 
-// Get all social media links
 // Get all social media links with a line break before the first link
 function getAllSocialLinks(socials) {
     if (!socials || Object.keys(socials).length === 0) {
