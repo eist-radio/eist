@@ -238,7 +238,7 @@ opacity: 0.7;
     flex-wrap: wrap;
     margin-bottom: 1rem;
     border-radius: 8px;
-    background-color: #AFFC41;
+    background-color: #4733FF;
 }
 
 .artist-image-container {
@@ -282,21 +282,16 @@ opacity: 0.7;
 }
 
 .artist-content h3 {
-    color: #4733FF;
+    color: #AFFC41;
     margin-block-end: unset !important;
-    padding-left: 1em;
-    padding-right: 1em;
 }
 
 .artist-desc {
-    color: #4733FF;
-    padding-left: 1em;
-    padding-right: 1em;
+    color: #AFFC41;
 }
 
 .artist-desc a {
-    font-weight: bold;
-    color: #4733FF;
+    color: #AFFC41;
 }
 
 .index-footer {
@@ -445,7 +440,6 @@ body {
         flex-wrap: wrap;
         margin-bottom: 1rem;
         border-radius: 8px;
-        background-color: #AFFC41;
     }
 
     .artist-content {
