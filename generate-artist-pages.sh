@@ -13,10 +13,11 @@ ARTISTS_ARRAY=$(curl -s -X GET "$ARTISTS_URL" \
   -H "x-api-key: $API_KEY" \
   -H "Content-Type: application/json")
 
-# Function to normalize filenames
+# Normalize filenames
 normalize_filename() {
-  echo "$1" | iconv -f UTF-8 -t ASCII//TRANSLIT | tr -cs 'a-zA-Z0-9' '-' | sed 's/-$//'
+  echo "$1" | sed 's/[ɅØøæÆ]/-/g' | iconv -f UTF-8 -t ASCII//TRANSLIT | tr -cs 'a-zA-Z0-9' '-' | sed -e 's/^-*//;s/-*$//' | tr '[:upper:]' '[:lower:]'
 }
+
 
 # Process each artist
 echo "$ARTISTS_ARRAY" | jq -c '.artists[]' | while read -r artist; do
