@@ -45,6 +45,10 @@
             </div>
         </div>
     </div>
+    <div>
+        <a href="" id="copy-link">Share this page&nbsp;</a>
+        {{- partial "svg.html" (dict "context" . "name" "share") -}}
+    </div>
 </main>
 {{ end }}
 {{ define "footer" }}
@@ -55,6 +59,10 @@
 </script>
 {{- $schedule := resources.Get "js/schedule.js" -}}
 {{- $script := $schedule | minify | fingerprint -}}
+<script type="text/javascript" src="{{ $script.Permalink }}">
+</script>
+{{- $copylink := resources.Get "js/copylink.js" -}}
+{{- $script := $copylink | minify | fingerprint -}}
 <script type="text/javascript" src="{{ $script.Permalink }}"></script>
 <!-- custom css + js -->
 {{ range .Site.Params.custom_css -}}

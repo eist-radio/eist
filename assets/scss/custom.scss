@@ -7,13 +7,13 @@
 h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav, {
     font-family: $heading-fonts;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.03em;
 }
 
 #site-header > div > div.hdr-left > nav, {
     font-family: $heading-fonts;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.03em;
 }
 
 .slideOutDown {
@@ -371,6 +371,14 @@ body {
 #pagination button[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+#copy-link {
+    font-size: smaller;
+}
+
+a #host-link {
+    text-decoration: none !important;
 }
 
 @media (max-width: 760px) {
