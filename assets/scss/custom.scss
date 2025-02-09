@@ -24,6 +24,7 @@ table {
     table-layout: fixed;
     width: 100%;
     border-collapse: collapse;
+    border: none;
 }
 
 table th, table td {
@@ -33,10 +34,22 @@ table th, table td {
     font-size: small;
 }
 
+table th {
+    font-weight: bold;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+table td {
+    vertical-align: top;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
 table caption {
-    text-align: left !important;
-    font-size: small;
+    text-align: left;
     font-style: italic;
+    font-size: small;
 }
 
 .content a {
