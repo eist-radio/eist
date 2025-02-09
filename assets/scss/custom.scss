@@ -360,6 +360,10 @@ body {
     cursor: not-allowed;
 }
 
+#copy-link {
+    font-size: smaller;
+}
+
 @media (max-width: 760px) {
     #player {
         flex-direction: column;
