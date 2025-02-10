@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC to pick up newly added/removed artists
+  workflow_dispatch: # Allows manual triggering
 
 permissions:
   contents: read

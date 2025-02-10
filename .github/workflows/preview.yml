@@ -6,7 +6,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - closed
 
 jobs:
   preview:
