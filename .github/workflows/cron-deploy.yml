@@ -1,4 +1,4 @@
-name: Nightly deploy Hugo site to Pages 
+name: Hourly deploy Hugo site to Pages 
 
 on:
   schedule:
