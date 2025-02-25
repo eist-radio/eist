@@ -109,7 +109,7 @@ async function renderSchedule(schedules) {
             return name.normalize("NFD") // Decompose Unicode characters
                 .replace(/[\u0300-\u036f]/g, "") // Replace diacritics
                 .replace(/[^a-zA-Z0-9]/g, "-") // Replace non-alphanumeric with '-'
-                .replace(/-+$/g, "") // Remove trailing hyphens
+                .replace(/^-+|-+$/g, "") // Remove leading and trailing hyphens
                 .replace(/--/g, "-") // Remove dupe hyphens
                 .toLowerCase();
         };
