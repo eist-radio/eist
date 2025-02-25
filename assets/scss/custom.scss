@@ -241,10 +241,6 @@ opacity: 0.7;
     flex-direction: column;
 }
 
-.home-player-schedule {
-
-}
-
 .artist {
     display: flex;
     flex-direction: column;
@@ -388,8 +384,7 @@ a #host-link {
     }
 
     .hdr-wrapper {
-        display: flex;
-        justify-content: space-between !important;
+        padding-top: 40px;
     }
 
     .header-logo {

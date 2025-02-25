@@ -1,4 +1,4 @@
-# Éist radio website
+# éist radio website
 
 Source files for the https://eist.radio website.
 

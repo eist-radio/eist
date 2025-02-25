@@ -18,9 +18,9 @@ defaultContentLanguageInSubdir = false
 
 [languages]
   [languages.en]
-    title = 'Éist'
+    title = 'éist'
     [languages.en.params]
-      homeSubtitle = "Éist is a radio station"
+      homeSubtitle = "éist is a radio station"
     weight = 1
 
 languageCode = "en-us"
@@ -40,7 +40,7 @@ expiryDate = ["expiryDate"]
     getenv = ['^API_KEY$']
 
 [params.author]
-  name = "Éist"
+  name = "éist"
   about = "about"
 
 [params.meta]
@@ -57,7 +57,7 @@ expiryDate = ["expiryDate"]
   custom_js = ["js/player.js"]
 
   # Metadata mostly used in document's head
-  description = "Éist is an internet radio station based in Cork, Ireland."
+  description = "éist is an internet radio station based in Cork, Ireland."
   themeColor = "#4733FF"
 
   justifyContent = false
