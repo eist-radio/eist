@@ -106,12 +106,13 @@ async function renderSchedule(schedules) {
 
         // Normalize artist name slug
         const normalizeArtistSlug = (name) => {
-            return name.normalize("NFD") // Decompose Unicode characters
-                .replace(/[\u0300-\u036f]/g, "") // Replace diacritics
-                .replace(/[^a-zA-Z0-9]/g, "-") // Replace non-alphanumeric with '-'
+            return name
+                .normalize("NFD") // Decompose Unicode characters
+                .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+                .replace(/[^a-zA-Z0-9]/g, "-") // Replace non-alphanumeric characters with '-'
+                .replace(/--+/g, "-") // Replace multiple dashes with a single dash
                 .replace(/^-+|-+$/g, "") // Remove leading and trailing hyphens
-                .replace(/--/g, "-") // Remove dupe hyphens
-                .toLowerCase();
+                .toLowerCase(); // Convert to lowercase
         };
 
         // Fetch and render each schedule row
