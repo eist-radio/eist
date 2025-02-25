@@ -85,6 +85,7 @@ table caption {
     height: 80px;
     align-items: center;
     flex-wrap: nowrap;
+    z-index: 9999;
 }
 
 .broadcast-status-indicator {
@@ -384,7 +385,7 @@ a #host-link {
     }
 
     .hdr-wrapper {
-        padding-top: 40px;
+        padding-top: 50px;
     }
 
     .header-logo {
