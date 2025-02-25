@@ -61,9 +61,6 @@
 {{- $script := $schedule | minify | fingerprint -}}
 <script type="text/javascript" src="{{ $script.Permalink }}">
 </script>
-{{- $copylink := resources.Get "js/copylink.js" -}}
-{{- $script := $copylink | minify | fingerprint -}}
-<script type="text/javascript" src="{{ $script.Permalink }}"></script>
 <!-- custom css + js -->
 {{ range .Site.Params.custom_css -}}
 <link rel="stylesheet" href="{{ . | absURL }}">

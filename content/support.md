@@ -6,17 +6,17 @@ draft = false
 
 <div class="artist">
     <div class="artist-image-container">
-        <img src="images/support-1024x1024.jpeg" alt="Support Éist" class="artist-image">
+        <img src="images/support-1024x1024.jpeg" alt="Support éist" class="artist-image">
     </div>
 </div>
 
-[Send us an email](mailto:info@eist.radio?subject=I'd%20like%20to%20receive%20occasional%20emails%20from%20Éist&body=Thanks! "I'd like to receive occasional updates about Éist and upcoming events") if you would like to receive occasional updates about news and upcoming events.
+[Send us an email](mailto:info@eist.radio?subject=I'd%20like%20to%20receive%20occasional%20emails%20from%20éist&body=Thanks! "I'd like to receive occasional updates about éist and upcoming events") if you would like to receive occasional updates about news and upcoming events.
 
 ## Support us with a monthly subscription
 
 If you like what you hear, and you want us to keep broadcasting, please consider setting up a monthly **PayPal subscription**.
 Your money goes directly towards the costs of running the radio station, helping us to pay for rent, electricity, radio web hosting, studio kit, etc.
-Your help and support for Éist is vital and greatly appreciated - we can't do this alone.
+Your help and support for éist is vital and greatly appreciated - we can't do this alone.
 
 Thank you! 🤟
 

@@ -1,11 +1,11 @@
 This is a human
 
 /* TEAM */
-Your title: Éist 
-Site: eist.live
+Your title: éist 
+Site: eist.radio
 
 /* THANKS */
-Name: Éist
+Name: éist
 
 /* SITE */
 Last update: 2024/07/11

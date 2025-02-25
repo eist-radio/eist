@@ -1,7 +1,7 @@
-name = "Éist"
+name = "éist"
 license = "MIT"
 licenselink = "https://github.com/eist-radio/eist/blob/main/LICENSE"
-description = "Éist is an online radio station based in Cork, Ireland"
+description = "éist is an online radio station based in Cork, Ireland"
 
 [module]
   [module.hugoVersion]

@@ -1,4 +1,4 @@
-# Éist radio website
+# éist radio website
 
 [![Deploy Hugo site to Pages](https://github.com/eist-radio/eist/actions/workflows/deploy.yml/badge.svg)](https://github.com/eist-radio/eist/actions/workflows/deploy.yml)
 

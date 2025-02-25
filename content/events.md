@@ -6,14 +6,14 @@ draft = false
 
 ### December 29 launch party!
 
-{{< figure src="images/EIST_launch_poster_Una.png" class="eist-event" title="Éist launch party @ Plugd" >}}
+{{< figure src="images/EIST_launch_poster_Una.png" class="eist-event" title="éist launch party @ Plugd" >}}
 
 We're excited to announce our launch party on Sunday 29th December in the one and only @[pludgrecords](https://www.instagram.com/pludgrecords).
 
-Come along for a night of live DJ broadcasts, wine, food, and chats as we take Éist from the drawing board to the airwaves.
+Come along for a night of live DJ broadcasts, wine, food, and chats as we take éist from the drawing board to the airwaves.
 
 The launch is a chance for us to celebrate our first live broadcast.
-We’ll have a raffle and merch for sale on the night to help raise funds for equipment, rent, and various costs that need to be covered to get Éist up and running.
+We’ll have a raffle and merch for sale on the night to help raise funds for equipment, rent, and various costs that need to be covered to get éist up and running.
 
 Come along, enjoy a boogie, buy a raffle ticket if you're feeling lucky...
 

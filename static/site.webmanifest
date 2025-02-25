@@ -1,1 +1,84 @@
-{"name":"","short_name":"","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "lang": "en",
+  "dir": "ltr",
+  "short_name": "éist",
+  "name": "éist",
+  "description": "éist is a volunteer-run internet radio collective based in Cork city, Ireland. We are dedicated to fostering creativity, collaboration, and community engagement through DIGITAL RADIO.",
+  "id": "/pwa-home",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["music", "entertainment", "radio", "arts"],
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/android-chrome-144x144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "type": "image/png",
+      "sizes": "1080x1920",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshot2.png",
+      "type": "image/png",
+      "sizes": "1920x1080",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Listen",
+      "description": "Tune in to the live radio stream.",
+      "url": "/?utm_source=pwa",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "type": "image/png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Schedule",
+      "description": "Check out upcoming shows.",
+      "url": "/schedule?utm_source=pwa",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "type": "image/png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

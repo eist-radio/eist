@@ -124,7 +124,7 @@ function toggleAudio() {
 function setMediaSession(showDesc) {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
-            title: 'Éist',
+            title: 'éist',
             artist: artistDetails.name,
             album: showDesc,
             artwork: [
@@ -141,6 +141,7 @@ function setMediaSession(showDesc) {
 
         navigator.mediaSession.setActionHandler('play', () => currentAudio.play());
         navigator.mediaSession.setActionHandler('pause', () => currentAudio.pause());
+        navigator.mediaSession.setActionHandler('stop', () => currentAudio.pause());
     }
 }
 
