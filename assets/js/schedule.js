@@ -71,11 +71,26 @@ async function renderSchedule(schedules) {
         return;
     }
 
-    // Group schedules by day
+    const today = new Date().toISOString().split('T')[0];
+
+    // Group schedules by day, handling 12:00 AM correctly
     const groupedSchedules = schedules.reduce((acc, item) => {
-        const date = new Date(item.startDateUtc).toISOString().split('T')[0];
-        acc[date] = acc[date] || [];
-        acc[date].push(item);
+        const startDate = new Date(item.startDateUtc);
+        let broadcastDate = startDate.toISOString().split('T')[0];
+
+        // If show starts at exactly 12:00 AM UTC, move it to the previous day
+        if (startDate.getUTCHours() === 0 && startDate.getUTCMinutes() === 0) {
+            const prevDate = new Date(startDate);
+            prevDate.setUTCDate(prevDate.getUTCDate() - 1);
+            broadcastDate = prevDate.toISOString().split('T')[0];
+        }
+
+        // Only include today or future days
+        if (broadcastDate >= today) {
+            acc[broadcastDate] = acc[broadcastDate] || [];
+            acc[broadcastDate].push(item);
+        }
+
         return acc;
     }, {});
 
@@ -152,26 +167,15 @@ async function renderSchedule(schedules) {
 
 // Main function to update the schedule
 async function updateSchedule() {
-    if (typeof numDays === 'undefined') {
-        // numDays is set in the HTML page where the JS is called
-        console.error("Error: numDays is not defined.");
-        return;
-    }
-
     const today = new Date();
     const endDate = new Date(today);
     endDate.setDate(today.getDate() + numDays);
 
-    const startDateFormatted = formatDate(today, '06:00:59Z');
+    const startDateFormatted = formatDate(today, '00:00:59Z');
     const endDateFormatted = formatDate(endDate, '23:59:59Z');
 
-    try {
-        const scheduleData = await fetchSchedule(startDateFormatted, endDateFormatted);
-        await renderSchedule(scheduleData.schedules);
-    } catch (error) {
-        console.error('Error updating schedule:', error);
-        document.getElementById('schedule-output').innerHTML = '<p>Error fetching schedule.</p>';
-    }
+    const scheduleData = await fetchSchedule(startDateFormatted, endDateFormatted);
+    await renderSchedule(scheduleData.schedules);
 }
 
 // Update the schedule when the page is loaded
