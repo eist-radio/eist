@@ -62,16 +62,33 @@ async function renderSchedule(schedules) {
     const container = document.getElementById('schedule-output');
     container.innerHTML = ''; // Clear existing content
 
-    if (!schedules || schedules.length === 0) {
+    const today = new Date().toISOString().split('T')[0];
+
+    // Check if there's anything scheduled for today
+    const hasTodaySchedule = schedules.some(item => {
+        const startDate = new Date(item.startDateUtc);
+        let broadcastDate = startDate.toISOString().split('T')[0];
+
+        if (startDate.getUTCHours() === 0 && startDate.getUTCMinutes() === 0) {
+            const prevDate = new Date(startDate);
+            prevDate.setUTCDate(prevDate.getUTCDate() - 1);
+            broadcastDate = prevDate.toISOString().split('T')[0];
+        }
+
+        return broadcastDate === today;
+    });
+
+    // If no schedule for today, show the message
+    if (!hasTodaySchedule) {
         container.innerHTML = `
             <tr>
-                <td colspan="3" style="text-align: center;"><a href="/schedule">No shows scheduled today - check the weekly schedule.</a></td>
+                <td colspan="3" style="text-align: center;">
+                    <a href="/schedule">No shows scheduled today - check the weekly schedule.</a>
+                </td>
             </tr>
+            </br>
         `;
-        return;
     }
-
-    const today = new Date().toISOString().split('T')[0];
 
     // Group schedules by day, handling 12:00 AM correctly
     const groupedSchedules = schedules.reduce((acc, item) => {
