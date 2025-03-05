@@ -54,7 +54,7 @@ expiryDate = ["expiryDate"]
 
   # Place custom js and css in static/js and static/css
   # custom_css = ["custom.css"]
-  custom_js = ["js/player.js"]
+  custom_js = ["js/front-page.js"]
 
   # Metadata mostly used in document's head
   description = "éist is an internet radio station based in Cork, Ireland."

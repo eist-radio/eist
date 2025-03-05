@@ -4,6 +4,7 @@ const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
     '/player.js',
+    '/front-page.js',
     '/eist_online.png',
     '/eist_offline.png',
     '/gradient-96x96.png',
@@ -26,7 +27,24 @@ self.addEventListener('install', async (event) => {
     self.skipWaiting();
 });
 
-// Fetch all CSS files dynamically from /css/
+// Check if it's the first visit in this session
+let isFirstVisit = sessionStorage.getItem("visited");
+
+window.addEventListener("visibilitychange", function () {
+    console.log("Visibility changed");
+    
+    if (document.visibilityState === "visible" && isFirstVisit) {
+        console.log("App started");
+        
+        // Set sessionStorage flag to mark the first visit
+        sessionStorage.setItem("visited", "true");
+
+        // Reload only on the first visibility change (i.e., first visit)
+        window.location.reload();
+    }
+});
+
+// Fetch all CSS files dynamically
 async function fetchCssFiles() {
     try {
         const response = await fetch('/css/');

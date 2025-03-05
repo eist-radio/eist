@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="{{ .Site.LanguageCode }}">
 
-<head>
+<head>  
     {{- partial "site-meta.html" . -}}
     {{ $author := (.Params.author | default .Site.Params.author.name) -}}
     <meta name="author" content="{{ $author }}">
@@ -23,13 +23,6 @@
     {{- end -}}
     {{- block "head" . -}}{{- end -}}
     {{- if templates.Exists "partials/extra-head.html" -}}{{- partial "extra-head.html" . -}}{{- end -}}
-</head>
-
-<body id="page">
-    {{- block "header" . -}}{{ end -}}
-    {{- block "main" . -}}{{ end -}}
-    {{- block "footer" . -}}{{ end -}}
-    {{- partial "scroll-to-top.html" . -}}
     <!-- Load main.js -->
     {{- $main := resources.Get "js/main.js" -}}
     {{ $script := $main | minify | fingerprint -}}
@@ -38,6 +31,21 @@
     {{- $copylink := resources.Get "js/copylink.js" -}}
     {{ $copylinkScript := $copylink | minify | fingerprint -}}
     <script async src="{{ $copylinkScript.Permalink }}" {{ printf "integrity=%q" $copylinkScript.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
+    <!-- Load player.js -->
+    {{- $player := resources.Get "js/player.js" -}}
+    {{ $playerScript := $player | minify | fingerprint -}}
+    <script async src="{{ $playerScript.Permalink }}" {{ printf "integrity=%q" $playerScript.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
+    <!-- Load turbo.js -->
+    {{- $turbo := resources.Get "js/turbo.es2017-esm.min.js" -}}
+    {{ $turboScript := $turbo | fingerprint -}}
+    <script async type="module" src="{{ $turboScript.Permalink }}" {{ printf "integrity=%q" $turboScript.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
+</head>
+
+<body id="page">
+    {{- block "header" . -}}{{ end -}}
+    {{- block "main" . -}}{{ end -}}
+    {{- block "footer" . -}}{{ end -}}
+    {{- partial "scroll-to-top.html" . -}}
     {{- if and (not (eq .Site.Params.shareSocial nil)) (.Site.Params.shareSocial) -}}
     {{- end -}}
     {{- if templates.Exists "partials/extra-foot.html" -}}{{- partial "extra-foot.html" . -}}{{- end -}}

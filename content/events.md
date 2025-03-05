@@ -4,7 +4,7 @@ date = 2024-11-13T15:53:33Z
 draft = false
 +++
 
-### December 29 launch party!
+#### December 29 launch party!
 
 {{< figure src="images/EIST_launch_poster_Una.png" class="eist-event" title="éist launch party @ Plugd" >}}
 
