@@ -11,6 +11,7 @@ description = "éist is an online radio station based in Cork, Ireland"
 [author]
   name = "Aidan Reilly"
   homepage = "https://github.com/aidanreilly"
+
 [original]
   name = "eist"
   repo = "https://github.com/eist-radio/eist"

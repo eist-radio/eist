@@ -6,7 +6,7 @@ draft = false
 
 <div class="artist">
     <div class="artist-image-container">
-        <img src="images/team-1024x1024.jpeg" alt="About éist" class="artist-image">
+        <img src="/about/images/team-1024x1024.jpeg" alt="About éist" class="artist-image">
     </div>
 </div>
 

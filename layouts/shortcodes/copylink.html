@@ -1,3 +1,0 @@
-{{- $copylink := resources.Get "js/copylink.js" -}}
-{{- $script := $copylink | minify | fingerprint -}}
-<script type="text/javascript" src="{{ $script.Permalink }}"></script>
