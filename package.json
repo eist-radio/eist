@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@hotwired/turbo": "^8.0.13"
+  }
+}

@@ -1,3 +1,5 @@
+import * as Turbo from "@hotwired/turbo";
+
 // Throttle
 //
 const throttle = (callback, limit) => {
