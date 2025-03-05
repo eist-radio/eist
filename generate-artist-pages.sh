@@ -1,6 +1,10 @@
 #!/bin/bash
 # Generate Markdown files for artists from RadioCult API
 
+source .env
+
+export API_KEY
+
 STATION_ID="eist-radio"
 ARTISTS_URL="https://api.radiocult.fm/api/station/${STATION_ID}/artists"
 OUTPUT_DIR="content/artists"
@@ -41,5 +45,7 @@ noindex = false
 
 <div id="artists-output">
 </div>
+
+<iframe width="100%" height="315" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https://soundcloud.com/eistcork/sets/$ARTIST_FILENAME&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"><a href="https://producer.ua" style="display:none;">talent manager</a></iframe>
 EOF
 done
