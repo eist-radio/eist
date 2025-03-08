@@ -47,7 +47,7 @@ jobs:
           echo "API_KEY=${{ secrets.RADIOCULT_API_KEY }}" >> $GITHUB_ENV
       - name: Generate artist pages
         run: |
-          sudo chmod +x ./generate-artist-pages.sh
+          sudo chmod +x ./generate-artist-pages.sh 
           ./generate-artist-pages.sh
       - name: Cache Hugo files
         uses: actions/cache@v3

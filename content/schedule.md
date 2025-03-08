@@ -5,7 +5,10 @@ draft = false
 noindex = true
 +++
 
-<table id="schedule-output">
+<!---
+data-turbo-frame="false" because we want that shit fresh yo
+-->
+<table id="schedule-output" data-turbo-frame="false">
 </table>
 
 {{< schedule >}}

@@ -299,14 +299,14 @@ table {
 
 #mobile-menu {
   position: fixed;
-  top: 110px;
+  top: 125px;
   bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
   display: none;
   padding: .6em 1.8em;
-  z-index: 3;
+  z-index: 9999;
   box-sizing: border-box;
   background-color: $eist;
 
@@ -515,7 +515,8 @@ hr.post-end {
   }
 
   a.anchor {
-    float: left;
+    display: none;
+/*    float: left;
     margin-left: -25px;
     padding-right: 6px;
     box-shadow: none;
@@ -524,7 +525,7 @@ hr.post-end {
       background: none;
       color: $theme;
       opacity: 1;
-    }
+    }*/
 
     svg {
       display: inline-block;
@@ -799,8 +800,8 @@ a.footnote-ref {
 
 @media (max-width: 1000px) {
 
-  body.with-header {
-    padding-top: 100px;
+  #page {
+    padding-top: 225px;
   }
 
   .hide-in-mobile,
@@ -851,7 +852,7 @@ a.footnote-ref {
   }
 }
 
-.human{
+.human {
   display: flex;
   justify-content: flex-end;
 }
