@@ -88,16 +88,19 @@ expiryDate = ["expiryDate"]
     name = "instagram"
     url = "https://www.instagram.com/eistradio"
 
-  [[params.socialLinks]]
-    name = "soundcloud"
-    url = "https://soundcloud.com/eistcork"
-
 #   [[params.socialLinks]]
 #     name = "github"
 #     url = "https://github.com/eist-radio/eist"
 
-[menu]
+  [[params.socialLinks]]
+    name = "soundcloud"
+    url = "https://soundcloud.com/eistcork"
 
+  [[params.socialLinks]]
+    name = "mixcloud"
+    url = "https://mixcloud.com/eistcork"
+
+[menu]
   [[menu.main]]
     name = "listen"
     url = "/"
