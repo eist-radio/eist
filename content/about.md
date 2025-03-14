@@ -19,3 +19,5 @@ We aim to promote and support community-driven digital radio initiatives, provid
 We want to encourage the production and dissemination of a diverse variety of audio content, and foster a sense of community among members through collaboration and shared projects.
 
 éist seeks to promote diverse voices and build a supportive network for all members in an inclusive environment. We do not tolerate sexism, homophobia, transphobia, racism, classism or other forms of discrimination.
+
+<!-- [Sign up to our Newsletter](/newsletter) -->
