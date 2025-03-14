@@ -1,9 +1,10 @@
-const CACHE_NAME = 'eist-radio-cache-v1';
+// Sets up the website to allow it to be installed as a PWA
+const CACHE_NAME = 'eist-radio-cache-v2';
 
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
-    '/player.js',
+    '/js/*',
     '/eist_online.png',
     '/eist_offline.png',
     '/gradient-96x96.png',
@@ -26,7 +27,7 @@ self.addEventListener('install', async (event) => {
     self.skipWaiting();
 });
 
-// Fetch all CSS files dynamically from /css/
+// Fetch all CSS files dynamically
 async function fetchCssFiles() {
     try {
         const response = await fetch('/css/');
@@ -48,16 +49,38 @@ self.addEventListener('activate', (event) => {
                 cacheNames.filter((name) => name !== CACHE_NAME)
                           .map((name) => caches.delete(name))
             );
-        })
+        }).then(() => self.clients.matchAll())
+          .then((clients) => {
+              clients.forEach(client => client.navigate(client.url));
+          })
     );
     self.clients.claim();
 });
 
-// Fetch event: serve from cache, fallback to network
+// Fetch event: prefer fresh network response, fallback to cache
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            return cachedResponse || fetch(event.request);
-        })
+        fetch(event.request)
+            .then((networkResponse) => {
+                return caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, networkResponse.clone());
+                    return networkResponse;
+                });
+            })
+            .catch(() => caches.match(event.request))
     );
 });
+
+// Check if it's the first visit in this session
+document.addEventListener("DOMContentLoaded", function () {
+    if (!sessionStorage.getItem("visited")) {
+        console.log("First visit detected");
+        sessionStorage.setItem("visited", "true");
+
+        // Reload using Turbo
+        setTimeout(() => {
+            Turbo.visit(window.location.href, { action: "replace" });
+        }, 100);
+    }
+});
+
