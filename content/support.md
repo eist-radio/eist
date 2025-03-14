@@ -10,8 +10,6 @@ draft = false
     </div>
 </div>
 
-[Send us an email](mailto:info@eist.radio?subject=I'd%20like%20to%20receive%20occasional%20emails%20from%20éist&body=Thanks! "I'd like to receive occasional updates about éist and upcoming events") if you would like to receive occasional updates about news and upcoming events.
-
 ## Support us with a monthly subscription
 
 If you like what you hear, and you want us to keep broadcasting, please consider setting up a monthly **PayPal subscription**.
