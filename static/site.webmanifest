@@ -4,8 +4,8 @@
   "short_name": "éist",
   "name": "éist",
   "description": "éist is a volunteer-run internet radio collective based in Cork city, Ireland. We are dedicated to fostering creativity, collaboration, and community engagement through DIGITAL RADIO.",
-  "id": "/pwa-home",
-  "start_url": "/?utm_source=pwa",
+  "id": "/eist-pwa",
+  "start_url": "/",
   "scope": "/",
   "background_color": "#ffffff",
   "theme_color": "#000000",
@@ -59,7 +59,7 @@
     {
       "name": "Listen",
       "description": "Tune in to the live radio stream.",
-      "url": "/?utm_source=pwa",
+      "url": "/",
       "icons": [
         {
           "src": "/android-chrome-192x192.png",

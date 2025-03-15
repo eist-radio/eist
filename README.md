@@ -37,9 +37,11 @@ API_KEY=<REDACTED>
 Then:
 
 ```cmd
-source .env
-export API_KEY
-hugo server
+source .env && export API_KEY
+chmod +x generate-artist-pages.sh
+chmod +x hugo-start.sh
+./generate-artist-pages.sh
+./hugo-start.sh
 ```
 
 On Windows:
@@ -51,7 +53,6 @@ set API_KEY=xxxxx
 # Deploying previews with Surge
 
 PR previews are deployed using Surge. Preview links are posted in the PR.
-
 
 # Open source :)
 

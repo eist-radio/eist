@@ -16,6 +16,7 @@
                 <button id="menu-btn" class="hdr-btn" title="{{i18n "menu"}}">{{- partial "svg.html" (dict "context" . "name" "menuBtn") -}}</button>
             </div>
         </div>
+        {{ partial "player.html" . }} 
     </header>
     <div id="mobile-menu" {{- if ne false .Site.Params.usesAnimation }} class="animated fast" {{- end -}}>
         <ul>

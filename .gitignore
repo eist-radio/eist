@@ -1,6 +1,8 @@
-content/artists/*
+content/artists
+content/artists.md
 public/
 resources/
+node_modules/
 .hugo_build.lock
 .env
 *.sublime-project

@@ -3,7 +3,6 @@
 
 # Source and export the API key ($API_KEY) from the .env file
 source .env
-
 export API_KEY
 
 STATION_ID="eist-radio"
