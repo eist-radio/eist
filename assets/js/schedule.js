@@ -160,7 +160,7 @@ function initializeSchedule() {
                     const artistName = item.artistIds?.length? await fetchArtistName(item.artistIds[0]): 'Unknown Host';
 
                     const artistSlug = normalizeArtistSlug(artistName);
-                    const artistLink = (numDays !== 0 && item.artistIds?.length)? `<a href="/artists/${artistSlug}">${artistName}</a>`: artistName;
+                    const artistLink = (item.artistIds?.length)? `<a href="/artists/${artistSlug}">${artistName}</a>`: artistName;
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
