@@ -224,7 +224,7 @@ function initializePage() {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: isOffline ? "éist · offline" : showTitle,
                 artist: isOffline ? "" : `${artistDetails.name} · live on éist`,
-                album: 'éist',
+                album: 'eist.radio',
                 artwork: isOffline ? [] : [
                     { src: artistDetails.image, sizes: '96x96', type: 'image/png' },
                     { src: artistDetails.image, sizes: '128x128', type: 'image/png' },
