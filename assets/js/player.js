@@ -1,6 +1,7 @@
 // Audio player for de radio like
 // Running locally, you need to source .env && export API_KEY
 // Restart the hugo server when you make changes
+// If you want to hack the audio stream, update the player src in partials/player.html
 
 document.addEventListener("turbo:load", initializePage);
 
@@ -16,21 +17,104 @@ function initializePage() {
     const apiUrl = `https://api.radiocult.fm/api/station/${stationId}`;
     const defaultImage = '/eist_online.png';
 
+    // Track play promises
+    let playPromise = null;
+
     // Global State
     let artistDetails = {
         name: defaultText,
         image: defaultImage
     };
 
-    if (!audio || !playPauseBtn) {
-        console.warn("Audio or Play button not found!");
-        return;
-    }
-
     // Prevent duplicate event listeners
     if (!playPauseBtn.dataset.listenerAdded) {
         playPauseBtn.addEventListener("click", togglePlay);
         playPauseBtn.dataset.listenerAdded = "true";
+    }
+
+    // Setup audio listeners if not already set
+    if (!audio.dataset.listenersAdded) {
+        // Handle audio errors
+        audio.addEventListener("error", function() {
+            console.error("Audio error, retrying...");
+            setTimeout(() => audio.load(), 5000);
+        });
+
+        // Update play state
+        audio.addEventListener("play", function() {
+            isPlaying = true;
+            playPauseBtn.src = '/pause.svg';
+            console.log("Audio play event fired");
+        });
+
+        // Update pause state
+        audio.addEventListener("pause", function() {
+            isPlaying = false;
+            playPauseBtn.src = '/play.svg';
+            console.log("Audio pause event fired");
+        });
+
+        audio.dataset.listenersAdded = "true";
+    }
+
+    // Toggle play/pause with promise handling
+    function togglePlay() {
+        console.log("Toggle play called, current state:", isPlaying);
+
+        if (isPlaying) {
+            // If we have an ongoing play operation, wait for it to complete before pausing
+            if (playPromise !== null) {
+                console.log("Waiting for play promise to resolve before pausing");
+                playPromise
+                    .then(() => {
+                        console.log("Play promise resolved, now pausing");
+                        audio.pause();
+                        audio.currentTime = 0;
+                        playPauseBtn.src = '/play.svg';
+                        isPlaying = false;
+                        updateMediaSession(false);
+                    })
+                    .catch(() => {
+                        console.log("Play promise rejected, updating UI only");
+                        playPauseBtn.src = '/play.svg';
+                        isPlaying = false;
+                        updateMediaSession(false);
+                    });
+            } else {
+                // No ongoing play operation, pause directly
+                console.log("Pausing directly");
+                audio.pause();
+                audio.currentTime = 0;
+                playPauseBtn.src = '/play.svg';
+                isPlaying = false;
+                updateMediaSession(false);
+            }
+        } else {
+            // Reload the stream before playing
+            audio.load();
+
+            // Store the play promise
+            console.log("Starting playback");
+            playPromise = audio.play();
+
+            playPromise
+                .then(() => {
+                    console.log("Playback started successfully");
+                    playPauseBtn.src = '/pause.svg';
+                    isPlaying = true;
+                    updateMediaSession(true);
+                    // Clear the promise reference after it's resolved
+                    playPromise = null;
+                })
+                .catch(error => {
+                    console.error("Playback failed:", error);
+                    playPauseBtn.src = '/play.svg';
+                    isPlaying = false;
+                    updateMediaSession(false);
+                    // Clear the promise reference after it's rejected
+                    playPromise = null;
+                });
+        }
     }
 
     // Fetch artist details
@@ -99,6 +183,8 @@ function initializePage() {
     }
 
     function updatePlayer({ broadcastStatus, showTitle, artistDetails }) {
+        console.log("Updating player UI with:", { broadcastStatus, showTitle, artistName: artistDetails.name });
+        
         const artistNameElement = document.getElementById('dj-name');
         const showTitleElement = document.getElementById('player-metadata-show-title');
         const broadcastStatusElement = document.getElementById('live-text');
@@ -107,10 +193,8 @@ function initializePage() {
         if (artistNameElement) artistNameElement.textContent = artistDetails.name;
         if (showTitleElement) showTitleElement.textContent = showTitle;
 
-        if (broadcastStatus === "schedule") {
-            broadcastStatusElement.textContent = "we are live";
-        } else {
-            broadcastStatusElement.textContent = "off air";
+        if (broadcastStatusElement) {
+            broadcastStatusElement.textContent = broadcastStatus === "schedule" ? "we are live" : "off air";
         }
 
         if (artistImageElement) {
@@ -118,40 +202,30 @@ function initializePage() {
         }
 
         setMediaSessionMetadata(showTitle, artistDetails);
-    }
-
-    function togglePlay() {
-        if (isPlaying) {
-            audio.pause();
-            playPauseBtn.src = '/play.svg';
-        } else {
-            audio.play().then(() => {
-                playPauseBtn.src = '/pause.svg';
-            }).catch(error => {
-                console.error("Playback failed:", error);
-                playPauseBtn.src = '/play.svg';
-            });
-        }
-        isPlaying = !isPlaying;
-        updateMediaSession(isPlaying);
+        console.log("Player UI update complete");
     }
 
     function updateMediaSession(isPlaying) {
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-            navigator.mediaSession.setActionHandler('play', () => audio.play());
-            navigator.mediaSession.setActionHandler('pause', () => audio.pause());
-            navigator.mediaSession.setActionHandler('stop', () => audio.pause());
+            navigator.mediaSession.setActionHandler('play', () => {
+                togglePlay();
+            });
+            navigator.mediaSession.setActionHandler('pause', () => {
+                togglePlay();
+            });
         }
     }
 
     function setMediaSessionMetadata(showTitle, artistDetails) {
+        const isOffline = !showTitle || showTitle === defaultText;
+
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: showTitle,
-                artist: artistDetails.name,
+                title: isOffline ? "éist · offline" : showTitle,
+                artist: isOffline ? "" : `${artistDetails.name} · live on éist`,
                 album: 'éist',
-                artwork: [
+                artwork: isOffline ? [] : [
                     { src: artistDetails.image, sizes: '96x96', type: 'image/png' },
                     { src: artistDetails.image, sizes: '128x128', type: 'image/png' },
                     { src: artistDetails.image, sizes: '192x192', type: 'image/png' },
@@ -163,13 +237,29 @@ function initializePage() {
         }
     }
 
-    // Ensure artists are loaded on page load
-    document.addEventListener('DOMContentLoaded', async () => {
-        nowPlaying();
-        initializePage();
+    // Handle visibility changes
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+            console.log("Page became visible");
+            nowPlaying();
+        }
     });
 
+    // Initialize with default metadata
     setMediaSessionMetadata(defaultText, artistDetails);
+    
+    // Start fetching now playing information
+    console.log("Starting initial nowPlaying fetch");
+    
+    // Ensure we have defaults before the API call
+    updatePlayer({ 
+        broadcastStatus: 'initializing', 
+        showTitle: defaultText, 
+        artistDetails: { name: defaultText, image: defaultImage } 
+    });
+
     nowPlaying();
     updateMediaSession(isPlaying);
+    
+    console.log("Player initialization complete");
 }
