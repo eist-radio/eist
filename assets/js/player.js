@@ -208,23 +208,40 @@ function initializePage() {
     function updateMediaSession(isPlaying) {
         if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-            navigator.mediaSession.setActionHandler('play', () => {
-                togglePlay();
+
+            navigator.mediaSession.setActionHandler('play', async () => {
+                if (audio.paused) {
+                    try {
+                        await audio.play();
+                        isPlaying = true;
+                        playPauseBtn.src = '/pause.svg';
+                        navigator.mediaSession.playbackState = "playing";
+                    } catch (error) {
+                        console.error("Error resuming playback:", error);
+                    }
+                }
             });
+
             navigator.mediaSession.setActionHandler('pause', () => {
-                togglePlay();
+                if (!audio.paused) {
+                    audio.pause();
+                    isPlaying = false;
+                    playPauseBtn.src = '/play.svg';
+                    navigator.mediaSession.playbackState = "paused";
+                }
             });
         }
     }
+
 
     function setMediaSessionMetadata(showTitle, artistDetails) {
         const isOffline = !showTitle || showTitle === defaultText;
 
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: isOffline ? "éist · offline" : showTitle,
+                title: isOffline ? "éist · off air" : showTitle,
                 artist: isOffline ? "" : `${artistDetails.name} · live on éist`,
-                album: 'eist.radio',
+                album: '',
                 artwork: isOffline ? [] : [
                     { src: artistDetails.image, sizes: '96x96', type: 'image/png' },
                     { src: artistDetails.image, sizes: '128x128', type: 'image/png' },
