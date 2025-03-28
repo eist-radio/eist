@@ -12,10 +12,16 @@ function initializeSchedule() {
 
     var apiKey = radiocultApiKey;
     var stationId = 'eist-radio';
-    var timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     function formatDate(date, time = '06:00:59Z') {
         return date.toISOString().split('T')[0] + `T${time}`;
+    }
+
+    function convertToLocalTime(utcDate) {
+        return new Date(utcDate).toLocaleString('en-US', {
+            timeZone: timeZone, // Convert to user's local timezone
+        });
     }
 
     async function fetchArtistName(artistId) {
@@ -41,8 +47,8 @@ function initializeSchedule() {
         }
     }
 
-    async function fetchSchedule(startDate, endDate) {
-        const scheduleUrl = `https://api.radiocult.fm/api/station/${stationId}/schedule?startDate=${startDate}&endDate=${endDate}&timeZone=${timeZone}`;
+    async function fetchSchedule(localStartDate, endDate) {
+        const scheduleUrl = `https://api.radiocult.fm/api/station/${stationId}/schedule?startDate=${localStartDate}&endDate=${endDate}&timeZone=${timeZone}`;
 
         try {
             const response = await fetch(scheduleUrl, {
@@ -71,11 +77,11 @@ function initializeSchedule() {
 
         // Check if there's anything scheduled for today
         const hasTodaySchedule = schedules.some(item => {
-            const startDate = new Date(item.startDateUtc);
-            let broadcastDate = startDate.toISOString().split('T')[0];
+            const localStartDate = new Date(item.startDateUtc);
+            let broadcastDate = localStartDate.toISOString().split('T')[0];
 
-            if (startDate.getUTCHours() === 0 && startDate.getUTCMinutes() === 0) {
-                const prevDate = new Date(startDate);
+            if (localStartDate.getUTCHours() === 0 && localStartDate.getUTCMinutes() === 0) {
+                const prevDate = new Date(localStartDate);
                 prevDate.setUTCDate(prevDate.getUTCDate() - 1);
                 broadcastDate = prevDate.toISOString().split('T')[0];
             }
@@ -96,11 +102,11 @@ function initializeSchedule() {
 
         // Group schedules by day, handling 12:00 AM correctly
         const groupedSchedules = schedules.reduce((acc, item) => {
-            const startDate = new Date(item.startDateUtc);
-            let broadcastDate = startDate.toISOString().split('T')[0];
+            const localStartDate = new Date(item.startDateUtc);
+            let broadcastDate = localStartDate.toISOString().split('T')[0];
 
-            if (startDate.getUTCHours() === 0 && startDate.getUTCMinutes() === 0) {
-                const prevDate = new Date(startDate);
+            if (localStartDate.getUTCHours() === 0 && localStartDate.getUTCMinutes() === 0) {
+                const prevDate = new Date(localStartDate);
                 prevDate.setUTCDate(prevDate.getUTCDate() - 1);
                 broadcastDate = prevDate.toISOString().split('T')[0];
             }
@@ -149,12 +155,12 @@ function initializeSchedule() {
 
             const rows = await Promise.all(
                 items.map(async (item) => {
-                    const startDate = new Date(item.startDateUtc);
-                    const friendlyTime = startDate.toLocaleString('en-US', {
+                    const localStartDate = new Date(item.startDateUtc);
+                    const friendlyTime = localStartDate.toLocaleString('en-US', {
                         hour: 'numeric',
                         minute: '2-digit',
                         hour12: true,
-                        timeZone: 'UTC',
+                        timeZone: timeZone, // Use actual timezone
                     });
 
                     const artistName = item.artistIds?.length? await fetchArtistName(item.artistIds[0]): 'Unknown Host';
@@ -187,10 +193,10 @@ function initializeSchedule() {
         const endDate = new Date(today);
         endDate.setDate(today.getDate() + numDays);
 
-        const startDateFormatted = formatDate(today, '00:00:59Z');
+        const localStartDateFormatted = formatDate(today, '00:00:59Z');
         const endDateFormatted = formatDate(endDate, '23:59:59Z');
 
-        const scheduleData = await fetchSchedule(startDateFormatted, endDateFormatted);
+        const scheduleData = await fetchSchedule(localStartDateFormatted, endDateFormatted);
         await renderSchedule(scheduleData.schedules);
     }
 
