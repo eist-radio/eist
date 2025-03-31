@@ -184,7 +184,7 @@ function initializePage() {
 
     function updatePlayer({ broadcastStatus, showTitle, artistDetails }) {
         console.log("Updating player UI with:", { broadcastStatus, showTitle, artistName: artistDetails.name });
-        
+
         const artistNameElement = document.getElementById('dj-name');
         const showTitleElement = document.getElementById('player-metadata-show-title');
         const broadcastStatusElement = document.getElementById('live-text');
@@ -194,7 +194,9 @@ function initializePage() {
         if (showTitleElement) showTitleElement.textContent = showTitle;
 
         if (broadcastStatusElement) {
-            broadcastStatusElement.textContent = broadcastStatus === "schedule" ? "we are live" : "off air";
+            broadcastStatusElement.textContent = broadcastStatus === "schedule" ?
+                `live w/ ${artistDetails.name}` :
+                "off air";
         }
 
         if (artistImageElement) {
@@ -264,19 +266,19 @@ function initializePage() {
 
     // Initialize with default metadata
     setMediaSessionMetadata(defaultText, artistDetails);
-    
+
     // Start fetching now playing information
     console.log("Starting initial nowPlaying fetch");
-    
+
     // Ensure we have defaults before the API call
-    updatePlayer({ 
-        broadcastStatus: 'initializing', 
-        showTitle: defaultText, 
-        artistDetails: { name: defaultText, image: defaultImage } 
+    updatePlayer({
+        broadcastStatus: 'initializing',
+        showTitle: defaultText,
+        artistDetails: { name: defaultText, image: defaultImage }
     });
 
     nowPlaying();
     updateMediaSession(isPlaying);
-    
+
     console.log("Player initialization complete");
 }
