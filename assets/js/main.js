@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Force Turbo to reload the correct state when swiping back/forward on mobile
+window.addEventListener("popstate", (event) => {
+    Turbo.visit(window.location.href, { action: "replace" });
+});
+
 document.addEventListener("turbo:load", () => {
     // Throttle
     //
