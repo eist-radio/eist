@@ -275,9 +275,7 @@ opacity: 0.7;
     display: block;
     width: 100%;
     height: auto;
-    filter: grayscale(100%);
-    opacity: 0.5;
-    transition: filter 0.3s ease, opacity 0.5s ease;
+    opacity: 0.9;
 }
 
 /* Gradient overlay */
@@ -290,13 +288,14 @@ opacity: 0.7;
     height: 100%;
     background: linear-gradient(transparent, $eist);
     pointer-events: none;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
-.artist-image-container:hover .artist-image {
+/*This is kinda wack*/
+/*.artist-image-container:hover .artist-image {
     filter: grayscale(0);
     opacity: 1;
-}
+}*/
 
 .artist-content {
     display: flex;
