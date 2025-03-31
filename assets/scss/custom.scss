@@ -4,6 +4,11 @@
     overflow: scroll;
   }
 */
+
+body{
+    margin-top: 215px;
+}
+
 h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav, {
     font-family: $heading-fonts;
     font-weight: 700;
@@ -76,9 +81,11 @@ table caption {
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 400px;
     justify-content: center;
     align-items: stretch; /* align-items affects the children */
     position: relative;
+    margin-top: 225px;
 }
 
 .broadcast-status {
@@ -92,15 +99,8 @@ table caption {
     z-index: 2;
 }
 
-.broadcast-status-indicator {
-    width: 0.5em;
-    padding: 0.4em;
-    margin-top: 0.2em;
-    z-index: 2;
-}
-
 .broadcasting-live-text-status {
-    font-size: 0.8em;
+    font-size: large;
     text-transform: lowercase;
     z-index: 2;
     text-align: end;
@@ -110,7 +110,7 @@ table caption {
     flex: 2;
     overflow: hidden;
     display: flex;
-    max-height: 18em;
+    height: 100px;
     align-items: center;
     justify-content: flex-end;
     position: relative;
@@ -119,7 +119,6 @@ table caption {
 }
 
 .player-background img {
-    width: -webkit-fill-available;
     width: 100%;
     overflow: hidden;
     opacity: 20%;
@@ -428,19 +427,15 @@ a #host-link {
     flex-direction: row-reverse;
 }
 
-.broadcast-status-indicator {
-    width: 10px;
-    height: 10px;
-}
-
-@media (max-width: 1728px) {
+@media (max-width: 1800px) {
     #player-small {
-        width: 100%;
-        max-width: 720px;
+        width: 97%;
+        max-width: 735px;
     }
 }
 
 @media (max-width: 760px) {
+
     #playPauseBtn {
         width: 60px;
         height: 60px;
@@ -451,15 +446,9 @@ a #host-link {
         justify-content: flex-start;
     }
 
-    .broadcast-status-indicator {
-        width: 15px;
-        height: 15px;
-    }
-
-
     #player {
         flex-direction: column;
-        height: auto;
+        height: 300px;
     }
 
     .hdr-wrapper {
@@ -481,7 +470,6 @@ a #host-link {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        max-height: 300px;
         position: relative;
     }
 
