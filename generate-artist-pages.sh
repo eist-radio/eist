@@ -6,7 +6,7 @@ STATION_ID="eist-radio"
 ARTISTS_URL="https://api.radiocult.fm/api/station/${STATION_ID}/artists"
 OUTPUT_DIR="content/artists"
 OUTPUT_FILE="content/artists.md"
-DEFAULT_IMAGE="/no-artist.png"
+DEFAULT_IMAGE="/eist_online.png"
 
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR"
