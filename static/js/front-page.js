@@ -5,12 +5,12 @@ document.addEventListener("turbo:load", initializeFrontPage);
 document.addEventListener("turbo:render", initializeFrontPage);
 
 function initializeFrontPage() {
-    var apiKey = radiocultApiKey;
-    var stationId = 'eist-radio';
-    var apiUrl = `https://api.radiocult.fm/api/station/${stationId}`;
-    var defaultOfflineImage = '/eist_offline.png';
-    var defaultOnlineImage = '/eist_online.png';
-    var defaultText = ' ';
+    const apiKey = radiocultApiKey;
+    const stationId = 'eist-radio';
+    const apiUrl = `https://api.radiocult.fm/api/station/${stationId}`;
+    const defaultOfflineImage = '/eist_offline.png';
+    const defaultOnlineImage = '/eist_online.png';
+    const defaultText = ' ';
 
     // Global State
     let frontPageArtistDetails = {
@@ -25,7 +25,7 @@ function initializeFrontPage() {
             const response = await fetch(`${apiUrl}/schedule/live`, {
                 method: 'GET',
                 headers: {
-                    'x-api-key': radiocultApiKey,
+                    'x-api-key': apiKey,
                     'Content-Type': 'application/json'
                 }
             });
@@ -33,9 +33,9 @@ function initializeFrontPage() {
             if (!response.ok) throw new Error(`API request failed: ${response.status}`);
 
             const data = await response.json();
-            const { status, content } = data.result;
+            const { status, content, metadata } = data.result;
 
-            // If nothing is playing use offline image and default text
+            // If nothing is playing, use offline image and default text
             if (status !== "schedule") {
                 frontPageArtistDetails = {
                     name: defaultText,
@@ -47,11 +47,16 @@ function initializeFrontPage() {
             }
 
             const artistId = content.artistIds?.[0] || defaultText;
-            const showDesc = content.description?.content?.[0]?.content?.[0]?.text || defaultText;
+            let showDesc = content.description?.content?.[0]?.content?.[0]?.text || defaultText;
             const showTitle = content.title || defaultText;
 
             // Fetch artist details
             frontPageArtistDetails = await getArtistDetails(artistId);
+
+            // Append the current song title if the media type is "playlist"
+            if (content.media?.type === "playlist" && metadata?.title) {
+                showDesc += `\n\nNow playing: ${metadata.title}`;
+            }
 
             // Update the DOM with live show details
             updateFrontPage({ showDesc, showTitle, frontPageArtistDetails });
@@ -76,7 +81,7 @@ function initializeFrontPage() {
             const response = await fetch(`${apiUrl}/artists/${artistId}`, {
                 method: 'GET',
                 headers: {
-                    'x-api-key': radiocultApiKey,
+                    'x-api-key': apiKey,
                     'Content-Type': 'application/json'
                 }
             });
@@ -89,7 +94,7 @@ function initializeFrontPage() {
             return {
                 name: artist.name || defaultText,
                 bio: artist.description?.content?.[0]?.content?.[0]?.text || 'No bio available',
-                image: artist.logo?. ['256x256'] || defaultOnlineImage
+                image: artist.logo?.['256x256'] || defaultOnlineImage
             };
 
         } catch (error) {
@@ -106,7 +111,7 @@ function initializeFrontPage() {
         const artistImageElement = document.getElementById('dj-image-front-page');
 
         if (artistNameElement) artistNameElement.textContent = frontPageArtistDetails.name;
-        if (showDescElement) showDescElement.textContent = showDesc;
+        if (showDescElement) showDescElement.innerHTML = showDesc.replace(/\n/g, '<br>');
         if (showTitleElementFrontPage) showTitleElementFrontPage.textContent = showTitle;
 
         if (artistImageElement) artistImageElement.src = frontPageArtistDetails.image || defaultOfflineImage;
