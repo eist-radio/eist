@@ -94,7 +94,7 @@ function initializeFrontPage() {
             return {
                 name: artist.name || defaultText,
                 bio: artist.description?.content?.[0]?.content?.[0]?.text || 'No bio available',
-                image: artist.logo?.['256x256'] || defaultOnlineImage
+                image: artist.logo?.['512x512'] || defaultOnlineImage
             };
 
         } catch (error) {
