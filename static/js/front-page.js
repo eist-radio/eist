@@ -47,7 +47,16 @@ function initializeFrontPage() {
             }
 
             const artistId = content.artistIds?.[0] || defaultText;
-            let showDesc = content.description?.content?.[0]?.content?.[0]?.text || defaultText;
+            let showDesc = (content.description?.content || [])
+            .map(block => {
+                if (!Array.isArray(block.content)) return '';
+                return block.content.map(child => {
+                    if (child.type === 'text') return child.text;
+                    if (child.type === 'hardBreak') return '<br>';
+                    return '';
+                }).join('');
+            })
+            .join('<br><br>') || defaultText;
             const showTitle = content.title || defaultText;
 
             // Fetch artist details
@@ -111,7 +120,7 @@ function initializeFrontPage() {
         const artistImageElement = document.getElementById('dj-image-front-page');
 
         if (artistNameElement) artistNameElement.textContent = frontPageArtistDetails.name;
-        if (showDescElement) showDescElement.innerHTML = showDesc.replace(/\n/g, '<br>');
+        if (showDescElement) showDescElement.innerHTML = showDesc;
         if (showTitleElementFrontPage) showTitleElementFrontPage.textContent = showTitle;
 
         if (artistImageElement) artistImageElement.src = frontPageArtistDetails.image || defaultOfflineImage;
