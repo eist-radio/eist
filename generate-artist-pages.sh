@@ -105,7 +105,20 @@ echo "$ARTISTS_JSON" | jq -c '.artists[]' | while read -r artist; do
   SOCIAL_LINKS=$(generate_social_links "$ARTIST_SOCIALS")
   ARTIST_FILENAME=$(normalize_filename "$ARTIST_NAME")
   FILE_PATH="$OUTPUT_DIR/$ARTIST_FILENAME.md"
-  ARTIST_BIO=$(echo "$artist" | jq -r '.description.content[0].content[0].text // ""')
+  # Handle text formatting
+  ARTIST_BIO=$(echo "$artist" | jq -r '
+    if .description and .description.content then
+      [.description.content[]? |
+        [.content[]? |
+          if .type == "text" then .text
+          elif .type == "hardBreak" then "\n"
+          else "" end
+        ] | join("")
+      ] | join("\n\n")
+    else
+      ""
+    end
+  ')
 
   # If artist image is empty, use a default image
   [[ -z "$ARTIST_IMAGE_URL" ]] && ARTIST_IMAGE_URL="$DEFAULT_IMAGE"
