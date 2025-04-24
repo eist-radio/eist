@@ -14,9 +14,6 @@ mkdir -p "$OUTPUT_DIR"
 # Fetch artist data
 ARTISTS_JSON=$(curl -s -X GET "$ARTISTS_URL" -H "x-api-key: $API_KEY" -H "Content-Type: application/json")
 
-# Fetch all Mixcloud shows
-MIXCLOUD_SHOWS_JSON=$(curl -s "https://api.mixcloud.com/eistcork/cloudcasts/")
-
 # Validate JSON response
 if ! echo "$ARTISTS_JSON" | jq empty >/dev/null 2>&1; then
   echo "Error: API response is not valid JSON."
