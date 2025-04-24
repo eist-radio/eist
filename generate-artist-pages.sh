@@ -43,13 +43,6 @@ extract_tag_value() {
   echo "$tags" | jq -r --arg prefix "$prefix" '.[] | select(startswith($prefix)) | sub($prefix; "")' | tr '[:upper:]' '[:lower:]'
 }
 
-# Fetch Mixcloud shows for the artist slug
-fetch_mixcloud_hosts() {
-  local artist_username="$1"
-  # Check if the artist slug exists in any host
-  echo "$MIXCLOUD_SHOWS_JSON" | jq -r ".data[] | select(.hosts != null) | .hosts[]?.key" | grep -q "/$artist_username/"
-}
-
 # Generate social media links with <br> before the first link
 generate_social_links() {
     local socials_json="$1"
@@ -137,7 +130,7 @@ echo "$ARTISTS_JSON" | jq -c '.artists[]' | while read -r artist; do
   fi
 
   # Check if the artist mixcloud username exists as an eistcork Mixcloud host
-  if fetch_mixcloud_hosts "$MC_USERNAME"; then
+  if [[ -n "$MC_USERNAME" ]]; then
     LATEST_MIXCLOUD="
 <iframe width=\"100%\" height=\"60\" src=\"https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&feed=/eistcork/hosts/$MC_USERNAME/\" frameborder=\"0\" ></iframe>"
   else
@@ -215,12 +208,16 @@ EOF
 # Collect artist links into a single string
 while IFS= read -r row; do
   ARTIST_NAME=$(echo "$row" | jq -r '.name')
-  MC_USERNAME=$(normalize_filename "$ARTIST_NAME")
+  ARTIST_SLUG=$(normalize_filename "$ARTIST_NAME")
 
   if [[ -n "$ARTIST_LINKS" ]]; then
     ARTIST_LINKS+=" / "
   fi
-  ARTIST_LINKS+="[$ARTIST_NAME](/artists/$MC_USERNAME)"
+
+  if [[ -n "$ARTIST_SLUG" ]]; then
+    ARTIST_LINKS+="[$ARTIST_NAME](/artists/$ARTIST_SLUG)"
+  fi
+
 done < <(echo "$ARTISTS_JSON" | jq -c '.artists[]')
 
 echo "$ARTIST_LINKS" >> "$OUTPUT_FILE"
