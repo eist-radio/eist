@@ -42,49 +42,47 @@ extract_tag_value() {
 
 # Generate social media links with <br> before the first link
 generate_social_links() {
-    local socials_json="$1"
-    local links=()
+  local socials_json="$1"
+  local links=()
 
-    # Check if socials_json is empty or invalid
-    if [[ -z "$socials_json" || "$socials_json" == "null" ]]; then
-        echo ""
-        return
-    fi
+  [[ -z "$socials_json" || "$socials_json" == "null" ]] && echo "" && return
 
-    local platforms=("soundcloud" "instagram" "facebook" "mixcloud" "site")
+  # API keys to check
+  local keys=("soundcloud" "instagramHandle" "mixcloud" "site")
 
-    # Loop through the platforms to build the links
-    for platform in "${platforms[@]}"; do
-        local url=$(echo "$socials_json" | jq -r ".${platform} // empty")
-        if [[ -n "$url" ]]; then
-            local label
-            case "$platform" in
-                soundcloud) label="SoundCloud" ;;
-                instagram) label="Instagram" ;;
-                facebook) label="Facebook" ;;
-                mixcloud) label="Mixcloud" ;;
-                site) label="Website" ;;
-            esac
+  for key in "${keys[@]}"; do
+    # extract value
+    local val
+    val=$(echo "$socials_json" | jq -r ".${key} // empty")
+    [[ -z "$val" ]] && continue
 
-            # Construct the full URL for platforms other than "site"
-            if [[ "$platform" != "site" ]]; then
-                url="https://www.${platform}.com/${url}"
-            fi
+    # map to label
+    local label
+    case "$key" in
+      soundcloud)      label="SoundCloud"    ;;
+      mixcloud)        label="Mixcloud"      ;;
+      instagramHandle) label="Instagram"     ;;
+      site)            label="Website"       ;;
+    esac
 
-            # Add the link to the links array
-            links+=("[$label]($url)")
-        fi
-    done
-
-    # Add archive links if they exist
-
-    # Join the links with " / " separator and return the result
-    if [[ ${#links[@]} -gt 0 ]]; then
-      echo "${links[@]}" | sed 's/ / \/ /g'
+    # build URL
+    local url
+    if [[ "$key" == "instagramHandle" ]]; then
+      url="https://www.instagram.com/$val"
     else
-      echo ""
+      # soundcloud or mixcloud
+      [[ "$val" =~ ^https?:// ]] && url="$val" || url="https://www.${key}.com/$val"
     fi
+
+    links+=("[$label]($url)")
+  done
+
+  # Join the links with " / " separator and return the result
+  if [[ ${#links[@]} -gt 0 ]]; then
+    echo "${links[@]}" | sed 's/ / \/ /g'
+  fi
 }
+
 
 # Process each artist
 echo "$ARTISTS_JSON" | jq -c '.artists[]' | while read -r artist; do
