@@ -13,7 +13,7 @@ h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav, {
     font-family: $heading-fonts;
     font-weight: 700;
     letter-spacing: 0.04em;
-    padding-top: 0.2em;
+/*    padding-top: 0.2em;*/
 }
 
 h1 {
@@ -85,7 +85,7 @@ table caption {
     justify-content: center;
     align-items: stretch; /* align-items affects the children */
     position: relative;
-    margin-top: 225px;
+    margin-top: 50px;
 }
 
 .broadcast-status {
@@ -120,28 +120,26 @@ table caption {
 .player-background img {
     width: 100%;
     overflow: hidden;
-    opacity: 20%;
 }
 
 .player-background::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-image: linear-gradient(
     to top,
-    rgba(175, 252, 65, 1) 0%,
-    rgba(175, 252, 65, 0.3) 50%,
-    rgba(175, 252, 65, 0.15) 65%,
-    rgba(175, 252, 65, 0.075) 75.5%,
-    rgba(175, 252, 65, 0.037) 82.85%,
-    rgba(175, 252, 65, 0.019) 88%,
-    #00000000 120%
+    rgba(255, 255, 255, 1)     0%,
+    rgba(255, 255, 255, 0.3)   50%,
+    rgba(255, 255, 255, 0.15)  65%,
+    rgba(255, 255, 255, 0.075) 75.5%,
+    rgba(255, 255, 255, 0.037) 82.85%,
+    rgba(255, 255, 255, 0.019) 88%,
+    rgba(255, 255, 255, 0)     120%
   );
   pointer-events: none;
 }
+
+
 
 .player-now-playing {
     display: flex;
@@ -398,7 +396,6 @@ a #host-link {
     left: 50%;
     transform: translateX(-50%);
     background-color: $eist;
-    padding: 8px;
     margin: auto;
     display: flex; /* Enables centering of content */
     align-items: center;
@@ -409,13 +406,14 @@ a #host-link {
     width: 100%;
     display: flex;
     align-items: center;
+    padding-right: 8px;
     justify-content: space-between;
 }
 
 #playPauseBtn {
     width: 55px;
     height: 55px;
-    padding: 2px;
+    padding: 5px;
 }
 
 .broadcast-status {
@@ -426,10 +424,18 @@ a #host-link {
     flex-direction: row-reverse;
 }
 
+#dj-image-front-page {
+  /* make the image fully grayscale */
+  filter: grayscale(100%);
+  /* for better support on older WebKit browsers */
+  -webkit-filter: grayscale(100%);
+}
+
 @media (max-width: 1800px) {
     #player-small {
         width: 97%;
         max-width: 735px;
+        padding-bottom: 8px;
     }
 }
 
@@ -448,10 +454,11 @@ a #host-link {
     #player {
         flex-direction: column;
         height: 300px;
+        margin-top: 10px;
     }
 
     .hdr-wrapper {
-        padding-top: 50px;
+        padding-top: 2px;
     }
 
     .header-logo {

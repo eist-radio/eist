@@ -141,6 +141,7 @@ table {
 .thin {
   max-width: 720px;
   margin: auto;
+  padding-top: 25px;
 }
 
 .feather {
@@ -299,7 +300,7 @@ table {
 
 #mobile-menu {
   position: fixed;
-  top: 125px;
+  top: 145px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -707,6 +708,7 @@ a.footnote-ref {
 
   .thin {
     max-width: 960px;
+    padding-top: 75px;
   }
 
   figure.left {
