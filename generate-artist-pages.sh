@@ -86,7 +86,8 @@ generate_social_links() {
 
 # Process each artist
 echo "$ARTISTS_JSON" | jq -c '.artists[]' | while read -r artist; do
-  ARTIST_NAME=$(echo "$artist" | jq -r '.name')
+  ARTIST_NAME=$(echo "$artist" | jq -r '.name // empty')
+  [[ -z "$ARTIST_NAME" ]] && continue
   ARTIST_TAGS=$(echo "$artist" | jq -c '.tags')
   ARTIST_IMAGE_URL=$(echo "$artist" | jq -r '.logo["1024x1024"] // ""')
   ARTIST_SOCIALS=$(echo "$artist" | jq -r '.socials')
@@ -190,7 +191,7 @@ done
 
 echo "Generated artist pages"
 
-# Generate artists index markdown file
+# Generate artists index
 cat > "$OUTPUT_FILE" <<EOF
 +++
 title = "Artists"
@@ -200,19 +201,14 @@ noindex = false
 +++
 EOF
 
-# Collect artist links into a single string
+ARTIST_LINKS=""
 while IFS= read -r row; do
-  ARTIST_NAME=$(echo "$row" | jq -r '.name')
-  ARTIST_SLUG=$(normalize_filename "$ARTIST_NAME")
+  ARTIST_NAME=$(echo "$row" | jq -r '.name // empty')
+  [[ -z "$ARTIST_NAME" ]] && continue
 
-  if [[ -n "$ARTIST_LINKS" ]]; then
-    ARTIST_LINKS+=" / "
-  fi
-
-  if [[ -n "$ARTIST_SLUG" ]]; then
-    ARTIST_LINKS+="[$ARTIST_NAME](/artists/$ARTIST_SLUG)"
-  fi
-
+  SLUG=$(normalize_filename "$ARTIST_NAME")
+  [[ -z "$ARTIST_LINKS" ]] || ARTIST_LINKS+=" / "
+  ARTIST_LINKS+="[$ARTIST_NAME](/artists/$SLUG)"
 done < <(echo "$ARTISTS_JSON" | jq -c '.artists[]')
 
 echo "$ARTIST_LINKS" >> "$OUTPUT_FILE"
