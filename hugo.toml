@@ -58,7 +58,7 @@ expiryDate = ["expiryDate"]
 
   # Metadata mostly used in document's head
   description = "éist is an internet radio station based in Cork, Ireland."
-  themeColor = "#4733FF"
+  themeColor = "#1B1212"
 
   justifyContent = false
 
@@ -74,7 +74,7 @@ expiryDate = ["expiryDate"]
   allowRobots = "index, follow"
   siteNoIndex = false
   # noIndexPages = ["404 Page not found"]
-  logo = "eist-logo-small.png"
+  logo = "radio-solstice.png"
 
   [[params.socialLinks]]
     name = "email"
