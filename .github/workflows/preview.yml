@@ -1,4 +1,4 @@
-name: Deploy PR previews with Surge
+name: Deploy PR previews with Netlify
 
 on:
   pull_request:
@@ -12,30 +12,39 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: install deps
         uses: actions/setup-node@v4
         with:
           node-version: v20.x
+
       - name: Install Hugo CLI
         env:
           HUGO_VERSION: 0.137.1
         run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+          wget -O ${{ runner.temp }}/hugo.deb \
+            https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
           && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+
       - name: Install Dart Sass
         run: sudo snap install dart-sass
+
       - name: Install Node.js dependencies
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-      - name: Set and export the RadioCult API key
         run: |
-          echo "API_KEY=${{ secrets.RADIOCULT_API_KEY }}" >> $GITHUB_ENV
+          [[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true
+
+      - name: Set and export the RadioCult API key
+        run: echo "API_KEY=${{ secrets.RADIOCULT_API_KEY }}" >> $GITHUB_ENV
+
       - name: Generate artist pages
         run: |
           sudo chmod +x ./generate-artist-pages.sh
           ./generate-artist-pages.sh
+
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
@@ -45,11 +54,21 @@ jobs:
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
-      - uses: afc163/surge-preview@v1
-        id: preview_step
+
+      - name: Deploy to Netlify Preview
+        uses: nwtgck/actions-netlify@v3.0
+        id: netlify_preview
         with:
-          surge_token: ${{ secrets.SURGE_TOKEN }}
-          dist: public
-          build: ls
-      - name: Get the preview_url
-        run: echo "url => ${{ steps.preview_step.outputs.preview_url }}"
+          publish-dir: public
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "PR preview (#${{ github.event.pull_request.number }})"
+          alias: preview-${{ github.event.pull_request.number }}
+          enable-commit-comment: false
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Fetch preview URL
+        run: |
+          echo "Preview URL: ${{ steps.netlify_preview.outputs.deploy-url }}"
