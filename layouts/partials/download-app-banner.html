@@ -1,0 +1,147 @@
+<!-- App download popup for iOS and Android -->
+<div id="download-app-popup" class="app-popup-overlay">
+  <div class="app-popup">
+    <div class="app-popup-content">
+      <div class="app-popup-header">
+        <h3>Install éist App</h3>
+        <button id="download-app-close" aria-label="Close popup">&times;</button>
+      </div>
+      <div class="app-popup-body">
+        <p>Get the best experience with our native iOS app!</p>
+        <button id="app-action-button" class="action-button">
+          <span id="action-text">Install the iOS App</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var popup = document.getElementById('download-app-popup');
+    if (!popup) return console.warn('Download app popup element missing');
+
+    var ua = navigator.userAgent || '';
+    var platform = navigator.platform || '';
+    var maxTouch = navigator.maxTouchPoints || 0;
+    
+    // Debug logging
+    console.log('App Popup Detection Debug:');
+    console.log('User Agent:', ua);
+    console.log('Platform:', platform);
+    console.log('Max Touch Points:', maxTouch);
+    console.log('Standalone mode:', window.navigator.standalone);
+    console.log('Display mode:', window.matchMedia('(display-mode: standalone)').matches);
+    console.log('Fullscreen mode:', window.matchMedia('(display-mode: fullscreen)').matches);
+
+    // iOS detection: iOS proper or modern iPad on iOS13+ (MacIntel + touch)
+    var isiOS = /iPad|iPhone|iPod/.test(ua)
+                 || (platform === 'MacIntel' && maxTouch > 1);
+    
+    // More robust standalone detection for iOS
+    var isStandalone = false;
+    if (isiOS) {
+      // Check multiple indicators of standalone mode
+      isStandalone = window.navigator.standalone === true || 
+                    window.matchMedia('(display-mode: standalone)').matches ||
+                    window.matchMedia('(display-mode: fullscreen)').matches ||
+                    window.matchMedia('(display-mode: minimal-ui)').matches ||
+                    // Check if running in WKWebView (common for installed apps)
+                    /WebKit/.test(ua) && !/Chrome/.test(ua) && !/Safari/.test(ua) ||
+                    // Check for specific standalone indicators in user agent
+                    /Mobile/.test(ua) && /Safari/.test(ua) && !/Chrome/.test(ua) && window.navigator.standalone;
+    }
+    
+    // Android detection - commented out until Android app is ready
+    // var isAndroid = /Android/.test(ua);
+    
+    console.log('Is iOS detected:', isiOS);
+    console.log('Is standalone mode:', isStandalone);
+    // console.log('Is Android detected:', isAndroid);
+
+    var actionButton = document.getElementById('app-action-button');
+    var actionText = document.getElementById('action-text');
+    
+    if (!actionButton || !actionText) {
+      console.warn('Action button elements missing');
+      return;
+    }
+
+    // For iOS, redirect to App Store (but not if already in standalone mode)
+    if (isiOS && !isStandalone) {
+      var fallbackUrl = 'https://apps.apple.com/ie/app/%C3%A9ist/id6746519137';
+      
+      actionText.textContent = 'Install the iOS App';
+      
+      actionButton.addEventListener('click', function() {
+        // Try to open the app first, then fallback to App Store
+        var appUrl = 'eist://';
+        
+        // Create a hidden iframe to try opening the app
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        document.body.appendChild(iframe);
+        
+        // Try to open the app
+        iframe.src = appUrl;
+        
+        // If app doesn't open within 2 seconds, redirect to App Store
+        setTimeout(function() {
+          document.body.removeChild(iframe);
+          window.location.href = fallbackUrl;
+        }, 2000);
+      });
+      
+      // Show popup for iOS users who haven't installed the app
+      // Delay the popup to let the page load first
+      setTimeout(function() {
+        popup.classList.add('show');
+      }, 2000);
+      
+      console.log('Showing popup for iOS user');
+      
+    } 
+    // Android functionality commented out until Android app is ready
+    /*
+    else if (isAndroid) {
+      var fallbackUrl = 'https://play.google.com/store/apps/details?id=com.eist.app';
+      
+      actionText.textContent = 'Install the Android App';
+      
+      actionButton.addEventListener('click', function() {
+        window.location.href = fallbackUrl;
+      });
+      
+      // Show popup for Android users
+      setTimeout(function() {
+        popup.classList.add('show');
+      }, 2000);
+      
+    } 
+    */
+    else {
+      if (isiOS && isStandalone) {
+        console.log('iOS user with installed app detected - popup will not show');
+      } else {
+        console.log('No supported mobile platform detected - popup will not show');
+      }
+    }
+
+    // Add close button functionality
+    var closeBtn = document.getElementById('download-app-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        popup.classList.remove('show');
+      });
+    }
+
+    // Close popup when clicking outside of it
+    popup.addEventListener('click', function(e) {
+      if (e.target === popup) {
+        popup.classList.remove('show');
+      }
+    });
+  });
+</script> 
