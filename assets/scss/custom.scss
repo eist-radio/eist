@@ -6,10 +6,10 @@
 */
 
 body{
-    margin-top: 215px;
+    margin-top: 245px;
 }
 
-h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav, {
+h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav {
     font-family: $heading-fonts;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -20,7 +20,7 @@ h1 {
     font-size: 1.4em;
 }
 
-#site-header > div > div.hdr-left > nav, {
+#site-header > div > div.hdr-left > nav {
     font-family: $heading-fonts;
     font-weight: 500;
     letter-spacing: 0.03em;
@@ -85,7 +85,7 @@ table caption {
     justify-content: center;
     align-items: stretch; /* align-items affects the children */
     position: relative;
-    margin-top: 225px;
+    margin-top: 255px;
 }
 
 .broadcast-status {
@@ -246,6 +246,15 @@ table caption {
 
 .discord:hover {
 opacity: 0.7;
+}
+
+.app-link a {
+  position: relative;
+  overflow: hidden;
+}
+
+.app-link:hover {
+  opacity: 0.7;
 }
 
 .player-front-page {
@@ -451,7 +460,7 @@ a #host-link {
     }
 
     .hdr-wrapper {
-        padding-top: 50px;
+        padding-top: 80px;
     }
 
     .header-logo {
@@ -528,4 +537,16 @@ a #host-link {
     .artist-content {
         flex: 1;
     }
+
+}
+
+/* App download image styling */
+.content img[alt*="App Store"],
+.content img[alt*="Google Play"] {
+  width: 40%;
+  height: auto;
+  margin: 10px 5px;
+  display: inline-block;
+  object-fit: contain;
+  vertical-align: top;
 }

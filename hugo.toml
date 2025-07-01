@@ -117,8 +117,8 @@ expiryDate = ["expiryDate"]
     weight = 3
 
   [[menu.main]]
-    name = "artists"
-    url = "artists/"
+    name = "app"
+    url = "app/"
     weight = 4
 
   # [[menu.main]]
@@ -132,11 +132,16 @@ expiryDate = ["expiryDate"]
   #   weight = 5
 
   [[menu.main]]
-    name = "support"
-    url = "support/"
+    name = "artists"
+    url = "artists/"
     weight = 5
 
   [[menu.main]]
-    name = "get involved"
-    url = "get-involved/"
+    name = "support"
+    url = "support/"
     weight = 6
+
+  # [[menu.main]]
+  #   name = "get involved"
+  #   url = "get-involved/"
+  #   weight = 7
