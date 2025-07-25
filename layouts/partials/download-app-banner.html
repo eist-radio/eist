@@ -1,0 +1,397 @@
+<!-- App download banner for iOS and Android -->
+<div id="download-app-banner" class="app-banner">
+  <div class="app-banner-content">
+    <div class="app-banner-logo">
+      <img src="/eist-logo-small-primary.png" alt="éist" class="banner-logo">
+    </div>
+    <div class="app-banner-text">
+      <span class="banner-title">éist</span>
+      <span class="banner-subtitle">Cork</span>
+    </div>
+    <div class="app-banner-actions">
+      <button id="app-action-button" class="banner-action-button">
+        <span id="action-text">Listen in app</span>
+      </button>
+      <button id="download-app-close" class="banner-close-button" aria-label="Close banner">&times;</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.app-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #AFFC41;
+  color: #000;
+  padding: 12px 16px;
+  z-index: 10000;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.app-banner.show {
+  transform: translateY(0);
+}
+
+.app-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 16px;
+}
+
+.app-banner-logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.banner-logo {
+  height: 32px;
+  width: auto;
+  vertical-align: middle;
+}
+
+.app-banner-text {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.banner-title {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.banner-subtitle {
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 1.2;
+}
+
+.app-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.banner-action-button {
+  background-color: #4733FF;
+  color: #AFFC41;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.banner-action-button:hover {
+  background-color: #3A28CC;
+  transform: translateY(-1px);
+}
+
+.banner-close-button {
+  background: none;
+  border: none;
+  color: #4733FF;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  line-height: 1;
+  pointer-events: auto;
+}
+
+.banner-close-button:hover {
+  background-color: rgba(71, 51, 255, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-banner {
+    padding: 10px 12px;
+  }
+  
+  .app-banner-content {
+    gap: 12px;
+  }
+  
+  .banner-logo {
+    height: 28px;
+  }
+  
+  .banner-title {
+    font-size: 16px;
+  }
+  
+  .banner-subtitle {
+    font-size: 12px;
+  }
+  
+  .banner-action-button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .banner-close-button {
+    font-size: 20px;
+    padding: 2px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-banner-text {
+    display: none;
+  }
+  
+  .app-banner-content {
+    justify-content: space-between;
+  }
+}
+
+/* Remove body padding adjustment - let banner overlay instead */
+body.banner-shown {
+  /* No padding adjustment needed */
+}
+
+/* Extra padding for PWA/standalone mode - will be overridden by JavaScript */
+@media (display-mode: standalone) {
+  .app-banner {
+    padding-top: 17px; /* 40% more than base 12px */
+  }
+  
+  @media (max-width: 768px) {
+    .app-banner {
+      padding-top: 14px; /* 40% more than base 10px */
+    }
+  }
+}
+
+/* iOS Safe Area adjustments for standalone mode */
+.app-banner.ios-safe-area {
+  top: var(--safe-area-top, 0px);
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var banner = document.getElementById('download-app-banner');
+    if (!banner) return console.warn('Download app banner element missing');
+
+    var ua = navigator.userAgent || '';
+    var platform = navigator.platform || '';
+    var maxTouch = navigator.maxTouchPoints || 0;
+    
+    // Debug logging
+    console.log('App Banner Detection Debug:');
+    console.log('User Agent:', ua);
+    console.log('Platform:', platform);
+    console.log('Max Touch Points:', maxTouch);
+    console.log('Standalone mode:', window.navigator.standalone);
+    console.log('Display mode:', window.matchMedia('(display-mode: standalone)').matches);
+
+    // iOS detection: iOS proper or modern iPad on iOS13+ (MacIntel + touch)
+    var isiOS = /iPad|iPhone|iPod/.test(ua)
+                 || (platform === 'MacIntel' && maxTouch > 1);
+    
+    // More robust standalone detection for iOS
+    var isStandalone = false;
+    if (isiOS) {
+      // Check multiple indicators of standalone mode
+      isStandalone = window.navigator.standalone === true || 
+                    window.matchMedia('(display-mode: standalone)').matches ||
+                    window.matchMedia('(display-mode: fullscreen)').matches ||
+                    window.matchMedia('(display-mode: minimal-ui)').matches ||
+                    // Check if running in WKWebView (common for installed apps)
+                    /WebKit/.test(ua) && !/Chrome/.test(ua) && !/Safari/.test(ua) ||
+                    // Check for specific standalone indicators in user agent
+                    /Mobile/.test(ua) && /Safari/.test(ua) && !/Chrome/.test(ua) && window.navigator.standalone;
+    }
+    
+    console.log('Is iOS detected:', isiOS);
+    console.log('Is standalone mode:', isStandalone);
+
+    // Handle iOS safe area in standalone mode
+    if (isiOS && isStandalone) {
+      // Create a temporary element to measure safe area
+      var testEl = document.createElement('div');
+      testEl.style.cssText = 'position: fixed; top: 0; left: 0; width: 1px; height: env(safe-area-inset-top); pointer-events: none; opacity: 0;';
+      document.body.appendChild(testEl);
+      
+      // Get the computed safe area
+      var safeAreaTop = 0;
+      try {
+        var computedStyle = window.getComputedStyle(testEl);
+        var height = computedStyle.height;
+        if (height && height !== '0px' && height !== 'auto') {
+          safeAreaTop = parseInt(height, 10);
+        }
+      } catch (e) {
+        console.log('Could not detect safe area, using fallback');
+      }
+      
+      // Fallback: estimate safe area for common iOS devices
+      if (safeAreaTop === 0) {
+        var screenHeight = window.screen.height;
+        var viewportHeight = window.innerHeight;
+        
+        // Common safe area heights for iOS devices
+        if (screenHeight >= 812) { // iPhone X and newer
+          safeAreaTop = 44;
+        } else if (screenHeight >= 736) { // iPhone Plus models
+          safeAreaTop = 20;
+        } else { // Older iPhones
+          safeAreaTop = 20;
+        }
+      }
+      
+      console.log('Detected safe area top:', safeAreaTop);
+      
+      // Apply safe area to banner
+      if (safeAreaTop > 0) {
+        banner.classList.add('ios-safe-area');
+        banner.style.setProperty('--safe-area-top', safeAreaTop + 'px');
+      }
+      
+      document.body.removeChild(testEl);
+    }
+
+    var actionButton = document.getElementById('app-action-button');
+    var actionText = document.getElementById('action-text');
+    
+    if (!actionButton || !actionText) {
+      console.warn('Action button elements missing');
+      return;
+    }
+
+    // Debug: Check storage state
+    console.log('SessionStorage appBannerClosed:', sessionStorage.getItem('appBannerClosed'));
+    console.log('LocalStorage appBannerClosedStandalone:', localStorage.getItem('appBannerClosedStandalone'));
+    
+    // TEMPORARY: Clear any stored preferences for testing
+    // sessionStorage.removeItem('appBannerClosed');
+    // localStorage.removeItem('appBannerClosedStandalone');
+    
+    // Check if banner was already closed (but not for PWA/standalone mode)
+    var wasClosedKey = isStandalone ? 'appBannerClosedStandalone' : 'appBannerClosed';
+    if (!isStandalone && sessionStorage.getItem('appBannerClosed') === 'true') {
+      console.log('Banner was already closed this session (non-standalone) - BLOCKING');
+      // TEMPORARY: Comment out return to force showing for testing
+      // return;
+    }
+    
+    // In standalone mode (PWA), check localStorage with expiry instead of sessionStorage
+    if (isStandalone) {
+      var closedData = localStorage.getItem('appBannerClosedStandalone');
+      if (closedData) {
+        try {
+          var parsed = JSON.parse(closedData);
+          var daysSinceClosed = (Date.now() - parsed.timestamp) / (1000 * 60 * 60 * 24);
+          if (daysSinceClosed < 7) { // Show again after 7 days in PWA mode
+            console.log('Banner was closed recently in standalone mode - BLOCKING');
+            // TEMPORARY: Comment out return to force showing for testing
+            // return;
+          }
+        } catch (e) {
+          // Invalid data, clear it
+          localStorage.removeItem('appBannerClosedStandalone');
+        }
+      }
+    }
+
+    // Show banner on iOS devices
+    var fallbackUrl = 'https://apps.apple.com/ie/app/%C3%A9ist/id6746519137';
+    
+    // Set button text based on context
+    if (isiOS && !isStandalone) {
+      actionText.textContent = 'Listen in the éist App';
+    } else if (isiOS && isStandalone) {
+      actionText.textContent = 'Open Native App';
+    } else {
+      actionText.textContent = 'View in App Store';
+    }
+    
+    actionButton.addEventListener('click', function() {
+      if (isiOS) {
+        // Try to open the app first, then fallback to App Store
+        var appUrl = 'eist://';
+        
+        // Create a hidden iframe to try opening the app
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        document.body.appendChild(iframe);
+        
+        // Try to open the app
+        iframe.src = appUrl;
+        
+        // If app doesn't open within 2 seconds, redirect to App Store
+        setTimeout(function() {
+          document.body.removeChild(iframe);
+          window.location.href = fallbackUrl;
+        }, 2000);
+      } else {
+        // For non-iOS or testing: just go to App Store
+        window.location.href = fallbackUrl;
+      }
+    });
+    
+    // Add close button functionality
+    var closeBtn = document.getElementById('download-app-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        banner.classList.remove('show');
+        document.body.classList.remove('banner-shown');
+        
+        if (isStandalone) {
+          // In PWA mode, store in localStorage with timestamp
+          localStorage.setItem('appBannerClosedStandalone', JSON.stringify({
+            timestamp: Date.now(),
+            version: '1.0'
+          }));
+        } else {
+          // In browser mode, store in sessionStorage
+          sessionStorage.setItem('appBannerClosed', 'true');
+        }
+      });
+    }
+    
+    // Show banner logic: 
+    // - In PWA mode: only for iOS users
+    // - In browser mode: for all users
+    var shouldShowBanner = isStandalone ? isiOS : true;
+    
+    console.log('Banner display decision:');
+    console.log('- isStandalone:', isStandalone);
+    console.log('- isiOS:', isiOS);
+    console.log('- shouldShowBanner:', shouldShowBanner);
+    
+    if (shouldShowBanner) {
+      console.log('Attempting to show banner in 1 second...');
+      setTimeout(function() {
+        console.log('Showing banner now!');
+        banner.classList.add('show');
+        document.body.classList.add('banner-shown');
+        console.log('Banner classes added - show class present:', banner.classList.contains('show'));
+      }, 1000);
+    } else {
+      console.log('Banner not shown - shouldShowBanner is false');
+    }
+  });
+</script> 

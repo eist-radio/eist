@@ -1,6 +1,8 @@
 {{ define "header" }}
-{{ partialCached "header.html" . }}
+  {{ partialCached "header.html" . }}
+  {{ partial "download-app-banner.html" . }}
 {{ end }}
+
 {{ define "main" }}
 <main class="site-main section-inner thin">
     <div id="spotlight">
