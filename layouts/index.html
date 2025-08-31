@@ -1,6 +1,7 @@
 {{ define "header" }}
-{{ partialCached "header.html" . }}
+  {{ partialCached "header.html" . }}
 {{ end }}
+
 {{ define "main" }}
 <main class="site-main section-inner thin">
     <div id="spotlight">
@@ -21,6 +22,9 @@
                 </div>
             </div>
             <div class="player-discord">
+                <p class="app-link">
+                    <a href="/app/">Listen in the App ✨</a>
+                </p>
                 <p class="discord">
                     <a href="https://discord.gg/4eHnAAUmFN">Get in the Discord chatbox <img src="/discord.svg" class="discord-logo"/></a>
                 </p>
