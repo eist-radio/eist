@@ -5,10 +5,6 @@
   }
 */
 
-body{
-    margin-top: 245px;
-}
-
 h1, h2, h3, h4, h5, h6, #site-header > div > div.hdr-left > nav {
     font-family: $heading-fonts;
     font-weight: 700;
@@ -444,6 +440,10 @@ a #host-link {
 
 @media (max-width: 760px) {
 
+    body {
+        margin-top: 120px;
+    }
+
     #playPauseBtn {
         width: 60px;
         height: 60px;
@@ -460,7 +460,7 @@ a #host-link {
     }
 
     .hdr-wrapper {
-        padding-top: 80px;
+        padding-top: 40px;
     }
 
     .header-logo {
@@ -549,4 +549,10 @@ a #host-link {
   display: inline-block;
   object-fit: contain;
   vertical-align: top;
+}
+
+@media (max-width: 520px) {
+    body {
+        margin-top: 100px;
+    }
 }
