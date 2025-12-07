@@ -240,5 +240,7 @@ echo "$ARTIST_LINKS" >> "$OUTPUT_FILE"
 
 echo "Generated $OUTPUT_FILE"
 
-# Temporary: also generate show pages for PR preview
+# Temporary: run full pipeline for PR preview
+python3 scripts/detect-faces.py 2>/dev/null || true
+python3 generate-show-cache.py 2>/dev/null || true
 python3 generate-show-pages.py 2>/dev/null || true
