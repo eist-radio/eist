@@ -251,7 +251,8 @@
     position: relative;
     width: 44px;
     height: 24px;
-    background: rgba(71, 51, 255, 0.15);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 12px;
     transition: all 0.3s ease;
 }
@@ -261,15 +262,16 @@
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 20px;
-    height: 20px;
-    background: $light-grey;
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .toggle-input:checked + .toggle-switch {
-    background: $eist;
+    background: rgba(175, 252, 65, 0.25);
+    border-color: rgba(175, 252, 65, 0.5);
 }
 
 .toggle-input:checked + .toggle-switch::after {
