@@ -1,0 +1,235 @@
+{{ define "header" }}
+{{ partial "header.html" . }}
+{{ end }}
+
+{{ define "main" }}
+{{/* Extract show data from front matter */}}
+{{ $title := .Title }}
+{{ $showStart := .Params.show_start }}
+{{ $artistName := .Params.artist_name }}
+{{ $artistSlug := .Params.artist_slug }}
+{{ $mixcloudSlug := .Params.mixcloud_slug }}
+{{ $mixcloudUrl := .Params.mixcloud_url }}
+{{ $mixcloudImage := .Params.mixcloud_image }}
+{{ $soundcloudId := .Params.soundcloud_id }}
+{{ $soundcloudUrl := .Params.soundcloud_url }}
+{{ $soundcloudImage := .Params.soundcloud_image }}
+{{ $description := .Content }}
+{{ $hasArchive := or $mixcloudSlug $soundcloudId }}
+
+{{/* Format date */}}
+{{ $showDate := "" }}
+{{ if $showStart }}
+    {{ $showDate = (time $showStart).Format "2 January 2006" }}
+{{ end }}
+
+{{/* Determine image: prefer Mixcloud, then SoundCloud, then fallback */}}
+{{ $showImage := $mixcloudImage }}
+{{ if not $showImage }}
+    {{ $showImage = $soundcloudImage }}
+{{ end }}
+{{ if not $showImage }}
+    {{ $showImage = "/eist_online.png" }}
+{{ end }}
+
+<main class="show-page">
+    {{/* Hero Section with Show Artwork */}}
+    <section class="show-hero section-inner">
+        {{/* Precompute archive data for reuse */}}
+        {{ $platform := cond (ne $soundcloudId "") "soundcloud" "mixcloud" }}
+        {{ $trackId := cond (ne $soundcloudId "") $soundcloudId $mixcloudSlug }}
+        {{ $platformUrl := cond (ne $soundcloudId "") $soundcloudUrl $mixcloudUrl }}
+
+        <div class="show-hero-artwork">
+            <img src="{{ $showImage }}" alt="{{ $title }}" class="show-artwork-image" loading="eager" onerror="this.onerror=null; this.src='/eist_online.png';">
+            {{/* Play button overlay - triggers archive player via event delegation */}}
+            {{ if $hasArchive }}
+            <button class="show-play-overlay"
+                data-archive-play
+                data-platform="{{ $platform }}"
+                data-track-id="{{ $trackId }}"
+                data-title="{{ $title }}"
+                data-artist="{{ $artistName }}"
+                data-artwork="{{ $showImage }}"
+                data-platform-url="{{ $platformUrl }}"
+                aria-label="Play this show">
+                <span class="show-play-button">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </span>
+            </button>
+            {{ end }}
+        </div>
+
+        <div class="show-hero-details">
+            <span class="show-date">{{ $showDate }}</span>
+            <h1 class="show-title">{{ $title }}</h1>
+
+            {{ if $artistName }}
+            <a href="/artists/{{ $artistSlug }}/" class="show-artist-link">
+                <span class="artist-link-label">by</span>
+                <span class="artist-link-name">{{ $artistName }}</span>
+                <svg class="artist-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+            {{ end }}
+
+            {{/* Primary play button in hero - immediate action without scrolling */}}
+            {{ if $hasArchive }}
+            <button class="show-hero-play"
+                data-archive-play
+                data-platform="{{ $platform }}"
+                data-track-id="{{ $trackId }}"
+                data-title="{{ $title }}"
+                data-artist="{{ $artistName }}"
+                data-artwork="{{ $showImage }}"
+                data-platform-url="{{ $platformUrl }}">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <span class="play-text">Play</span>
+                <span class="platform-label">{{ if $soundcloudId }}SoundCloud{{ else }}Mixcloud{{ end }}</span>
+            </button>
+            {{ else }}
+            {{/* Archive status - only show when NO archive available */}}
+            <span class="archive-badge unavailable">
+                Archive Not Available
+            </span>
+            {{ end }}
+
+            {{ if $description }}
+            <div class="show-description">
+                {{ $description | safeHTML }}
+            </div>
+            {{ end }}
+        </div>
+    </section>
+
+    {{/* Listen Section - external platform links */}}
+    {{ if $hasArchive }}
+    <section class="show-listen-section section-inner" id="listen">
+        <h2 class="listen-heading">Listen Back</h2>
+
+        {{/* External platform links */}}
+        <div class="archive-external-links">
+            {{ if $soundcloudUrl }}
+            <a href="{{ $soundcloudUrl }}" class="platform-external-link soundcloud" target="_blank" rel="noopener">
+                Open in SoundCloud
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="external-icon">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+                </svg>
+            </a>
+            {{ end }}
+            {{ if $mixcloudUrl }}
+            <a href="{{ $mixcloudUrl }}" class="platform-external-link mixcloud" target="_blank" rel="noopener">
+                Open in Mixcloud
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="external-icon">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+                </svg>
+            </a>
+            {{ end }}
+        </div>
+
+        {{/* Inline embeds as fallback - hidden by default, shown if JS fails */}}
+        <noscript>
+            {{ if $soundcloudId }}
+            <div class="soundcloud-embed-wrapper" style="margin-top: 1.5rem;">
+                <iframe
+                    width="100%"
+                    height="166"
+                    scrolling="no"
+                    frameborder="no"
+                    allow="autoplay"
+                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{ $soundcloudId }}&color=affc41&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"
+                    loading="lazy"
+                ></iframe>
+            </div>
+            {{ else if $mixcloudSlug }}
+            <div class="mixcloud-embed-wrapper" style="margin-top: 1.5rem;">
+                <iframe
+                    width="100%"
+                    height="120"
+                    src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&feed=/eistcork/{{ $mixcloudSlug }}/"
+                    frameborder="0"
+                    loading="lazy"
+                ></iframe>
+            </div>
+            {{ end }}
+        </noscript>
+    </section>
+    {{ end }}
+
+    {{/* More from Artist Section */}}
+    {{/* Uses precomputed related_shows from frontmatter to avoid O(n²) lookups */}}
+    {{ if $artistSlug }}
+    <section class="show-more-section section-inner">
+        <div class="more-header">
+            <h2 class="more-heading">More from {{ $artistName }}</h2>
+            <a href="/artists/{{ $artistSlug }}/" class="view-all-link">View Artist →</a>
+        </div>
+
+        {{/* Use precomputed related_shows (up to 4 slugs of other shows by same artist) */}}
+        {{ $relatedSlugs := .Params.related_shows | default slice }}
+
+        {{ if $relatedSlugs }}
+        <div class="more-shows-grid">
+            {{ range $relatedSlugs }}
+            {{ $show := site.GetPage (printf "/shows/%s" .) }}
+            {{ if $show }}
+            {{ $otherImage := $show.Params.mixcloud_image | default $show.Params.soundcloud_image | default "/eist_online.png" }}
+            {{ $otherDate := "" }}
+            {{ if $show.Params.show_start }}
+                {{ $otherDate = (time $show.Params.show_start).Format "2 Jan 2006" }}
+            {{ end }}
+            <a href="{{ $show.Permalink }}" class="more-show-card">
+                <div class="more-show-image-wrapper">
+                    <img src="{{ $otherImage }}" alt="{{ $show.Title }}" class="more-show-image" loading="lazy" onerror="this.onerror=null; this.src='/eist_online.png';">
+                    {{ if or $show.Params.mixcloud_slug $show.Params.soundcloud_id }}
+                    <span class="more-show-has-archive">▶</span>
+                    {{ end }}
+                </div>
+                <div class="more-show-info">
+                    <span class="more-show-title">{{ $show.Title }}</span>
+                    <span class="more-show-date">{{ $otherDate }}</span>
+                </div>
+            </a>
+            {{ end }}
+            {{ end }}
+        </div>
+        {{ else }}
+        <p class="no-other-shows">This is the only archived show from {{ $artistName }}.</p>
+        {{ end }}
+    </section>
+    {{ end }}
+
+    {{/* Navigation */}}
+    <section class="show-nav-section section-inner">
+        {{ if $artistSlug }}
+        <a href="/artists/{{ $artistSlug }}/" class="back-to-artist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="back-arrow">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to {{ $artistName }}
+        </a>
+        {{ else }}
+        <a href="/shows/" class="back-to-artist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="back-arrow">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Archive
+        </a>
+        {{ end }}
+
+        <a href="" id="copy-link" class="share-link">
+            Share
+            {{- partial "svg.html" (dict "context" . "name" "share") -}}
+        </a>
+    </section>
+</main>
+{{ end }}
+
+{{ define "footer" }}
+{{ partialCached "footer.html" . }}
+{{ end }}

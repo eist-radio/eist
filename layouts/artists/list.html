@@ -1,0 +1,246 @@
+{{ define "header" }}
+{{ partial "header.html" . }}
+{{ end }}
+
+{{ define "main" }}
+{{/* Collect all artists */}}
+{{ $allArtists := .RegularPages }}
+
+{{/* Hard blocklist - these genres are never shown anywhere */}}
+{{ $hardBlocklist := slice "TWAT" "CORKCORE" "140" "THEWEATHER" }}
+
+{{/* Soft blocklist - shown in modal but not inline pills */}}
+{{ $softBlocklist := slice "AGONY AUNT" "AURAL ADVICE COLUMN" "UPTEMPO BANGERS AT WRONG SPEED" "WRONG SPEEDERS" "INTERNET EPHEMERA" "MUZAK" "SHAKESPEARE" "RADIO PLAY" "THEATRE" "TALK SHOW" "PERFORMANCE" "MIX" "VARIOUS" "LOCAL" "GENRE HOP" "ALL AND NO GENRES" }}
+
+{{/* Collect unique genres and count artists per genre */}}
+{{ $genreCounts := dict }}
+{{ range $allArtists }}
+    {{ $genreStr := .Params.genres | default "" }}
+    {{ if $genreStr }}
+        {{ range split $genreStr "," }}
+            {{ $genre := trim . " " }}
+            {{ if $genre }}
+                {{ $count := index $genreCounts $genre | default 0 }}
+                {{ $genreCounts = merge $genreCounts (dict $genre (add $count 1)) }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{/* Get all shows to find genres with archives */}}
+{{ $allShows := site.GetPage "/shows" }}
+{{ $genresWithArchives := slice }}
+{{ if $allShows }}
+    {{ range $allShows.RegularPages }}
+        {{ if or .Params.mixcloud_slug .Params.soundcloud_id }}
+            {{ $artistSlug := .Params.artist_slug }}
+            {{ if $artistSlug }}
+                {{ $artistPage := site.GetPage (printf "/artists/%s" $artistSlug) }}
+                {{ if $artistPage }}
+                    {{ $genreStr := $artistPage.Params.genres | default "" }}
+                    {{ range split $genreStr "," }}
+                        {{ $genre := trim . " " }}
+                        {{ if and $genre (not (in $genresWithArchives $genre)) }}
+                            {{ $genresWithArchives = $genresWithArchives | append $genre }}
+                        {{ end }}
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{/* Build filtered genre lists */}}
+{{ $allGenres := slice }}
+{{ $inlineGenres := slice }}
+{{ $modalGenres := slice }}
+
+{{ range $genre, $count := $genreCounts }}
+    {{ $genreUpper := $genre | upper }}
+    {{/* Skip hard blocklist everywhere */}}
+    {{ if not (in $hardBlocklist $genreUpper) }}
+        {{ $allGenres = $allGenres | append $genre }}
+
+        {{/* Modal: include if has archived shows */}}
+        {{ if in $genresWithArchives $genre }}
+            {{ $modalGenres = $modalGenres | append $genre }}
+        {{ end }}
+
+        {{/* Inline: exclude soft blocklist and genres with < 2 artists */}}
+        {{ if and (not (in $softBlocklist $genreUpper)) (ge $count 2) }}
+            {{ $inlineGenres = $inlineGenres | append $genre }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ $allGenres = sort $allGenres }}
+{{ $inlineGenres = sort $inlineGenres }}
+{{ $modalGenres = sort $modalGenres }}
+
+{{/* Stats */}}
+{{ $totalArtists := len $allArtists }}
+
+<main class="artists-page">
+    {{/* Hero Section - uses shared .page-hero classes */}}
+    <section class="page-hero">
+        <div class="page-hero-inner section-inner">
+            <div class="page-hero-content">
+                <h1 class="page-title">Residents</h1>
+                <p class="page-subtitle">The voices of éist.</p>
+            </div>
+            <div class="page-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ $totalArtists }}</span>
+                    <span class="stat-label">Artists</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ len $modalGenres }}</span>
+                    <span class="stat-label">Genres</span>
+                </div>
+            </div>
+        </div>
+        {{/* Decorative waveform element */}}
+        <div class="page-hero-wave" aria-hidden="true">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,60 Q150,20 300,60 T600,60 T900,60 T1200,60 L1200,120 L0,120 Z" fill="currentColor"/>
+            </svg>
+        </div>
+    </section>
+
+    {{/* Filter Controls */}}
+    <section class="artists-filters">
+        <div class="section-inner">
+            <div class="filter-row">
+                {{/* Artist Jump Dropdown */}}
+                <div class="filter-group artist-jump">
+                    <label class="filter-label">Jump to</label>
+                    <select id="artist-jump-select" class="filter-select">
+                        <option value="">Select artist...</option>
+                        {{ range $allArtists }}
+                            {{ $artistName := .Description | default .Title }}
+                            <option value="{{ .RelPermalink }}">{{ $artistName }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+
+                {{/* Search Input */}}
+                <div class="filter-group search-filter">
+                    <label class="filter-label">Search</label>
+                    <div class="search-input-wrapper">
+                        <input type="text" id="artist-search" class="filter-input" placeholder="Find an artist...">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                        </svg>
+                    </div>
+                </div>
+
+                {{/* Results count */}}
+                <div class="filter-group results-count">
+                    <span class="results-text" id="results-count">Showing all {{ $totalArtists }} artists</span>
+                </div>
+
+                {{/* Expand filters button (mobile only, shows when scrolled) */}}
+                <button class="filter-expand-btn" id="filter-expand-btn" aria-label="Show filters">
+                    Filters
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+            </div>
+
+            {{/* Genre Tags - show filtered inline genres */}}
+            {{ if $inlineGenres }}
+            <div class="genre-filter-row">
+                <span class="filter-label">Genres</span>
+                <div class="genre-tags" id="genre-tags">
+                    {{ range first 20 $inlineGenres }}
+                    <button class="genre-filter-tag" data-genre="{{ . | lower }}">{{ . }}</button>
+                    {{ end }}
+                    {{ if gt (len $modalGenres) 20 }}
+                    <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 20 }} more</button>
+                    {{ end }}
+                </div>
+            </div>
+
+            {{/* Genre Drawer - Full genre browser with all archived genres */}}
+            {{ partial "genre-drawer.html" $modalGenres }}
+            {{ end }}
+
+            {{/* Active Filters Display */}}
+            <div class="active-filters" id="active-filters" style="display: none;">
+                <span class="active-label">Filtering:</span>
+                <div class="active-tags" id="active-tags"></div>
+                <button class="clear-filters" id="clear-filters">Clear all</button>
+            </div>
+        </div>
+    </section>
+
+    {{/* Artists Grid */}}
+    <section class="artists-grid-section section-inner">
+        <div class="artists-grid" id="artists-grid">
+            {{ range $allArtists }}
+                {{ $image := .Params.image | default "/eist_online.png" }}
+                {{ $genres := .Params.genres | default "" }}
+                {{ $artistName := .Description | default .Title }}
+
+                <article class="artist-card"
+                         data-name="{{ $artistName | lower }}"
+                         data-genres="{{ $genres | lower }}">
+                    <a href="{{ .Permalink }}" class="artist-card-link">
+                        <div class="artist-card-image-wrapper">
+                            <img
+                                src="{{ $image }}"
+                                alt="{{ $artistName }}"
+                                class="artist-card-image"
+                                loading="lazy"
+                                onerror="this.onerror=null; this.src='/eist_online.png';"
+                            >
+                            <div class="artist-card-overlay"></div>
+                        </div>
+                        <div class="artist-card-content">
+                            <h3 class="artist-card-name">{{ $artistName }}</h3>
+                            {{ if $genres }}
+                            <div class="artist-card-genres">
+                                {{ $genreList := split $genres "," }}
+                                {{ range first 3 $genreList }}
+                                    {{ if . }}
+                                    <span class="genre-tag">{{ . }}</span>
+                                    {{ end }}
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                        </div>
+                    </a>
+                </article>
+            {{ end }}
+        </div>
+    </section>
+
+    {{/* No Results Message */}}
+    <div class="artists-no-results section-inner" id="no-results" style="display: none;">
+        <div class="no-results-content">
+            <svg class="no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <h3>No artists found</h3>
+            <p>Try adjusting your search or <button class="text-btn" id="reset-filters">reset filters</button></p>
+        </div>
+    </div>
+
+    {{/* Back to Top */}}
+    <div class="artists-back-top section-inner">
+        <button class="back-top-btn" id="back-to-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 19V5M5 12l7-7 7 7"/>
+            </svg>
+            Back to top
+        </button>
+    </div>
+</main>
+{{ end }}
+
+{{ define "footer" }}
+{{ partialCached "footer.html" . }}
+{{ end }}

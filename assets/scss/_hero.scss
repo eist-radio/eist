@@ -1,0 +1,197 @@
+// ============================================
+// Shared Hero Component Styles
+// Used by artists and archive pages
+// ============================================
+
+// Base hero section - provides gradient background and overflow handling
+.page-hero {
+    position: relative;
+    background: $eist;
+    padding: 4rem 0 5rem;
+    overflow: hidden;
+
+    // Radial gradient overlays for depth
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(ellipse 80% 50% at 20% 40%, rgba(175, 252, 65, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 20%, rgba(175, 252, 65, 0.05) 0%, transparent 40%);
+        pointer-events: none;
+    }
+
+    // Noise texture overlay
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.025;
+        @include noise-texture(0.85);
+        pointer-events: none;
+    }
+}
+
+// Hero inner container - flexbox layout with stats alignment
+.page-hero-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+}
+
+// Hero content area (title + subtitle)
+.page-hero-content {
+    flex: 1;
+}
+
+// Large uppercase title for hero sections
+.page-title {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 800;
+    color: $eist-secondary;
+    margin: 0;
+    padding-top: 0;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    animation: fadeInBlur 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+// Subtitle below hero title
+.page-subtitle {
+    font-size: 1.1rem;
+    color: $eist-secondary;
+    opacity: 0.85;
+    margin: 1rem 0 0;
+    max-width: 400px;
+    --fade-distance: 15px;
+    animation: fadeInUp 0.6s 0.2s ease-out backwards;
+}
+
+// Stats container (artist count, genre count, etc.)
+.page-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    --fade-distance: 20px;
+    animation: fadeInX 0.6s 0.3s ease-out backwards;
+}
+
+// Individual stat item
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+// Large stat number
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: $eist-secondary;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+// Stat label below number
+.stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.25rem;
+}
+
+// Vertical divider between stats
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, rgba(175, 252, 65, 0.4), transparent);
+}
+
+// Decorative wave at bottom of hero
+.page-hero-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    color: var(--bg);
+    z-index: 3;
+
+    svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+}
+
+// ============================================
+// Hero Responsive Styles
+// ============================================
+
+@media (max-width: 1100px) {
+    .page-hero-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+
+    .page-stats {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .stat-item {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 900px) {
+    .page-hero {
+        padding: 3rem 0 4rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 520px) {
+    .page-hero {
+        padding: 2.5rem 0 3.5rem;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .page-stats {
+        gap: 1rem;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-divider {
+        height: 30px;
+    }
+}
