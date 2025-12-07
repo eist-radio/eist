@@ -239,3 +239,6 @@ done < <(echo "$ARTISTS_JSON" | jq -c '.artists[]')
 echo "$ARTIST_LINKS" >> "$OUTPUT_FILE"
 
 echo "Generated $OUTPUT_FILE"
+
+# Temporary: also generate show pages for PR preview
+python3 generate-show-pages.py 2>/dev/null || true
