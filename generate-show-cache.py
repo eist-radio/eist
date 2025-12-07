@@ -1108,7 +1108,9 @@ def extract_episode_info(archive_title, show_title):
             idx = archive_normalized.find(show_title_normalized)
             after_title = archive_normalized[idx + len(show_title_normalized):]
             # Look for a standalone number (not part of a date)
-            match = re.search(r'^\s*(\d{1,2})(?!\d|/|-|\.)', after_title)
+            # Exclude: digits followed by ordinal suffixes (st/nd/rd/th) which indicate dates
+            # Also exclude numbers followed by date separators (/, -, .)
+            match = re.search(r'^\s*(\d{1,2})(?!\d|/|-|\.|st|nd|rd|th)', after_title)
             if match:
                 return f"#{match.group(1)}"
 
