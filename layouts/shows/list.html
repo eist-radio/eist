@@ -1,0 +1,320 @@
+{{ define "header" }}
+{{ partial "header.html" . }}
+{{ end }}
+
+{{ define "main" }}
+{{/* Collect all shows and organize by month/year */}}
+{{ $allShows := .RegularPages }}
+{{ $showsByMonth := dict }}
+
+{{ range $allShows }}
+    {{ if .Params.show_start }}
+        {{ $date := time .Params.show_start }}
+        {{ $monthKey := $date.Format "2006-01" }}
+        {{ $existing := index $showsByMonth $monthKey | default slice }}
+        {{ $showsByMonth = merge $showsByMonth (dict $monthKey ($existing | append .)) }}
+    {{ end }}
+{{ end }}
+
+{{/* Get sorted month keys (newest first) */}}
+{{ $monthKeys := slice }}
+{{ range $key, $_ := $showsByMonth }}
+    {{ $monthKeys = $monthKeys | append $key }}
+{{ end }}
+{{ $monthKeys = sort $monthKeys "value" "desc" }}
+
+{{/* Hard blocklist - these genres are never shown anywhere */}}
+{{ $hardBlocklist := slice "TWAT" "CORKCORE" "140" "THEWEATHER" }}
+
+{{/* Soft blocklist - shown in modal but not inline pills */}}
+{{ $softBlocklist := slice "AGONY AUNT" "AURAL ADVICE COLUMN" "UPTEMPO BANGERS AT WRONG SPEED" "WRONG SPEEDERS" "INTERNET EPHEMERA" "MUZAK" "SHAKESPEARE" "RADIO PLAY" "THEATRE" "TALK SHOW" "PERFORMANCE" "MIX" "VARIOUS" "LOCAL" "GENRE HOP" "ALL AND NO GENRES" }}
+
+{{/* Collect genres from archived shows only, and count occurrences */}}
+{{ $genreCounts := dict }}
+{{ $genresWithArchives := slice }}
+{{ range $allShows }}
+    {{ $hasArchive := or .Params.mixcloud_slug .Params.soundcloud_id }}
+    {{ $artistSlug := .Params.artist_slug }}
+    {{ if $artistSlug }}
+        {{ $artistPage := $.Site.GetPage (printf "/artists/%s" $artistSlug) }}
+        {{ if $artistPage }}
+            {{ $genreStr := $artistPage.Params.genres | default "" }}
+            {{ if $genreStr }}
+                {{ range split $genreStr "," }}
+                    {{ $genre := trim . " " }}
+                    {{ if $genre }}
+                        {{/* Count all genres */}}
+                        {{ $count := index $genreCounts $genre | default 0 }}
+                        {{ $genreCounts = merge $genreCounts (dict $genre (add $count 1)) }}
+                        {{/* Track genres with archived shows */}}
+                        {{ if and $hasArchive (not (in $genresWithArchives $genre)) }}
+                            {{ $genresWithArchives = $genresWithArchives | append $genre }}
+                        {{ end }}
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{/* Build filtered genre lists */}}
+{{ $allGenres := slice }}
+{{ $inlineGenres := slice }}
+{{ $modalGenres := slice }}
+
+{{ range $genre, $count := $genreCounts }}
+    {{ $genreUpper := $genre | upper }}
+    {{/* Skip hard blocklist everywhere */}}
+    {{ if not (in $hardBlocklist $genreUpper) }}
+        {{ $allGenres = $allGenres | append $genre }}
+
+        {{/* Modal: include if has archived shows */}}
+        {{ if in $genresWithArchives $genre }}
+            {{ $modalGenres = $modalGenres | append $genre }}
+        {{ end }}
+
+        {{/* Inline: exclude soft blocklist and genres with < 2 shows */}}
+        {{ if and (not (in $softBlocklist $genreUpper)) (ge $count 2) (in $genresWithArchives $genre) }}
+            {{ $inlineGenres = $inlineGenres | append $genre }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ $allGenres = sort $allGenres }}
+{{ $inlineGenres = sort $inlineGenres }}
+{{ $modalGenres = sort $modalGenres }}
+
+{{/* Collect unique artists */}}
+{{ $allArtists := dict }}
+{{ range $allShows }}
+    {{ if .Params.artist_name }}
+        {{ $allArtists = merge $allArtists (dict .Params.artist_slug .Params.artist_name) }}
+    {{ end }}
+{{ end }}
+
+{{/* Stats */}}
+{{ $totalShows := len $allShows }}
+{{ $archivedShows := 0 }}
+{{ range $allShows }}
+    {{ if or .Params.mixcloud_slug .Params.soundcloud_id }}
+        {{ $archivedShows = add $archivedShows 1 }}
+    {{ end }}
+{{ end }}
+
+<main class="archive-page">
+    {{/* Hero Section - uses shared .page-hero classes */}}
+    <section class="page-hero">
+        <div class="page-hero-inner section-inner">
+            <div class="page-hero-content">
+                <h1 class="page-title">Archive</h1>
+                <p class="page-subtitle">Explore the éist collection.</p>
+            </div>
+            <div class="page-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ $totalShows }}</span>
+                    <span class="stat-label">Broadcasts</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ $archivedShows }}</span>
+                    <span class="stat-label">Available to listen</span>
+                </div>
+            </div>
+        </div>
+        {{/* Decorative waveform element */}}
+        <div class="page-hero-wave" aria-hidden="true">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,60 Q150,20 300,60 T600,60 T900,60 T1200,60 L1200,120 L0,120 Z" fill="currentColor"/>
+            </svg>
+        </div>
+    </section>
+
+    {{/* Filter Controls */}}
+    <section class="archive-filters section-inner">
+        <div class="filter-row">
+            {{/* Month/Year Navigation */}}
+            <div class="filter-group month-filter">
+                <label class="filter-label">Jump to</label>
+                <select id="month-select" class="filter-select">
+                    <option value="">All months</option>
+                    {{ range $monthKeys }}
+                        {{ $date := time (printf "%s-01" .) }}
+                        <option value="{{ . }}">{{ $date.Format "January 2006" }}</option>
+                    {{ end }}
+                </select>
+            </div>
+
+            {{/* Artist Filter */}}
+            <div class="filter-group artist-filter">
+                <label class="filter-label">Artist</label>
+                <select id="artist-select" class="filter-select">
+                    <option value="">All artists</option>
+                    {{ range $slug, $name := $allArtists }}
+                        <option value="{{ $slug }}">{{ $name }}</option>
+                    {{ end }}
+                </select>
+            </div>
+
+            {{/* Include unarchived toggle */}}
+            <div class="filter-group archive-toggle">
+                <label class="toggle-label">
+                    <input type="checkbox" id="include-unarchived" class="toggle-input">
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-text">Include unrecorded</span>
+                </label>
+            </div>
+
+            {{/* Mobile expand button - shown only when scrolled on mobile */}}
+            <button class="filter-expand-btn" id="archive-filter-expand-btn" type="button">
+                Filters
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+        </div>
+
+        {{/* Genre Tags - show filtered inline genres */}}
+        {{ if $inlineGenres }}
+        <div class="genre-filter-row">
+            <span class="filter-label">Genres</span>
+            <div class="genre-tags" id="genre-tags">
+                {{ range first 20 $inlineGenres }}
+                <button class="genre-filter-tag" data-genre="{{ . | lower }}">{{ . }}</button>
+                {{ end }}
+                {{ if gt (len $modalGenres) 20 }}
+                <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 20 }} more</button>
+                {{ end }}
+            </div>
+        </div>
+
+        {{/* Genre Drawer - Full genre browser with all archived genres */}}
+        {{ partial "genre-drawer.html" $modalGenres }}
+        {{ end }}
+
+        {{/* Active Filters Display */}}
+        <div class="active-filters" id="active-filters" style="display: none;">
+            <span class="active-label">Showing:</span>
+            <div class="active-tags" id="active-tags"></div>
+            <button class="clear-filters" id="clear-filters">Clear all</button>
+        </div>
+    </section>
+
+    {{/* Floating Month Indicator - shows current month when scrolled */}}
+    <div class="floating-month-indicator" id="floating-month-indicator">
+        <div class="floating-month-indicator-inner">
+            <div class="floating-month-content">
+                <span class="floating-month-name" id="floating-month-name"></span>
+                <span class="floating-month-year" id="floating-month-year"></span>
+            </div>
+            <div class="floating-month-line"></div>
+            <span class="floating-month-count" id="floating-month-count"></span>
+        </div>
+    </div>
+
+    {{/* Shows Timeline */}}
+    <section class="archive-timeline section-inner">
+        {{ range $monthKey := $monthKeys }}
+            {{ $shows := index $showsByMonth $monthKey }}
+            {{ $monthDate := time (printf "%s-01" $monthKey) }}
+
+            <div class="timeline-month" data-month="{{ $monthKey }}" id="month-{{ $monthKey }}">
+                {{/* Month Header - Sticky */}}
+                <div class="month-header">
+                    <div class="month-marker">
+                        <span class="month-name">{{ $monthDate.Format "January" }}</span>
+                        <span class="month-year">{{ $monthDate.Format "2006" }}</span>
+                    </div>
+                    <div class="month-line"></div>
+                    <span class="month-count">{{ len $shows }} shows</span>
+                </div>
+
+                {{/* Shows Grid for this month */}}
+                <div class="archive-grid">
+                    {{ range $shows }}
+                        {{ $hasArchive := or .Params.mixcloud_slug .Params.soundcloud_id }}
+                        {{ $showImage := .Params.mixcloud_image | default .Params.soundcloud_image | default "/eist_online.png" }}
+                        {{ $showDate := "" }}
+                        {{ if .Params.show_start }}
+                            {{ $showDate = (time .Params.show_start).Format "Mon 2 Jan" }}
+                        {{ end }}
+
+                        {{/* Get artist genres for data attribute */}}
+                        {{ $artistGenresStr := "" }}
+                        {{ if .Params.artist_slug }}
+                            {{ $artistPage := $.Site.GetPage (printf "/artists/%s" .Params.artist_slug) }}
+                            {{ if $artistPage }}
+                                {{ $artistGenresStr = $artistPage.Params.genres | default "" }}
+                            {{ end }}
+                        {{ end }}
+
+                        <article class="archive-card{{ if $hasArchive }} has-archive{{ end }}"
+                                 data-artist="{{ .Params.artist_slug }}"
+                                 data-genres="{{ $artistGenresStr | lower }}"
+                                 data-has-archive="{{ if $hasArchive }}true{{ else }}false{{ end }}">
+                            <a href="{{ .Permalink }}" class="archive-card-link">
+                                <div class="archive-card-image">
+                                    <img src="{{ $showImage }}" alt="{{ .Title }}" loading="lazy" onerror="this.onerror=null; this.src='/eist_online.png';">
+                                    {{ if $hasArchive }}
+                                    <div class="archive-play-indicator">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </div>
+                                    {{ end }}
+                                    <div class="archive-card-overlay"></div>
+                                </div>
+                                <div class="archive-card-content">
+                                    <span class="archive-card-date">{{ $showDate }}</span>
+                                    <h3 class="archive-card-title">{{ .Title }}</h3>
+                                    {{ if .Params.artist_name }}
+                                    <span class="archive-card-artist">{{ .Params.artist_name }}</span>
+                                    {{ end }}
+                                    {{/* Genre tags - show max 2, pulled from artist */}}
+                                    {{ if $artistGenresStr }}
+                                    <div class="archive-card-genres">
+                                        {{ $genreList := split $artistGenresStr "," }}
+                                        {{ $displayGenres := first 2 $genreList }}
+                                        {{ range $displayGenres }}
+                                        <span class="archive-genre-pill">{{ trim . " " }}</span>
+                                        {{ end }}
+                                        {{ if gt (len $genreList) 2 }}
+                                        <span class="archive-genre-more">+{{ sub (len $genreList) 2 }}</span>
+                                        {{ end }}
+                                    </div>
+                                    {{ end }}
+                                </div>
+                            </a>
+                        </article>
+                    {{ end }}
+                </div>
+            </div>
+        {{ end }}
+    </section>
+
+    {{/* No Results Message */}}
+    <div class="archive-no-results section-inner" id="no-results" style="display: none;">
+        <div class="no-results-content">
+            <svg class="no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <h3>No shows found</h3>
+            <p>Try adjusting your filters or <button class="text-btn" id="reset-filters">reset all filters</button></p>
+        </div>
+    </div>
+
+    {{/* Back to Top */}}
+    <div class="archive-back-top section-inner">
+        <button class="back-top-btn" id="back-to-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 19V5M5 12l7-7 7 7"/>
+            </svg>
+            Back to top
+        </button>
+    </div>
+</main>
+{{ end }}
+
+{{ define "footer" }}
+{{ partialCached "footer.html" . }}
+{{ end }}

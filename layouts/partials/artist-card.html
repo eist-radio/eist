@@ -1,0 +1,29 @@
+{{/* Artist card partial for the grid layout */}}
+{{ $image := .Params.image | default "/eist_online.png" }}
+{{ $genres := .Params.genres | default "" }}
+{{ $artistName := .Description | default .Title }}
+
+<a href="{{ .Permalink }}" class="artist-card">
+    <div class="artist-card-image-wrapper">
+        <img
+            src="{{ $image }}"
+            alt="{{ $artistName }}"
+            class="artist-card-image"
+            loading="lazy"
+        >
+        <div class="artist-card-overlay"></div>
+    </div>
+    <div class="artist-card-content">
+        <h3 class="artist-card-name">{{ $artistName }}</h3>
+        {{ if $genres }}
+        <div class="artist-card-genres">
+            {{ $genreList := split $genres "," }}
+            {{ range first 3 $genreList }}
+                {{ if . }}
+                <span class="genre-tag">{{ . }}</span>
+                {{ end }}
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+</a>
