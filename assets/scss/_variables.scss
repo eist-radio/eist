@@ -1,1 +1,13 @@
 $dimmed-opacity: 0.6 !default;
+
+// Layout dimensions
+// Header heights (scrolled/docked state)
+$header-height: 46px !default;
+$header-height-mobile: 60px !default;
+
+// Docked player bar height
+$player-bar-height: 54px !default;
+
+// Combined header + player for sticky positioning
+$header-plus-player: $header-height + $player-bar-height; // 100px
+$header-plus-player-mobile: $header-height-mobile + 50px; // 110px
