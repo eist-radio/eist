@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Face detection script for artist images.
-Analyzes artist images and sets hero_focus in frontmatter based on face position.
+Analyzes artist images and outputs hero_focus values to data/hero-focus.json.
 
 Requires: pip install face_recognition Pillow requests
 
@@ -14,6 +14,7 @@ Usage:
 import os
 import sys
 import re
+import json
 import requests
 import tempfile
 from pathlib import Path
@@ -123,52 +124,19 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
     return frontmatter, body
 
 
-def update_frontmatter(filepath: Path, hero_focus: str, dry_run: bool = False) -> bool:
-    """Update hero_focus in artist frontmatter."""
-    content = filepath.read_text()
-
-    # Check if hero_focus already exists - if so, replace it
-    if 'hero_focus = ' in content:
-        new_content = re.sub(
-            r'hero_focus = "[^"]*"',
-            f'hero_focus = "{hero_focus}"',
-            content
-        )
-    else:
-        # Insert hero_focus after image line
-        new_content = re.sub(
-            r'(image = "[^"]*"\n)',
-            f'\\1hero_focus = "{hero_focus}"\n',
-            content
-        )
-
-    if new_content == content:
-        print(f"  Could not find image/hero_focus field to update")
-        return False
-
-    if dry_run:
-        print(f"  Would set hero_focus = \"{hero_focus}\"")
-        return True
-
-    filepath.write_text(new_content)
-    print(f"  Set hero_focus = \"{hero_focus}\"")
-    return True
-
-
-def process_artist(artist_path: Path, dry_run: bool = False) -> dict:
+def process_artist(artist_path: Path, dry_run: bool = False, existing_data: dict = None) -> dict:
     """Process a single artist file. Returns result dict for reporting."""
     name = artist_path.stem
     result = {"name": name, "status": None, "hero_focus": None}
 
+    # Check if already in hero-focus.json
+    if existing_data and name in existing_data:
+        result["status"] = "already_set"
+        result["hero_focus"] = existing_data[name]
+        return result
+
     content = artist_path.read_text()
     frontmatter, _ = parse_frontmatter(content)
-
-    # Skip if already has non-empty hero_focus (means it was analyzed)
-    existing_hero_focus = frontmatter.get('hero_focus', '')
-    if existing_hero_focus:
-        result["status"] = "already_set"
-        result["hero_focus"] = existing_hero_focus
-        return result
 
     image_url = frontmatter.get('image', '')
     if not image_url or image_url == '/eist_online.png':
@@ -194,12 +162,11 @@ def process_artist(artist_path: Path, dry_run: bool = False) -> dict:
         # Create hero_focus value (only vertical position matters for cropping)
         hero_focus = f"center {y_percent:.0f}%"
 
-        # Update frontmatter
-        if update_frontmatter(artist_path, hero_focus, dry_run):
-            result["status"] = "updated"
-            result["hero_focus"] = hero_focus
-        else:
-            result["status"] = "update_failed"
+        result["status"] = "updated"
+        result["hero_focus"] = hero_focus
+
+        if dry_run:
+            print(f"  Would set hero_focus = \"{hero_focus}\"")
 
         return result
 
@@ -210,17 +177,24 @@ def process_artist(artist_path: Path, dry_run: bool = False) -> dict:
 
 def process_artist_wrapper(args):
     """Wrapper for multiprocessing."""
-    artist_path, dry_run = args
+    artist_path, dry_run, existing_data = args
     try:
-        return process_artist(artist_path, dry_run)
+        return process_artist(artist_path, dry_run, existing_data)
     except Exception as e:
         return {"name": artist_path.stem, "status": "error", "error": str(e)}
 
 
 def main():
-    artists_dir = Path(__file__).parent.parent / "content" / "artists"
+    project_root = Path(__file__).parent.parent
+    artists_dir = project_root / "content" / "artists"
+    hero_focus_file = project_root / "data" / "hero-focus.json"
 
     dry_run = "--dry-run" in sys.argv
+
+    # Load existing hero_focus data
+    existing_data = {}
+    if hero_focus_file.exists():
+        existing_data = json.loads(hero_focus_file.read_text())
 
     # Parse --limit=N option
     limit = None
@@ -240,8 +214,14 @@ def main():
         if not artist_path.exists():
             print(f"Artist not found: {specific_artist}")
             sys.exit(1)
-        result = process_artist(artist_path, dry_run)
+        result = process_artist(artist_path, dry_run, existing_data)
         print(f"{result['name']}: {result['status']} {result.get('hero_focus', '')}")
+
+        # Update JSON for single artist
+        if result.get('hero_focus') and not dry_run:
+            existing_data[result['name']] = result['hero_focus']
+            hero_focus_file.write_text(json.dumps(existing_data, indent=2, sort_keys=True))
+            print(f"Updated {hero_focus_file}")
     else:
         # Collect all artist paths
         artist_paths = [p for p in sorted(artists_dir.glob("*.md")) if p.stem != "_index"]
@@ -254,7 +234,7 @@ def main():
         print(f"Processing {total} artists using {num_workers} workers...")
 
         # Prepare args for multiprocessing
-        args = [(path, dry_run) for path in artist_paths]
+        args = [(path, dry_run, existing_data) for path in artist_paths]
 
         # Process in parallel with progress
         results = []
@@ -266,16 +246,25 @@ def main():
                 focus = result.get('hero_focus', '')
                 print(f"[{i}/{total}] {name}: {status} {focus}")
 
-        # Report results
+        # Report results and collect hero_focus values
         stats = {"updated": 0, "no_face": 0, "no_image": 0, "already_set": 0, "error": 0}
         print("\n--- Results ---")
         for r in results:
             status = r.get("status", "error")
             stats[status] = stats.get(status, 0) + 1
-            if status == "updated":
+            if status == "updated" and r.get('hero_focus'):
                 print(f"✓ {r['name']}: {r['hero_focus']}")
+                existing_data[r['name']] = r['hero_focus']
+            elif status == "already_set" and r.get('hero_focus'):
+                # Keep existing values in the JSON
+                existing_data[r['name']] = r['hero_focus']
             elif status == "error":
                 print(f"✗ {r['name']}: {r.get('error', 'unknown error')}")
+
+        # Write updated JSON
+        if not dry_run:
+            hero_focus_file.write_text(json.dumps(existing_data, indent=2, sort_keys=True))
+            print(f"\nWrote {len(existing_data)} entries to {hero_focus_file}")
 
         print(f"\n--- Summary ---")
         print(f"Updated: {stats['updated']}")
