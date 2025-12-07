@@ -35,6 +35,18 @@
     {{- $player := resources.Get "js/player.js" -}}
     {{ $playerScript := $player | minify | fingerprint -}}
     <script async src="{{ $playerScript.Permalink }}" {{ printf "integrity=%q" $playerScript.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
+    <!-- Load archive-filter.js -->
+    {{- $archiveFilter := resources.Get "js/archive-filter.js" -}}
+    {{ $archiveFilterScript := $archiveFilter | minify | fingerprint -}}
+    <script async src="{{ $archiveFilterScript.Permalink }}" {{ printf "integrity=%q" $archiveFilterScript.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
+    <!-- Load artists-filter.js -->
+    {{- $artistsFilter := resources.Get "js/artists-filter.js" -}}
+    {{ $artistsFilterScript := $artistsFilter | minify | fingerprint -}}
+    <script async src="{{ $artistsFilterScript.Permalink }}" {{ printf "integrity=%q" $artistsFilterScript.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
+    <!-- Load archive-player.js (Phase 6: Persistent Archive Player) -->
+    {{- $archivePlayer := resources.Get "js/archive-player.js" -}}
+    {{ $archivePlayerScript := $archivePlayer | minify | fingerprint -}}
+    <script async src="{{ $archivePlayerScript.Permalink }}" {{ printf "integrity=%q" $archivePlayerScript.Data.Integrity | safeHTMLAttr }} crossorigin="anonymous"></script>
     <!-- Load turbo.js -->
     {{- $turbo := resources.Get "js/turbo.es2017-esm.min.js" -}}
     {{ $turboScript := $turbo | fingerprint -}}
@@ -42,13 +54,18 @@
 </head>
 
 <body id="page">
-    {{- block "header" . -}}{{ end -}}
-    {{- block "main" . -}}{{ end -}}
-    {{- block "footer" . -}}{{ end -}}
-    {{- partial "scroll-to-top.html" . -}}
-    {{- if and (not (eq .Site.Params.shareSocial nil)) (.Site.Params.shareSocial) -}}
-    {{- end -}}
-    {{- if templates.Exists "partials/extra-foot.html" -}}{{- partial "extra-foot.html" . -}}{{- end -}}
+    {{/* Turbo Frame wraps all changing content - archive player stays outside */}}
+    <turbo-frame id="main-content" data-turbo-action="advance">
+        {{- block "header" . -}}{{ end -}}
+        {{- block "main" . -}}{{ end -}}
+        {{- block "footer" . -}}{{ end -}}
+        {{- partial "scroll-to-top.html" . -}}
+        {{- if and (not (eq .Site.Params.shareSocial nil)) (.Site.Params.shareSocial) -}}
+        {{- end -}}
+        {{- if templates.Exists "partials/extra-foot.html" -}}{{- partial "extra-foot.html" . -}}{{- end -}}
+    </turbo-frame>
+    {{/* Archive player outside turbo-frame - iframes won't be touched during navigation */}}
+    {{- partial "archive-player.html" . -}}
 </body>
 
 </html>

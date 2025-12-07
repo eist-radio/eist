@@ -280,5 +280,94 @@ function initializePage() {
     nowPlaying();
     updateMediaSession(isPlaying);
 
+    // Initialize scroll-driven player morph
+    initPlayerMorph();
+
     console.log("Player initialization complete");
+}
+
+// ===========================================
+// SCROLL-DRIVEN PLAYER MORPH
+// Smoothly docks the player into the header as user scrolls
+// ===========================================
+function initPlayerMorph() {
+    const player = document.getElementById('player-small');
+    const header = document.getElementById('site-header');
+
+    if (!player || !header) {
+        console.log("Player morph: missing elements");
+        return;
+    }
+
+    // Prevent duplicate initialization
+    if (player.dataset.morphInitialized) return;
+    player.dataset.morphInitialized = "true";
+
+    // Configuration
+    const SCROLL_START = 0;      // Start morphing immediately
+    const SCROLL_END = 100;      // Complete morph by 100px scroll
+    const DOCK_THRESHOLD = 0.95; // When to snap to docked state
+
+    let isDocked = false;
+    let ticking = false;
+
+    function updatePlayerMorph() {
+        const scrollY = window.scrollY || window.pageYOffset;
+
+        // Calculate progress (0 to 1)
+        const progress = Math.min(Math.max((scrollY - SCROLL_START) / (SCROLL_END - SCROLL_START), 0), 1);
+
+        // Ease the progress for smoother feel
+        const easedProgress = easeOutCubic(progress);
+
+        // Determine if we should be in docked state
+        const shouldDock = progress >= DOCK_THRESHOLD;
+
+        if (shouldDock !== isDocked) {
+            isDocked = shouldDock;
+
+            if (isDocked) {
+                player.classList.add('player-docked');
+                header.classList.add('header-player-docked');
+                header.classList.add('header-scrolled');
+            } else {
+                player.classList.remove('player-docked');
+                header.classList.remove('header-player-docked');
+                header.classList.remove('header-scrolled');
+            }
+        }
+
+        // During transition (not fully docked), apply intermediate styles via CSS vars
+        if (!isDocked) {
+            // Gradually fade out the broadcast status
+            const statusOpacity = 1 - easedProgress;
+            const statusWidth = `${100 - (easedProgress * 100)}%`;
+
+            document.documentElement.style.setProperty('--status-opacity', statusOpacity);
+            document.documentElement.style.setProperty('--status-width', statusWidth);
+            document.documentElement.style.setProperty('--scroll-progress', easedProgress);
+        }
+
+        ticking = false;
+    }
+
+    function onScroll() {
+        if (!ticking) {
+            requestAnimationFrame(updatePlayerMorph);
+            ticking = true;
+        }
+    }
+
+    // Easing function for smooth animation
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    // Listen for scroll
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Initial state check
+    updatePlayerMorph();
+
+    console.log("Player morph initialized");
 }

@@ -11,6 +11,16 @@ DEFAULT_IMAGE="/eist_online.png"
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR"
 
+# Create section index for artists list
+cat > "$OUTPUT_DIR/_index.md" <<EOF
++++
+title = "Artists"
+date = $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+draft = false
+noindex = false
++++
+EOF
+
 # Fetch artist data
 ARTISTS_JSON=$(curl -s -X GET "$ARTISTS_URL" -H "x-api-key: $API_KEY" -H "Content-Type: application/json")
 
@@ -157,6 +167,27 @@ echo "$ARTISTS_JSON" | jq -c '.artists[]' | while read -r artist; do
     MC_ARTIST_PLAYLIST=""
   fi
 
+  # Extract genres from artist data
+  ARTIST_GENRES=$(echo "$artist" | jq -r '.genres // [] | join(", ")')
+
+  # Preserve existing hero_focus if set (non-empty), otherwise leave empty for detect-faces.py
+  HERO_FOCUS=""
+  if [[ -f "$FILE_PATH" ]]; then
+    EXISTING_HERO_FOCUS=$(grep '^hero_focus = ' "$FILE_PATH" | sed 's/hero_focus = "\(.*\)"/\1/')
+    [[ -n "$EXISTING_HERO_FOCUS" ]] && HERO_FOCUS="$EXISTING_HERO_FOCUS"
+  fi
+
+  # Extract individual social URLs for front matter
+  SOUNDCLOUD_URL=$(echo "$ARTIST_SOCIALS" | jq -r '.soundcloud // empty')
+  MIXCLOUD_URL=$(echo "$ARTIST_SOCIALS" | jq -r '.mixcloud // empty')
+  INSTAGRAM_HANDLE=$(echo "$ARTIST_SOCIALS" | jq -r '.instagramHandle // empty')
+  WEBSITE_URL=$(echo "$ARTIST_SOCIALS" | jq -r '.site // empty')
+
+  # Build full URLs
+  [[ -n "$SOUNDCLOUD_URL" && ! "$SOUNDCLOUD_URL" =~ ^https?:// ]] && SOUNDCLOUD_URL="https://www.soundcloud.com/$SOUNDCLOUD_URL"
+  [[ -n "$MIXCLOUD_URL" && ! "$MIXCLOUD_URL" =~ ^https?:// ]] && MIXCLOUD_URL="https://www.mixcloud.com/$MIXCLOUD_URL"
+  [[ -n "$INSTAGRAM_HANDLE" ]] && INSTAGRAM_URL="https://www.instagram.com/$INSTAGRAM_HANDLE" || INSTAGRAM_URL=""
+
   # Write artist markdown files
   cat > "$FILE_PATH" <<EOF
 +++
@@ -164,27 +195,21 @@ description = "$ARTIST_NAME"
 date = $(date +%Y-%m-%d)
 draft = false
 noindex = false
+image = "$ARTIST_IMAGE_URL"
+hero_focus = "$HERO_FOCUS"
+genres = "$ARTIST_GENRES"
+soundcloud = "$SOUNDCLOUD_URL"
+mixcloud = "$MIXCLOUD_URL"
+instagram = "$INSTAGRAM_URL"
+website = "$WEBSITE_URL"
+mc_username = "$MC_USERNAME"
+sc_username = "$SC_USERNAME"
+host_sc_playlist = "$HOST_SC_PLAYLIST"
+host_mc_playlist = "$HOST_MC_PLAYLIST"
+eist_mc_playlist = "$EIST_MC_PLAYLIST"
 +++
 
-## $ARTIST_NAME
-
-<div class="artist-image-container">
-    <img src="$ARTIST_IMAGE_URL" alt="$ARTIST_NAME" class="artist-image">
-</div>
-
 $ARTIST_BIO
-
-$SOCIAL_LINKS
-
-$LISTEN_BACK
-
-$LATEST_MIXCLOUD
-
-$MC_PLAYLIST
-
-$MC_ARTIST_PLAYLIST
-
-$SC_PLAYLIST
 
 EOF
 done

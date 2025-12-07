@@ -10,6 +10,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Scroll to top on Turbo Frame navigation (but not on back/forward)
+// This is needed because turbo-frame doesn't auto-scroll like turbo-drive
+document.addEventListener("turbo:before-render", (event) => {
+    // Only scroll to top for "advance" actions (new navigation), not "restore" (back/forward)
+    if (event.detail.renderMethod === "replace" || !event.detail.isPreview) {
+        window.scrollTo(0, 0);
+    }
+});
+
 // Force Turbo to reload the correct state when swiping back/forward on mobile
 window.addEventListener("popstate", (event) => {
     Turbo.visit(window.location.href, { action: "replace" });
@@ -136,5 +145,34 @@ document.addEventListener("turbo:load", () => {
                 shareMobileMenu();
             }
         }, 250));
+    }
+
+    // Artist page: Show more/less toggle for show history
+    const showsToggleBtn = document.getElementById('shows-toggle');
+    if (showsToggleBtn) {
+        const grid = document.getElementById('shows-grid');
+        const hiddenCards = grid?.querySelectorAll('.show-hidden') || [];
+        const extraCount = showsToggleBtn.dataset.extra;
+        let expanded = false;
+
+        showsToggleBtn.addEventListener('click', function() {
+            expanded = !expanded;
+
+            hiddenCards.forEach((card, index) => {
+                if (expanded) {
+                    card.style.display = '';
+                    card.style.animation = `showCardReveal 0.4s ease-out ${index * 0.05}s forwards`;
+                } else {
+                    card.style.animation = '';
+                    card.style.display = 'none';
+                }
+            });
+
+            showsToggleBtn.classList.toggle('expanded', expanded);
+            const toggleText = showsToggleBtn.querySelector('.toggle-text');
+            if (toggleText) {
+                toggleText.textContent = expanded ? 'Show less' : `+ ${extraCount} more shows`;
+            }
+        });
     }
 });

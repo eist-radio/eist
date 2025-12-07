@@ -3,6 +3,8 @@
                 <div class="site-branding">
                     <a href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" class="header-logo"/></a>
                 </div>
+            {{/* Player docks here when scrolled */}}
+            <div class="player-dock" id="player-dock"></div>
             <div class="hdr-left">
                 <nav class="site-nav hide-in-mobile">{{- partialCached "menu.html" . -}}</nav>
             </div>
@@ -16,7 +18,7 @@
                 <button id="menu-btn" class="hdr-btn" title="{{i18n "menu"}}">{{- partial "svg.html" (dict "context" . "name" "menuBtn") -}}</button>
             </div>
         </div>
-        {{ partial "player.html" . }} 
+        {{ partial "player.html" . }}
     </header>
     <div id="mobile-menu" {{- if ne false .Site.Params.usesAnimation }} class="animated fast" {{- end -}}>
         <ul>
