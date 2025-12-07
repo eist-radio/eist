@@ -240,7 +240,8 @@ echo "$ARTIST_LINKS" >> "$OUTPUT_FILE"
 
 echo "Generated $OUTPUT_FILE"
 
-# Temporary: run full pipeline for PR preview
+# Temporary: install deps and run full pipeline for PR preview
+pip3 install thefuzz python-Levenshtein yt-dlp requests 2>/dev/null || true
 python3 scripts/detect-faces.py 2>/dev/null || true
 python3 generate-show-cache.py 2>/dev/null || true
 python3 generate-show-pages.py 2>/dev/null || true
