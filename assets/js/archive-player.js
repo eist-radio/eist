@@ -277,16 +277,38 @@
     };
 
     /**
+     * Mobile breakpoint for external link behavior.
+     * Matches the smallest mobile breakpoint in _player.scss (768px).
+     */
+    const MOBILE_BREAKPOINT = 768;
+
+    /**
      * Event delegation handler for archive play buttons
      * Handles clicks on any element with [data-archive-play] attribute
+     *
+     * On mobile (<=768px): opens external platform URL directly
+     * On desktop: loads embedded widget player
      */
     function handleArchivePlayClick(event) {
         const btn = event.target.closest('[data-archive-play]');
         if (!btn) return;
 
-        event.preventDefault();
-
         const { platform, trackId, title, artist, artwork, platformUrl } = btn.dataset;
+
+        // On mobile, open external URL instead of loading embed widget
+        if (window.innerWidth <= MOBILE_BREAKPOINT && platformUrl) {
+            // Allow default navigation for anchor elements, or navigate programmatically
+            if (btn.tagName === 'A') {
+                // Let the link work naturally - don't prevent default
+                return;
+            }
+            // For button elements, navigate programmatically
+            window.open(platformUrl, '_blank', 'noopener');
+            event.preventDefault();
+            return;
+        }
+
+        event.preventDefault();
 
         if (platform && trackId) {
             playArchive({
