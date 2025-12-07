@@ -3,7 +3,13 @@
 @import "syntax.scss";
 @import "scroll.scss";
 @import "socialshare.scss";
-@import "custom.scss";
+@import "mixins.scss";
+@import "common.scss";
+@import "hero.scss";
+@import "player.scss";
+@import "artists.scss";
+@import "shows.scss";
+@import "archive.scss";
 
 /* Webkit Scrollbar Customize */
 ::-webkit-scrollbar {
@@ -136,6 +142,12 @@ table {
   margin: 0 auto;
   max-width: 1200px;
   width: 93%;
+
+  // Modifier for sections that handle their own internal padding
+  // Use when you need centering + max-width but full width within container
+  &--full {
+    width: 100%;
+  }
 }
 
 .thin {
@@ -517,16 +529,6 @@ hr.post-end {
 
   a.anchor {
     display: none;
-/*    float: left;
-    margin-left: -25px;
-    padding-right: 6px;
-    box-shadow: none;
-    opacity: .8;
-    &:hover {
-      background: none;
-      color: $theme;
-      opacity: 1;
-    }*/
 
     svg {
       display: inline-block;
@@ -736,7 +738,7 @@ a.footnote-ref {
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1300px) {
 
   .hide-in-mobile,
   .site-nav.hide-in-mobile {
