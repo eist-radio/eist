@@ -77,6 +77,7 @@ table caption {
 
 .header-scrolled .header-logo {
     width: 70px;
+    transform: translateY(4px); // optical alignment with player controls
 }
 
 .site-nav {

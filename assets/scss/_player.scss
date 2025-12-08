@@ -94,6 +94,7 @@
     letter-spacing: 0.15em;
     color: $eist-secondary;
     text-transform: uppercase;
+    transform: translateY(1px); // optical alignment with dot
 }
 
 /* DJ name styling within live-text */
@@ -357,6 +358,11 @@ opacity: 0.7;
 
 .header-scrolled .player-inline .broadcast-status {
     gap: 0.5rem;
+}
+
+/* Reset live-label optical adjustment when scrolled */
+.header-scrolled .player-inline .live-label {
+    transform: none;
 }
 
 /* Live text truncation when scrolled */
