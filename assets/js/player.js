@@ -189,14 +189,31 @@ function initializePage() {
         const showTitleElement = document.getElementById('player-metadata-show-title');
         const broadcastStatusElement = document.getElementById('live-text');
         const artistImageElement = document.getElementById('dj-image');
+        const liveIndicator = document.getElementById('live-indicator');
 
         if (artistNameElement) artistNameElement.textContent = artistDetails.name;
         if (showTitleElement) showTitleElement.textContent = showTitle;
 
+        const isLive = broadcastStatus === "schedule";
+
+        // Update live indicator state
+        if (liveIndicator) {
+            if (isLive) {
+                liveIndicator.classList.remove('off-air');
+            } else {
+                liveIndicator.classList.add('off-air');
+            }
+        }
+
+        // Update broadcast status text with styled spans
         if (broadcastStatusElement) {
-            broadcastStatusElement.textContent = broadcastStatus === "schedule" ?
-                `live w/ ${artistDetails.name}` :
-                "off air";
+            if (isLive) {
+                broadcastStatusElement.innerHTML =
+                    `<span class="dj-prefix">w/</span> <span class="dj-name">${artistDetails.name}</span>`;
+            } else {
+                broadcastStatusElement.innerHTML =
+                    `<span class="dj-prefix">off air</span>`;
+            }
         }
 
         if (artistImageElement) {
@@ -339,12 +356,6 @@ function initPlayerMorph() {
 
         // During transition (not fully docked), apply intermediate styles via CSS vars
         if (!isDocked) {
-            // Gradually fade out the broadcast status
-            const statusOpacity = 1 - easedProgress;
-            const statusWidth = `${100 - (easedProgress * 100)}%`;
-
-            document.documentElement.style.setProperty('--status-opacity', statusOpacity);
-            document.documentElement.style.setProperty('--status-width', statusWidth);
             document.documentElement.style.setProperty('--scroll-progress', easedProgress);
         }
 

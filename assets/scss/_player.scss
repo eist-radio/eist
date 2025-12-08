@@ -24,12 +24,85 @@
     align-items: center;
     flex-wrap: nowrap;
     z-index: 2;
+    gap: 0.75rem;
 }
 
 .broadcasting-live-text-status {
     font-size: large;
     z-index: 2;
     text-align: end;
+}
+
+/* ===========================================
+   LIVE INDICATOR
+   Pulsing dot + LIVE label for broadcast status
+   =========================================== */
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.6rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+
+    &.off-air {
+        .live-dot {
+            background: $highlight-grey;
+            box-shadow: none;
+            animation: none;
+        }
+
+        .live-label {
+            opacity: 0.5;
+        }
+    }
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background: #ff4757;
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px rgba(255, 71, 87, 0.6);
+    animation: pulse-live 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-live {
+    0%, 100% {
+        box-shadow: 0 0 8px 2px rgba(255, 71, 87, 0.6);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 12px 4px rgba(255, 71, 87, 0.8);
+        transform: scale(1.1);
+    }
+}
+
+.live-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.95);
+    text-transform: uppercase;
+}
+
+/* DJ name styling within live-text */
+#live-text {
+    margin: 0;
+
+    .dj-prefix {
+        font-size: 0.8em;
+        font-weight: 400;
+        opacity: 0.7;
+        letter-spacing: 0.05em;
+    }
+
+    .dj-name {
+        font-weight: 700;
+        color: $eist;
+    }
 }
 
 .player-background {
@@ -198,9 +271,6 @@ opacity: 0.7;
     --player-scale: 1;
     --player-y: 0px;
     --player-width: 100%;
-    --player-opacity: 1;
-    --status-opacity: 1;
-    --status-width: 100%;
 }
 
 /* Player dock space in header */
@@ -274,8 +344,8 @@ opacity: 0.7;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+    justify-content: flex-start;
+    gap: 0.75rem;
 }
 
 #playPauseBtn {
@@ -297,9 +367,8 @@ opacity: 0.7;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: var(--status-width, 100%);
-    flex-direction: row-reverse;
-    opacity: var(--status-opacity, 1);
+    width: auto;
+    flex-direction: row;
     overflow: hidden;
     white-space: nowrap;
 }
@@ -349,10 +418,6 @@ opacity: 0.7;
 
     #player-small.player-docked #live-text {
         font-size: 0.85rem;
-    }
-
-    .broadcast-status {
-        justify-content: flex-start;
     }
 
     #player {
