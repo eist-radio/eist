@@ -135,8 +135,17 @@ function initializePage() {
             const data = await response.json();
             const artist = data.artist || {};
 
+            // Generate slug from name for artist page URL
+            const artistName = artist.name || defaultText;
+            const slug = artistName.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
+                .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
+                .replace(/\s+/g, '-') // Spaces to hyphens
+                .replace(/-+/g, '-'); // Collapse multiple hyphens
+
             return {
-                name: artist.name || defaultText,
+                name: artistName,
+                slug: slug,
                 bio: artist.description?.content?.[0]?.content?.[0]?.text || 'No bio available',
                 image: artist.logo?.['256x256'] || defaultImage
             };
@@ -207,7 +216,10 @@ function initializePage() {
 
         // Update broadcast status text with styled spans
         if (broadcastStatusElement) {
-            if (isLive) {
+            if (isLive && artistDetails.slug) {
+                broadcastStatusElement.innerHTML =
+                    `<span class="dj-prefix">w/</span> <a href="/artists/${artistDetails.slug}/" class="dj-name">${artistDetails.name}</a>`;
+            } else if (isLive) {
                 broadcastStatusElement.innerHTML =
                     `<span class="dj-prefix">w/</span> <span class="dj-name">${artistDetails.name}</span>`;
             } else {

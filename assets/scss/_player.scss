@@ -102,6 +102,11 @@
     .dj-name {
         font-weight: 700;
         color: $eist-secondary;
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.8;
+        }
     }
 }
 
