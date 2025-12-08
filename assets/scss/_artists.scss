@@ -470,6 +470,14 @@
     box-shadow: 0 4px 12px rgba(175, 252, 65, 0.2);
 }
 
+/* Social Icons + Next Show Row */
+.artist-actions-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
 /* Social Icons - Enhanced */
 .artist-social-icons {
     display: flex;
@@ -501,6 +509,51 @@
 .social-icon {
     width: 18px;
     height: 18px;
+}
+
+/* Next Show Callout - Subtle pill inline with social icons */
+.artist-next-show {
+    display: none;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: rgba($eist-highlight, 0.12);
+    border: 1px solid rgba($eist-highlight, 0.35);
+    border-radius: 50px;
+    width: fit-content;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    animation: fadeInX 0.6s ease-out 0.5s backwards;
+}
+
+.artist-next-show.visible {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.next-show-icon {
+    width: 14px;
+    height: 14px;
+    color: $eist-highlight;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.next-show-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba($eist-highlight, 0.85);
+}
+
+.next-show-time {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.01em;
 }
 
 /* Bio Section - Enhanced typography */
@@ -759,6 +812,24 @@
     .social-icon {
         width: 18px;
         height: 18px;
+    }
+
+    .artist-actions-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .artist-next-show {
+        padding: 0.45rem 0.85rem;
+    }
+
+    .next-show-label {
+        font-size: 0.6rem;
+    }
+
+    .next-show-time {
+        font-size: 0.7rem;
     }
 
     .artist-bio-section,

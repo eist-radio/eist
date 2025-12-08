@@ -41,6 +41,7 @@ SOUNDCLOUD_USER = "eistcork"
 SOUNDCLOUD_TRACKS_URL = f"https://soundcloud.com/{SOUNDCLOUD_USER}/tracks"
 DATA_DIR = Path("data")
 SHOWS_FILE = DATA_DIR / "shows.json"
+UPCOMING_SCHEDULE_FILE = DATA_DIR / "upcoming_schedule.json"
 MIXCLOUD_CACHE_FILE = DATA_DIR / "mixcloud-cache.json"
 SOUNDCLOUD_CACHE_FILE = DATA_DIR / "soundcloud-cache.json"
 CACHE_META_FILE = DATA_DIR / "cache-meta.json"
@@ -83,6 +84,22 @@ def normalize_text(text):
     text = re.sub(r'[^a-z0-9\s]', '', text)
     # Collapse whitespace
     text = ' '.join(text.split())
+    return text
+
+
+def normalize_to_slug(name):
+    """Normalize name to URL slug, matching generate-artist-pages.sh behavior."""
+    if not name:
+        return ""
+    # Normalize unicode and remove accents
+    text = unicodedata.normalize('NFKD', name)
+    text = ''.join(c for c in text if not unicodedata.combining(c))
+    # Lowercase
+    text = text.lower()
+    # Replace non-alphanumeric with hyphens (like tr -cs 'a-zA-Z0-9' '-')
+    text = re.sub(r'[^a-z0-9]+', '-', text)
+    # Remove leading/trailing hyphens and collapse multiple hyphens
+    text = re.sub(r'-+', '-', text).strip('-')
     return text
 
 
@@ -792,17 +809,19 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
     # Build artist lookup
     artist_names = {aid: a.get('name', '') for aid, a in artists.items()}
     artist_mc_usernames = {}
+    artist_sc_usernames = {}
     for artist_id, artist in artists.items():
         for tag in artist.get('tags', []):
             if tag.startswith('MC-USERNAME_'):
                 artist_mc_usernames[artist_id] = tag.replace('MC-USERNAME_', '').lower()
-                break
+            elif tag.startswith('SC-USERNAME_'):
+                artist_sc_usernames[artist_id] = tag.replace('SC-USERNAME_', '').lower()
 
     # Track which shows have been matched to archives
     show_matches = {}  # show_id -> {mixcloud: {...}, soundcloud: {...}}
     archive_review_queue = []
 
-    def find_best_show_for_archive(archive_title, archive_date, archive_source):
+    def find_best_show_for_archive(archive_title, archive_date, archive_source, archive_url=None):
         """Find the best matching RadioCult show for an archive."""
         best_show = None
         best_score = 0
@@ -892,11 +911,14 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
             artist_ids = show.get('artistIds', [])
             artist_name = None
             mc_username = None
+            sc_username = None
             for aid in artist_ids:
                 if aid in artist_names:
                     artist_name = artist_names[aid]
                 if aid in artist_mc_usernames:
                     mc_username = artist_mc_usernames[aid]
+                if aid in artist_sc_usernames:
+                    sc_username = artist_sc_usernames[aid]
 
             # Calculate score (reuse existing function but swap args conceptually)
             # We're scoring how well this show matches the archive
@@ -912,6 +934,17 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
                 norm_artist = normalize_text(artist_name)
                 if norm_artist and len(norm_artist) > 2 and norm_artist in norm_archive:
                     score += 25
+
+            # Username match: artist's platform username appears in archive URL or title
+            # Use MC-USERNAME for Mixcloud, SC-USERNAME for SoundCloud
+            platform_username = mc_username if archive_source == 'mixcloud' else sc_username
+            if platform_username:
+                # Check URL first (most reliable)
+                if archive_url and platform_username.lower() in archive_url.lower():
+                    score += 40
+                # Also check title (for eistcork uploads where artist name is in title)
+                elif platform_username.lower() in norm_archive:
+                    score += 40
 
             # Title similarity
             if HAS_FUZZ and show_title and archive_title:
@@ -955,8 +988,9 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
     for archive in mixcloud_archives:
         title = archive.get('name', '')
         created = archive.get('created_time', '')
+        url = archive.get('url', '')
 
-        show, score = find_best_show_for_archive(title, created, 'mixcloud')
+        show, score = find_best_show_for_archive(title, created, 'mixcloud', url)
 
         if show and score >= MATCH_THRESHOLD:
             show_id = show.get('id')
@@ -990,8 +1024,9 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
     for archive in soundcloud_archives:
         title = archive.get('title', '')
         upload_date = archive.get('upload_date', '')  # YYYYMMDD format
+        url = archive.get('url', '')
 
-        show, score = find_best_show_for_archive(title, upload_date, 'soundcloud')
+        show, score = find_best_show_for_archive(title, upload_date, 'soundcloud', url)
 
         if show and score >= MATCH_THRESHOLD:
             show_id = show.get('id')
@@ -1324,6 +1359,49 @@ def main():
     # Filter out excluded shows (repeats, tests, pre-archive-start-date)
     original_shows = [s for s in all_shows if not should_exclude_show(s)]
     print(f"After filtering excluded shows: {len(original_shows)} original broadcasts")
+
+    # Fetch upcoming schedule for "next show" feature on artist pages
+    print("\nFetching upcoming schedule...")
+    upcoming_start = now
+    upcoming_end = now + timedelta(days=30)
+    time.sleep(REQUEST_DELAY)
+    upcoming_schedule = fetch_radiocult_schedule(api_key, upcoming_start, upcoming_end)
+
+    if upcoming_schedule and 'schedules' in upcoming_schedule:
+        future_shows = [s for s in upcoming_schedule['schedules'] if s.get('start', '') > now.isoformat()]
+
+        # Process future shows with artist info
+        upcoming_data = []
+        for show in future_shows:
+            artist_ids = show.get('artistIds', [])
+            artist_name = None
+            artist_slug = None
+
+            if artist_ids:
+                artist_id = artist_ids[0]
+                artist_info = artists.get(artist_id, {})
+                artist_name = artist_info.get('name')
+                if artist_name:
+                    artist_slug = normalize_to_slug(artist_name)
+
+            upcoming_data.append({
+                'id': show.get('id'),
+                'title': show.get('title'),
+                'start': show.get('start'),
+                'end': show.get('end'),
+                'artistIds': artist_ids,
+                'artistName': artist_name,
+                'artistSlug': artist_slug,
+            })
+
+        # Sort by start time
+        upcoming_data.sort(key=lambda x: x.get('start', ''))
+
+        UPCOMING_SCHEDULE_FILE.write_text(json.dumps(upcoming_data, indent=2))
+        print(f"  Saved {len(upcoming_data)} upcoming shows to {UPCOMING_SCHEDULE_FILE}")
+    else:
+        print("  No upcoming schedule data received")
+        UPCOMING_SCHEDULE_FILE.write_text('[]')
 
     # Fetch Mixcloud cloudcasts
     print("\nLoading Mixcloud archives...")
