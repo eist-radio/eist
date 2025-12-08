@@ -41,8 +41,8 @@
                 {{ range $genreList }}
                     {{ $genre := trim . " " }}
                     {{ if $genre }}
-                    {{ $genreSlug := $genre | lower | urlquery }}
-                    <a href="/artists/?genre={{ $genreSlug }}" class="artist-genre-pill" title="View all {{ $genre }} artists">{{ $genre }}</a>
+                    {{ $genreSlug := replace ($genre | lower) " " "%20" }}
+                    <a href="{{ printf "/artists/?genre=%s" $genreSlug | safeURL }}" class="artist-genre-pill" title="View all {{ $genre }} artists">{{ $genre }}</a>
                     {{ end }}
                 {{ end }}
             </div>
