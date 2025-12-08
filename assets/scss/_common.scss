@@ -64,33 +64,27 @@ table caption {
     text-decoration: underline !important;
 }
 
+// ============================================
+// Unified Header Scroll Transition
+// Single flex container with smooth transitions
+// ============================================
+
 .header-logo {
-    width: 200px;
-    margin-top: 12px;
-    transition: width 0.25s ease-out, margin-top 0.25s ease-out;
+    width: 180px;
+    height: auto;
+    transition: width 0.3s ease-out;
+}
+
+.header-scrolled .header-logo {
+    width: 70px;
 }
 
 .site-nav {
-    transition: font-size 0.25s ease-out;
-}
-
-.hdr-wrapper {
-    transition: padding 0.25s ease-out;
-}
-
-/* Shrink header when player is docked */
-.header-scrolled .header-logo {
-    width: 70px;
-    margin-top: 2px;
+    transition: font-size 0.3s ease-out;
 }
 
 #site-header.header-scrolled .site-nav {
-    font-size: 0.95em !important;
-}
-
-.header-scrolled .hdr-wrapper {
-    padding-top: 6px;
-    padding-bottom: 6px;
+    font-size: 0.95em;
 }
 
 // Miscellaneous shared styles

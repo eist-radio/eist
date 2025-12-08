@@ -1,10 +1,25 @@
     <header id="site-header" {{- if .Site.Params.usesAnimation }} class="animated slideInUp" {{- end -}}>
         <div class="hdr-wrapper section-inner">
-                <div class="site-branding">
-                    <a href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" class="header-logo"/></a>
+            {{/* Unified header content - single flex container */}}
+            <div class="site-branding">
+                <a href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" class="header-logo"/></a>
+            </div>
+            {{/* Player controls - inline in header */}}
+            <div class="player-inline" id="player-small">
+                <div class="audio-player" id="global-player" data-turbo-permanent>
+                    <img id="playPauseBtn" src="/play.svg" alt="Play" class="player-play-btn">
+                    <audio id="audio" src="https://eist-radio.radiocult.fm/stream"></audio>
+                    <div class="broadcast-status">
+                        <div class="live-indicator" id="live-indicator">
+                            <span class="live-dot"></span>
+                            <span class="live-label">LIVE</span>
+                        </div>
+                        <div class="broadcasting-live-text-status">
+                            <p id="live-text"></p>
+                        </div>
+                    </div>
                 </div>
-            {{/* Player docks here when scrolled */}}
-            <div class="player-dock" id="player-dock"></div>
+            </div>
             <div class="hdr-left">
                 <nav class="site-nav hide-in-mobile">{{- partialCached "menu.html" . -}}</nav>
             </div>
@@ -18,7 +33,6 @@
                 <button id="menu-btn" class="hdr-btn" title="{{i18n "menu"}}">{{- partial "svg.html" (dict "context" . "name" "menuBtn") -}}</button>
             </div>
         </div>
-        {{ partial "player.html" . }}
     </header>
     <div id="mobile-menu" {{- if ne false .Site.Params.usesAnimation }} class="animated fast" {{- end -}}>
         <ul>

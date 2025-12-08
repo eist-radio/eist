@@ -275,106 +275,115 @@ opacity: 0.7;
 }
 
 /* ===========================================
-   SCROLL-MORPHING PLAYER
-   The player smoothly docks into the header as user scrolls
+   UNIFIED HEADER PLAYER
+   Player is inline in header, uses flex wrap/order
+   for two-row (unscrolled) vs one-row (scrolled) layout
    =========================================== */
 
-/* CSS custom properties for scroll-driven values (set by JS) */
-:root {
-    --scroll-progress: 0;
-    --player-scale: 1;
-    --player-y: 0px;
-    --player-width: 100%;
-}
-
-/* Player dock space in header */
-.player-dock {
+/* Player inline container */
+.player-inline {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    height: 0;
-    overflow: visible;
-    transition: none;
-    flex-shrink: 0;
-}
-
-/* When player is docked, reserve space */
-.header-player-docked .player-dock {
-    width: 50px;
-    margin-right: 0.5rem;
-}
-
-#player-small {
-    /* Base positioning */
-    position: absolute;
-    z-index: 100;
-    box-sizing: border-box;
-
-    /* Initial state: full width bar below header row */
-    width: var(--player-width, 100%);
-    max-width: 960px;
-    left: 50%;
-    transform: translateX(-50%) translateY(var(--player-y, 0px)) scale(var(--player-scale, 1));
-    transform-origin: left center;
-
-    /* Appearance */
-    background-color: $eist;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    /* Smooth morphing - sync with header animation */
-    transition: top 0.25s ease-out, padding 0.25s ease-out, width 0.25s ease-out;
-    will-change: transform, width, left, top;
-}
-
-/* Docked state: player bar below header */
-#player-small.player-docked {
-    position: fixed;
-    /* Position as a bar below the shrunken header */
-    top: $header-height;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: none;
-    transform: none;
-    padding: 2px 0;
-    background: $eist;
-    z-index: 9998;
+    /* Unscrolled: full width row, centered content */
+    flex: 0 0 100%;
+    order: 10;
+    padding: 8px 0;
+    /* Center the player content to align with main content below */
     justify-content: center;
+    transition: flex 0.3s ease-out,
+                order 0s 0.15s,
+                padding 0.3s ease-out,
+                justify-content 0s 0.15s;
 }
 
-#player-small.player-docked .audio-player {
-    /* Align with the centered content (same as section-inner) */
-    width: 93%;
-    max-width: 1200px;
-    margin: 0 auto;
+/* Scrolled: player shrinks to content, stays inline */
+.header-scrolled .player-inline {
+    flex: 0 1 auto;
+    order: 1;
+    padding: 0;
+    margin-left: 1rem;
     justify-content: flex-start;
-    gap: 0.75rem;
+    transition: flex 0.3s ease-out,
+                order 0s,
+                padding 0.3s ease-out,
+                justify-content 0s;
 }
 
-.audio-player {
+.header-scrolled .player-inline .audio-player {
+    max-width: none;
+    width: auto;
+    margin: 0;
+}
+
+/* Player internal layout - matches .thin content width (720px) for alignment */
+.player-inline .audio-player {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 720px;
     width: 100%;
+    margin: 0 auto;
+    transition: gap 0.3s ease-out;
+}
+
+.header-scrolled .player-inline .audio-player {
+    gap: 0.5rem;
+    width: auto;
+}
+
+/* Play button sizing */
+.player-inline #playPauseBtn {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: width 0.3s ease-out, height 0.3s ease-out;
+}
+
+.header-scrolled .player-inline #playPauseBtn {
+    width: 32px;
+    height: 32px;
+}
+
+/* Broadcast status in player */
+.player-inline .broadcast-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: gap 0.3s ease-out;
+}
+
+.header-scrolled .player-inline .broadcast-status {
+    gap: 0.5rem;
+}
+
+/* Live text truncation when scrolled */
+.header-scrolled .player-inline .broadcasting-live-text-status {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Keep ID for JS compatibility */
+#player-small {
+    /* Styles handled by .player-inline */
+}
+
+/* Generic audio player styles (used by both unified header player and homepage player) */
+.audio-player {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 0.75rem;
 }
 
-#playPauseBtn {
+/* Default play button (for homepage player section) */
+#player #playPauseBtn {
     width: 55px;
     height: 55px;
     padding: 2px;
     flex-shrink: 0;
     cursor: pointer;
-}
-
-/* Docked play button: smaller */
-#player-small.player-docked #playPauseBtn {
-    width: 36px;
-    height: 36px;
-    padding: 0;
 }
 
 .broadcast-status {
@@ -393,51 +402,26 @@ opacity: 0.7;
     }
 }
 
-/* Show broadcast status when docked (it's the main info now) */
-#player-small.player-docked .broadcast-status {
-    width: auto;
-    opacity: 1;
-    flex-direction: row;
-}
-
-#player-small.player-docked #live-text {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: $eist-secondary;
-}
-
-@media (max-width: 1800px) {
-    #player-small:not(.player-docked) {
-        width: 97%;
-        max-width: 735px;
-    }
-}
-
+/* Mobile responsive for unified header player */
 @media (max-width: 760px) {
-
     body {
-        margin-top: 210px;
+        margin-top: 180px;
     }
 
-    #playPauseBtn {
-        width: 50px;
-        height: 50px;
-        padding: 5px;
+    /* Smaller play button on mobile */
+    .player-inline #playPauseBtn {
+        width: 40px;
+        height: 40px;
     }
 
-    /* Mobile docked player bar */
-    #player-small.player-docked {
-        top: $header-height-mobile;
-        padding: 6px 0;
+    .header-scrolled .player-inline #playPauseBtn {
+        width: 28px;
+        height: 28px;
     }
 
-    #player-small.player-docked #playPauseBtn {
-        width: 32px;
-        height: 32px;
-    }
-
-    #player-small.player-docked #live-text {
-        font-size: 0.85rem;
+    /* Hide DJ text on mobile when scrolled - just show LIVE indicator */
+    .header-scrolled .player-inline .broadcasting-live-text-status {
+        display: none;
     }
 
     #player {
@@ -445,13 +429,13 @@ opacity: 0.7;
         height: 300px;
     }
 
-    .hdr-wrapper {
-        padding-top: 40px;
-    }
-
     .header-logo {
         width: 125px;
         margin-top: 10px;
+        // Mobile scrolled state uses same transform approach
+        .header-scrolled & {
+            transform: scale(0.56);  // 70px / 125px = 0.56
+        }
     }
 
     .player-metadata-play {

@@ -316,59 +316,32 @@ function initializePage() {
 }
 
 // ===========================================
-// SCROLL-DRIVEN PLAYER MORPH
-// Smoothly docks the player into the header as user scrolls
+// UNIFIED HEADER SCROLL
+// Simple class toggle - CSS handles all transitions
 // ===========================================
 function initPlayerMorph() {
-    const player = document.getElementById('player-small');
     const header = document.getElementById('site-header');
 
-    if (!player || !header) {
-        console.log("Player morph: missing elements");
+    if (!header) {
+        console.log("Header scroll: missing header element");
         return;
     }
 
     // Prevent duplicate initialization
-    if (player.dataset.morphInitialized) return;
-    player.dataset.morphInitialized = "true";
+    if (header.dataset.scrollInitialized) return;
+    header.dataset.scrollInitialized = "true";
 
-    // Configuration
-    const SCROLL_START = 0;      // Start morphing immediately
-    const SCROLL_END = 100;      // Complete morph by 100px scroll
-    const DOCK_THRESHOLD = 0.95; // When to snap to docked state
-
-    let isDocked = false;
+    const SCROLL_THRESHOLD = 50; // Scroll distance to trigger compact mode
+    let isScrolled = false;
     let ticking = false;
 
-    function updatePlayerMorph() {
+    function updateScrollState() {
         const scrollY = window.scrollY || window.pageYOffset;
+        const shouldBeScrolled = scrollY > SCROLL_THRESHOLD;
 
-        // Calculate progress (0 to 1)
-        const progress = Math.min(Math.max((scrollY - SCROLL_START) / (SCROLL_END - SCROLL_START), 0), 1);
-
-        // Ease the progress for smoother feel
-        const easedProgress = easeOutCubic(progress);
-
-        // Determine if we should be in docked state
-        const shouldDock = progress >= DOCK_THRESHOLD;
-
-        if (shouldDock !== isDocked) {
-            isDocked = shouldDock;
-
-            if (isDocked) {
-                player.classList.add('player-docked');
-                header.classList.add('header-player-docked');
-                header.classList.add('header-scrolled');
-            } else {
-                player.classList.remove('player-docked');
-                header.classList.remove('header-player-docked');
-                header.classList.remove('header-scrolled');
-            }
-        }
-
-        // During transition (not fully docked), apply intermediate styles via CSS vars
-        if (!isDocked) {
-            document.documentElement.style.setProperty('--scroll-progress', easedProgress);
+        if (shouldBeScrolled !== isScrolled) {
+            isScrolled = shouldBeScrolled;
+            header.classList.toggle('header-scrolled', isScrolled);
         }
 
         ticking = false;
@@ -376,21 +349,16 @@ function initPlayerMorph() {
 
     function onScroll() {
         if (!ticking) {
-            requestAnimationFrame(updatePlayerMorph);
+            requestAnimationFrame(updateScrollState);
             ticking = true;
         }
-    }
-
-    // Easing function for smooth animation
-    function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
     }
 
     // Listen for scroll
     window.addEventListener('scroll', onScroll, { passive: true });
 
     // Initial state check
-    updatePlayerMorph();
+    updateScrollState();
 
-    console.log("Player morph initialized");
+    console.log("Header scroll initialized");
 }

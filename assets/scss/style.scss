@@ -253,14 +253,28 @@ table {
 
 .hdr-wrapper {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
   font-size: 1.2rem;
+  padding: 12px 0;
+  transition: padding 0.3s ease-out;
 
   .site-branding {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     margin-right: .8em;
-    font-size: 1.6em;
+    order: 0;
+  }
+
+  .hdr-left {
+    order: 2;
+    margin-left: auto;  /* Push nav to the right */
+    text-align: right;
+  }
+
+  .hdr-icons {
+    order: 3;
+    margin-left: 1rem;
   }
 
   .site-nav {
@@ -280,6 +294,11 @@ table {
       margin-left: .8em;
     }
   }
+}
+
+/* Scrolled state: tighter padding */
+.header-scrolled .hdr-wrapper {
+  padding: 6px 0;
 }
 
 .hdr-icons {
