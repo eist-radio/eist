@@ -67,30 +67,32 @@
 }
 
 .live-dot {
-    width: 10px;
-    height: 10px;
-    background: #ff4757;
+    width: 8px;
+    height: 8px;
+    background: $eist-secondary;
     border-radius: 50%;
-    box-shadow: 0 0 8px 2px rgba(255, 71, 87, 0.6);
-    animation: pulse-live 1.5s ease-in-out infinite;
+    box-shadow: 0 0 6px 1px rgba($eist-secondary, 0.4);
+    animation: breathe 3s ease-in-out infinite;
 }
 
-@keyframes pulse-live {
+@keyframes breathe {
     0%, 100% {
-        box-shadow: 0 0 8px 2px rgba(255, 71, 87, 0.6);
+        opacity: 1;
         transform: scale(1);
+        box-shadow: 0 0 6px 1px rgba($eist-secondary, 0.4);
     }
     50% {
-        box-shadow: 0 0 12px 4px rgba(255, 71, 87, 0.8);
-        transform: scale(1.1);
+        opacity: 0.6;
+        transform: scale(1.05);
+        box-shadow: 0 0 10px 3px rgba($eist-secondary, 0.6);
     }
 }
 
 .live-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: $eist-secondary;
     text-transform: uppercase;
 }
 
