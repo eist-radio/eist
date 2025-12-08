@@ -276,12 +276,20 @@ function initArtistsFilters() {
         });
     }
 
-    // Artist jump dropdown - navigate to artist page
+    // Artist jump dropdown - navigate to artist page via turbo-frame navigation (preserves audio)
     const artistJumpSelect = document.getElementById('artist-jump-select');
     if (artistJumpSelect) {
         artistJumpSelect.addEventListener('change', function() {
             if (this.value) {
-                window.location.href = this.value;
+                // Create link targeting turbo-frame to ensure frame navigation (not Drive)
+                // Links outside the frame default to Drive navigation which disrupts iframes
+                const link = document.createElement('a');
+                link.href = this.value;
+                link.dataset.turboFrame = 'main-content';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         });
     }
