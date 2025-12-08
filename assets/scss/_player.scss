@@ -343,7 +343,6 @@ opacity: 0.7;
     background: $eist;
     z-index: 9998;
     justify-content: center;
-    @include fixed-bar-shadow;
 }
 
 #player-small.player-docked .audio-player {

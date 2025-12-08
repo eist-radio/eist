@@ -76,13 +76,6 @@
   }
 }
 
-// Soft shadow for fixed/sticky bars (player bar, filter bars)
-// Creates a gentle transition between fixed bars and scrolling content
-// Usage: @include fixed-bar-shadow;
-@mixin fixed-bar-shadow {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
 @mixin aTag {
   a {
     word-wrap: break-word;
