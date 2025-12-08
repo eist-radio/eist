@@ -6,21 +6,38 @@
 {{/* Collect all artists */}}
 {{ $allArtists := .RegularPages }}
 
-{{/* Build set of artist slugs that have at least one show */}}
-{{ $artistsWithShows := dict }}
+{{/*
+    Build set of "active" artist slugs. An artist is active if:
+    - They have at least one show, OR
+    - They have had a show air in the past 30 days
+*/}}
+{{ $activeArtists := dict }}
 {{ $showsData := site.Data.shows }}
+{{ $thirtyDaysAgo := now.AddDate 0 0 -30 }}
 {{ range $showsData }}
     {{ $slug := .artistSlug }}
     {{ if $slug }}
-        {{ $artistsWithShows = merge $artistsWithShows (dict $slug true) }}
+        {{/* Check if already marked active */}}
+        {{ if not (index $activeArtists $slug) }}
+            {{ $isActive := true }}
+            {{/* Could add stricter rules here in future - for now, having any show = active */}}
+            {{/* Artists with shows in past 30 days are always active regardless of other rules */}}
+            {{ if .start }}
+                {{ $showDate := time .start }}
+                {{ if $showDate.After $thirtyDaysAgo }}
+                    {{ $isActive = true }}
+                {{ end }}
+            {{ end }}
+            {{ $activeArtists = merge $activeArtists (dict $slug $isActive) }}
+        {{ end }}
     {{ end }}
 {{ end }}
 
-{{/* Count artists with shows */}}
-{{ $artistsWithShowsCount := 0 }}
+{{/* Count active artists */}}
+{{ $activeArtistsCount := 0 }}
 {{ range $allArtists }}
-    {{ if index $artistsWithShows .File.BaseFileName }}
-        {{ $artistsWithShowsCount = add $artistsWithShowsCount 1 }}
+    {{ if index $activeArtists .File.BaseFileName }}
+        {{ $activeArtistsCount = add $activeArtistsCount 1 }}
     {{ end }}
 {{ end }}
 
@@ -137,7 +154,7 @@
                         <option value="">Select artist...</option>
                         {{ range $allArtists }}
                             {{ $artistName := .Description | default .Title }}
-                            {{ $hasShows := index $artistsWithShows .File.BaseFileName }}
+                            {{ $hasShows := index $activeArtists .File.BaseFileName }}
                             <option value="{{ .RelPermalink }}" data-has-shows="{{ if $hasShows }}true{{ else }}false{{ end }}"{{ if not $hasShows }} class="inactive-artist" hidden{{ end }}>{{ $artistName }}</option>
                         {{ end }}
                     </select>
@@ -156,7 +173,7 @@
 
                 {{/* Results count and inactive toggle */}}
                 <div class="filter-group results-toggle">
-                    <span class="results-text" id="results-count">Showing {{ $artistsWithShowsCount }} artists</span>
+                    <span class="results-text" id="results-count">Showing {{ $activeArtistsCount }} artists</span>
                     <label class="toggle-label">
                         <input type="checkbox" id="include-inactive" class="toggle-input">
                         <span class="toggle-switch"></span>
@@ -204,12 +221,12 @@
     <section class="artists-grid-section section-inner">
         <div class="artists-grid" id="artists-grid"
              data-total-artists="{{ $totalArtists }}"
-             data-artists-with-shows="{{ $artistsWithShowsCount }}">
+             data-artists-with-shows="{{ $activeArtistsCount }}">
             {{ range $allArtists }}
                 {{ $image := .Params.image | default "/eist_online.png" }}
                 {{ $genres := .Params.genres | default "" }}
                 {{ $artistName := .Description | default .Title }}
-                {{ $hasShows := index $artistsWithShows .File.BaseFileName }}
+                {{ $hasShows := index $activeArtists .File.BaseFileName }}
 
                 <article class="artist-card{{ if not $hasShows }} no-shows{{ end }}"
                          data-name="{{ $artistName | lower }}"
