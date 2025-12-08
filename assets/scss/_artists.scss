@@ -72,8 +72,11 @@
     pointer-events: none;
 }
 
-/* Results count */
-.results-count {
+/* Results count and inactive toggle */
+.results-toggle {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
     margin-left: auto;
 }
 
@@ -81,6 +84,7 @@
     font-size: 0.85rem;
     color: rgba(175, 252, 65, 0.7);
     font-weight: 500;
+    white-space: nowrap;
 }
 
 /* Artists Grid Section */
@@ -306,8 +310,10 @@
         gap: 1rem;
     }
 
-    .results-count {
+    .results-toggle {
         margin-left: 0;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
     }
 
     .filter-input {

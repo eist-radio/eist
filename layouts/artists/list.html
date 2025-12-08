@@ -6,6 +6,24 @@
 {{/* Collect all artists */}}
 {{ $allArtists := .RegularPages }}
 
+{{/* Build set of artist slugs that have at least one show */}}
+{{ $artistsWithShows := dict }}
+{{ $showsData := site.Data.shows }}
+{{ range $showsData }}
+    {{ $slug := .artistSlug }}
+    {{ if $slug }}
+        {{ $artistsWithShows = merge $artistsWithShows (dict $slug true) }}
+    {{ end }}
+{{ end }}
+
+{{/* Count artists with shows */}}
+{{ $artistsWithShowsCount := 0 }}
+{{ range $allArtists }}
+    {{ if index $artistsWithShows .File.BaseFileName }}
+        {{ $artistsWithShowsCount = add $artistsWithShowsCount 1 }}
+    {{ end }}
+{{ end }}
+
 {{/* Hard blocklist - these genres are never shown anywhere */}}
 {{ $hardBlocklist := slice "TWAT" "CORKCORE" "140" "THEWEATHER" }}
 
@@ -119,7 +137,8 @@
                         <option value="">Select artist...</option>
                         {{ range $allArtists }}
                             {{ $artistName := .Description | default .Title }}
-                            <option value="{{ .RelPermalink }}">{{ $artistName }}</option>
+                            {{ $hasShows := index $artistsWithShows .File.BaseFileName }}
+                            <option value="{{ .RelPermalink }}" data-has-shows="{{ if $hasShows }}true{{ else }}false{{ end }}"{{ if not $hasShows }} class="inactive-artist" hidden{{ end }}>{{ $artistName }}</option>
                         {{ end }}
                     </select>
                 </div>
@@ -135,9 +154,14 @@
                     </div>
                 </div>
 
-                {{/* Results count */}}
-                <div class="filter-group results-count">
-                    <span class="results-text" id="results-count">Showing all {{ $totalArtists }} artists</span>
+                {{/* Results count and inactive toggle */}}
+                <div class="filter-group results-toggle">
+                    <span class="results-text" id="results-count">Showing {{ $artistsWithShowsCount }} artists</span>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="include-inactive" class="toggle-input">
+                        <span class="toggle-switch"></span>
+                        <span class="toggle-text">Include inactive</span>
+                    </label>
                 </div>
 
                 {{/* Expand filters button (mobile only, shows when scrolled) */}}
@@ -178,15 +202,19 @@
 
     {{/* Artists Grid */}}
     <section class="artists-grid-section section-inner">
-        <div class="artists-grid" id="artists-grid">
+        <div class="artists-grid" id="artists-grid"
+             data-total-artists="{{ $totalArtists }}"
+             data-artists-with-shows="{{ $artistsWithShowsCount }}">
             {{ range $allArtists }}
                 {{ $image := .Params.image | default "/eist_online.png" }}
                 {{ $genres := .Params.genres | default "" }}
                 {{ $artistName := .Description | default .Title }}
+                {{ $hasShows := index $artistsWithShows .File.BaseFileName }}
 
-                <article class="artist-card"
+                <article class="artist-card{{ if not $hasShows }} no-shows{{ end }}"
                          data-name="{{ $artistName | lower }}"
-                         data-genres="{{ $genres | lower }}">
+                         data-genres="{{ $genres | lower }}"
+                         data-has-shows="{{ if $hasShows }}true{{ else }}false{{ end }}">
                     <a href="{{ .Permalink }}" class="artist-card-link">
                         <div class="artist-card-image-wrapper">
                             <img

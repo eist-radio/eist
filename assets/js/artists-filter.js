@@ -31,11 +31,17 @@ function initArtistsFilters() {
     // All cards
     const allCards = document.querySelectorAll('.artist-card');
     const totalArtists = allCards.length;
+    const artistsWithShows = parseInt(artistsGrid?.dataset.artistsWithShows || totalArtists, 10);
+
+    // Include inactive toggle
+    const includeInactiveToggle = document.getElementById('include-inactive');
+    const artistJumpSelect = document.getElementById('artist-jump-select');
 
     // Current filter state
     let filters = {
         search: '',
-        genres: []
+        genres: [],
+        includeInactive: false
     };
 
     /**
@@ -44,12 +50,18 @@ function initArtistsFilters() {
     function applyFilters() {
         let visibleCount = 0;
         const searchTerm = filters.search.toLowerCase().trim();
+        const baseCount = filters.includeInactive ? totalArtists : artistsWithShows;
 
         allCards.forEach(card => {
             let visible = true;
 
+            // Inactive filter (artists without shows)
+            if (!filters.includeInactive && card.dataset.hasShows === 'false') {
+                visible = false;
+            }
+
             // Search filter
-            if (searchTerm) {
+            if (visible && searchTerm) {
                 const name = card.dataset.name || '';
                 if (!name.includes(searchTerm)) {
                     visible = false;
@@ -79,9 +91,9 @@ function initArtistsFilters() {
 
         // Update results count
         if (filters.search || filters.genres.length > 0) {
-            resultsCount.textContent = `Showing ${visibleCount} of ${totalArtists} artists`;
+            resultsCount.textContent = `Showing ${visibleCount} of ${baseCount} artists`;
         } else {
-            resultsCount.textContent = `Showing all ${totalArtists} artists`;
+            resultsCount.textContent = `Showing ${baseCount} artists`;
         }
 
         // Show/hide no results message
@@ -149,7 +161,7 @@ function initArtistsFilters() {
     }
 
     /**
-     * Reset all filters
+     * Reset all filters (except includeInactive toggle)
      */
     function resetFilters() {
         searchInput.value = '';
@@ -158,7 +170,8 @@ function initArtistsFilters() {
 
         filters = {
             search: '',
-            genres: []
+            genres: [],
+            includeInactive: filters.includeInactive // preserve toggle state
         };
 
         applyFilters();
@@ -276,8 +289,24 @@ function initArtistsFilters() {
         });
     }
 
+    // Include inactive toggle
+    if (includeInactiveToggle) {
+        includeInactiveToggle.addEventListener('change', function() {
+            filters.includeInactive = this.checked;
+
+            // Update dropdown options visibility
+            const dropdownOptions = artistJumpSelect?.querySelectorAll('option[data-has-shows]');
+            dropdownOptions?.forEach(option => {
+                if (option.dataset.hasShows === 'false') {
+                    option.hidden = !filters.includeInactive;
+                }
+            });
+
+            applyFilters();
+        });
+    }
+
     // Artist jump dropdown - navigate to artist page via turbo-frame navigation (preserves audio)
-    const artistJumpSelect = document.getElementById('artist-jump-select');
     if (artistJumpSelect) {
         artistJumpSelect.addEventListener('change', function() {
             if (this.value) {
@@ -327,6 +356,9 @@ function initArtistsFilters() {
 
     // Initialize from URL params (must be after drawerTags is defined)
     initFromUrlParams();
+
+    // Apply default filters (hide inactive artists) on initial load
+    applyFilters();
 
     function openGenreDrawer() {
         if (!genreDrawer) return;
