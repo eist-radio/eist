@@ -376,6 +376,12 @@ opacity: 0.7;
     flex-direction: row;
     overflow: hidden;
     white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &.loaded {
+        opacity: 1;
+    }
 }
 
 /* Show broadcast status when docked (it's the main info now) */

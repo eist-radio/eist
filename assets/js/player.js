@@ -199,9 +199,15 @@ function initializePage() {
         const broadcastStatusElement = document.getElementById('live-text');
         const artistImageElement = document.getElementById('dj-image');
         const liveIndicator = document.getElementById('live-indicator');
+        const broadcastStatusContainer = document.querySelector('.broadcast-status');
 
         if (artistNameElement) artistNameElement.textContent = artistDetails.name;
         if (showTitleElement) showTitleElement.textContent = showTitle;
+
+        // Show the status area now that we have data
+        if (broadcastStatusContainer) {
+            broadcastStatusContainer.classList.add('loaded');
+        }
 
         const isLive = broadcastStatus === "schedule";
 
@@ -299,13 +305,7 @@ function initializePage() {
     // Start fetching now playing information
     console.log("Starting initial nowPlaying fetch");
 
-    // Ensure we have defaults before the API call
-    updatePlayer({
-        broadcastStatus: 'initializing',
-        showTitle: defaultText,
-        artistDetails: { name: defaultText, image: defaultImage }
-    });
-
+    // Don't show anything until we have real data from the API
     nowPlaying();
     updateMediaSession(isPlaying);
 
