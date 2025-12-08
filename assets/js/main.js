@@ -124,7 +124,6 @@ document.addEventListener("turbo:load", () => {
 
     if (header !== null) {
         listen('#menu-btn', "click", toggleMobileMenu);
-        listen('#mobile-menu-close', "click", toggleMobileMenu);
         listen('#share-btn', "click", shareMobileMenu);
         listen('#toc-btn', "click", toggleToc);
         listen('#img-btn', "click", showImg);
