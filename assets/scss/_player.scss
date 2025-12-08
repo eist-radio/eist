@@ -31,6 +31,11 @@
     font-size: large;
     z-index: 2;
     text-align: end;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ===========================================
@@ -46,6 +51,7 @@
     background: rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     backdrop-filter: blur(4px);
+    flex-shrink: 0;
 
     &.off-air {
         .live-dot {
@@ -91,6 +97,9 @@
 /* DJ name styling within live-text */
 #live-text {
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     .dj-prefix {
         font-size: 0.8em;
