@@ -9,34 +9,35 @@
 {{/*
     Build set of "active" artist slugs. An artist is active if:
     1. They have had a show in the past 30 days (always active), OR
-    2. They have shows in the last 6 months, OR
-    3. They have more than 3 total shows
+    2. They have archived shows in the last 3 months, OR
+    3. They have more than 3 total archived shows
 
-    Put another way: inactive = no shows in 6 months AND 3 or fewer total shows
+    Put another way: inactive = no archived shows in 3 months AND 3 or fewer total archived shows
 */}}
 {{ $showsData := site.Data.shows }}
 {{ $thirtyDaysAgo := now.AddDate 0 0 -30 }}
-{{ $sixMonthsAgo := now.AddDate 0 -6 0 }}
+{{ $threeMonthsAgo := now.AddDate 0 -3 0 }}
 
-{{/* First pass: gather stats per artist */}}
+{{/* First pass: gather stats per artist (only count shows with archives) */}}
 {{ $artistStats := dict }}
 {{ range $showsData }}
     {{ $slug := .artistSlug }}
-    {{ if $slug }}
-        {{ $stats := index $artistStats $slug | default (dict "total" 0 "recent30" false "recent6mo" false) }}
+    {{ $hasArchive := or .mixcloud_match .soundcloud_match }}
+    {{ if and $slug $hasArchive }}
+        {{ $stats := index $artistStats $slug | default (dict "total" 0 "recent30" false "recent3mo" false) }}
         {{ $newTotal := add (index $stats "total") 1 }}
         {{ $recent30 := index $stats "recent30" }}
-        {{ $recent6mo := index $stats "recent6mo" }}
+        {{ $recent3mo := index $stats "recent3mo" }}
         {{ if .start }}
             {{ $showDate := time .start }}
             {{ if $showDate.After $thirtyDaysAgo }}
                 {{ $recent30 = true }}
             {{ end }}
-            {{ if $showDate.After $sixMonthsAgo }}
-                {{ $recent6mo = true }}
+            {{ if $showDate.After $threeMonthsAgo }}
+                {{ $recent3mo = true }}
             {{ end }}
         {{ end }}
-        {{ $artistStats = merge $artistStats (dict $slug (dict "total" $newTotal "recent30" $recent30 "recent6mo" $recent6mo)) }}
+        {{ $artistStats = merge $artistStats (dict $slug (dict "total" $newTotal "recent30" $recent30 "recent3mo" $recent3mo)) }}
     {{ end }}
 {{ end }}
 
@@ -45,15 +46,15 @@
 {{ range $slug, $stats := $artistStats }}
     {{ $total := index $stats "total" }}
     {{ $recent30 := index $stats "recent30" }}
-    {{ $recent6mo := index $stats "recent6mo" }}
+    {{ $recent3mo := index $stats "recent3mo" }}
 
     {{/* Rule 1: Show in past 30 days = always active */}}
     {{ $isActive := $recent30 }}
 
-    {{/* Rule 2: No shows in 6 months AND ≤3 total = inactive */}}
-    {{ if and (not $isActive) (not $recent6mo) (le $total 3) }}
+    {{/* Rule 2: No archived shows in 3 months AND ≤3 total = inactive */}}
+    {{ if and (not $isActive) (not $recent3mo) (le $total 3) }}
         {{ $isActive = false }}
-    {{/* Rule 3: Has shows = active (unless caught by rule 2) */}}
+    {{/* Rule 3: Has archived shows = active (unless caught by rule 2) */}}
     {{ else if not $isActive }}
         {{ $isActive = true }}
     {{ end }}
