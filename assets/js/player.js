@@ -357,6 +357,9 @@ function initPlayerMorph() {
     // Listen for scroll
     window.addEventListener('scroll', onScroll, { passive: true });
 
+    // Also re-check on resize (content reflow can change scroll position)
+    window.addEventListener('resize', onScroll, { passive: true });
+
     // Initial state check
     updateScrollState();
 

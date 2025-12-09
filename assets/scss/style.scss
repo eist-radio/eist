@@ -301,9 +301,10 @@ table {
   }
 }
 
-/* Scrolled state: tighter padding */
+/* Scrolled state: tighter padding, prevent nav wrapping */
 .header-scrolled .hdr-wrapper {
   padding: 6px 0;
+  flex-wrap: nowrap;  /* In scrolled state, priority nav handles overflow - don't wrap */
 }
 
 .hdr-icons {
