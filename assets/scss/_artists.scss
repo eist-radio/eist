@@ -553,12 +553,14 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    line-height: 1;
     color: rgba($eist-highlight, 0.85);
 }
 
 .next-show-time {
     font-size: 0.75rem;
     font-weight: 500;
+    line-height: 1;
     color: #fff;
     letter-spacing: 0.01em;
 }
