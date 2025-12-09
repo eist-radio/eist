@@ -21,7 +21,21 @@
                 </div>
             </div>
             <div class="hdr-left">
-                <nav class="site-nav hide-in-mobile">{{- partialCached "menu.html" . -}}</nav>
+                <nav class="site-nav" id="priority-nav">
+                    <div class="nav-visible">
+                        {{- range .Site.Menus.main -}}
+                        <a href="{{ .URL | absLangURL }}" class="nav-item">{{ .Name }}</a>
+                        {{- end -}}
+                    </div>
+                    <button class="nav-overflow-btn" id="nav-overflow-btn" aria-label="More" aria-expanded="false">
+                        <span class="overflow-icon"></span>
+                    </button>
+                    <div class="nav-overflow-dropdown" id="nav-overflow-dropdown">
+                        {{- range .Site.Menus.main -}}
+                        <a href="{{ .URL | absLangURL }}">{{ .Name }}</a>
+                        {{- end -}}
+                    </div>
+                </nav>
             </div>
             <div class="hdr-right hdr-icons">
                 {{ if (or .Params.images .Params.featuredImg) -}}

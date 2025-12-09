@@ -87,6 +87,105 @@ document.addEventListener("turbo:load", () => {
         }
     }
 
+    // Priority Navigation (Progressive Collapse)
+    // Hides nav items right-to-left as space shrinks
+    //
+    const initPriorityNav = () => {
+        const nav = document.getElementById('priority-nav');
+        const navVisible = nav?.querySelector('.nav-visible');
+        const overflowBtn = document.getElementById('nav-overflow-btn');
+        const overflowDropdown = document.getElementById('nav-overflow-dropdown');
+
+        if (!nav || !navVisible || !overflowBtn) return;
+
+        const navItems = navVisible.querySelectorAll('.nav-item');
+        if (navItems.length === 0) return;
+
+        // Store original widths (measure once with all items visible)
+        const itemWidths = [];
+        navItems.forEach(item => {
+            item.classList.remove('nav-hidden');
+            itemWidths.push(item.offsetWidth + 13); // Include margin
+        });
+        const overflowBtnWidth = 40; // Approximate width of overflow button
+
+        const updateNav = () => {
+            // Get the nav's actual available width based on its position
+            const navRect = navVisible.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            // Available width is from nav's left edge to viewport right, minus button and some padding
+            const rightPadding = 20;
+            const availableWidth = viewportWidth - navRect.left - overflowBtnWidth - rightPadding;
+
+            // First, show all items to measure properly
+            navItems.forEach(item => item.classList.remove('nav-hidden'));
+
+            // Calculate which items fit based on their cumulative right edge
+            let lastVisibleIndex = -1;
+            let totalWidth = 0;
+
+            for (let i = 0; i < navItems.length; i++) {
+                totalWidth += itemWidths[i];
+                if (totalWidth <= availableWidth) {
+                    lastVisibleIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            // Ensure at least one item is visible
+            if (lastVisibleIndex < 0) lastVisibleIndex = 0;
+
+            // Update visibility
+            navItems.forEach((item, i) => {
+                if (i <= lastVisibleIndex) {
+                    item.classList.remove('nav-hidden');
+                } else {
+                    item.classList.add('nav-hidden');
+                }
+            });
+
+            // Show/hide overflow button
+            const hasOverflow = lastVisibleIndex < navItems.length - 1;
+            overflowBtn.classList.toggle('has-overflow', hasOverflow);
+        };
+
+        // Toggle dropdown
+        overflowBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = overflowDropdown.classList.contains('show');
+            overflowDropdown.classList.toggle('show');
+            overflowBtn.setAttribute('aria-expanded', !isOpen);
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (!nav.contains(e.target)) {
+                overflowDropdown.classList.remove('show');
+                overflowBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Close dropdown on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                overflowDropdown.classList.remove('show');
+                overflowBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Mark priority nav as active (hides old menu button via CSS)
+        document.getElementById('site-header')?.classList.add('priority-nav-active');
+
+        // Initial update
+        updateNav();
+
+        // Update on resize (use window resize for viewport-based calculation)
+        window.addEventListener('resize', throttle(updateNav, 100));
+    };
+
+    initPriorityNav();
+
     // Social Share Toggle
     //
     let shareMenuVisible = false;

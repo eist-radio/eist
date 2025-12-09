@@ -264,17 +264,22 @@ table {
     align-items: center;
     margin-right: .8em;
     order: 0;
+    flex-shrink: 0;  /* Don't shrink logo */
   }
 
   .hdr-left {
     order: 2;
     margin-left: auto;  /* Push nav to the right */
     text-align: right;
+    flex-shrink: 1;  /* Allow shrink, priority nav handles overflow via hiding items */
+    min-width: 0;  /* Allow shrinking below content size */
+    max-width: calc(100% - 200px);  /* Leave room for logo, don't force wrap */
   }
 
   .hdr-icons {
     order: 3;
     margin-left: 1rem;
+    flex-shrink: 0;  /* Don't shrink icons */
   }
 
   .site-nav {
@@ -759,11 +764,18 @@ a.footnote-ref {
 
 @media (max-width: 1300px) {
 
-  .hide-in-mobile,
-  .site-nav.hide-in-mobile {
+  // Old behavior: hide nav and show menu button
+  // Now handled by priority nav JS, but keep as no-JS fallback
+  .hide-in-mobile:not(#priority-nav) {
     display: none;
   }
 
+  // Hide old menu button when priority nav is active (JS working)
+  .priority-nav-active #menu-btn {
+    display: none;
+  }
+
+  // No-JS fallback: show menu button if priority nav not working
   #menu-btn {
     display: inline-block;
   }

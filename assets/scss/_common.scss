@@ -88,6 +88,148 @@ table caption {
     font-size: 0.95em;
 }
 
+// ============================================
+// Priority Navigation (Progressive Collapse)
+// Items hide right-to-left as space shrinks
+// ============================================
+
+#priority-nav {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.nav-visible {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.nav-item {
+    margin-left: 0.8em;
+    transition: opacity 0.2s ease-out;
+
+    &.nav-hidden {
+        display: none;
+    }
+}
+
+// Overflow button (hamburger/ellipsis)
+.nav-overflow-btn {
+    display: none; // Hidden until JS activates it
+    background: none;
+    border: none;
+    padding: 0 0.5em;
+    margin-left: 0.5em;
+    cursor: pointer;
+    color: inherit;
+    font-size: 1.4em;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &.has-overflow {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .overflow-icon {
+        display: block;
+        width: 20px;
+        height: 14px;
+        position: relative;
+
+        // Three horizontal lines (hamburger style)
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: currentColor;
+            border-radius: 1px;
+        }
+
+        &::before {
+            top: 0;
+            box-shadow: 0 6px 0 currentColor; // Middle line via shadow
+        }
+
+        &::after {
+            bottom: 0;
+        }
+    }
+}
+
+// Dropdown menu
+.nav-overflow-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5em;
+    background: $eist;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 0.5em 0;
+    min-width: 160px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+    &.show {
+        display: block;
+        animation: dropdownFadeIn 0.15s ease-out;
+    }
+
+    a {
+        display: block;
+        padding: 0.5em 1.2em;
+        margin: 0;
+        white-space: nowrap;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    }
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Mobile: hide all nav items, just show hamburger
+@media (max-width: 520px) {
+    .nav-visible .nav-item {
+        display: none !important;
+    }
+
+    // Always show hamburger on mobile (not just when has-overflow)
+    .nav-overflow-btn {
+        display: inline-flex !important;
+        margin-left: 0;
+    }
+
+    // Ensure dropdown is accessible on mobile
+    .nav-overflow-dropdown {
+        right: -10px;
+        min-width: 140px;
+    }
+}
+
 // Miscellaneous shared styles
 
 .artist {
