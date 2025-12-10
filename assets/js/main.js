@@ -101,53 +101,58 @@ document.addEventListener("turbo:load", () => {
         const navItems = navVisible.querySelectorAll('.nav-item');
         if (navItems.length === 0) return;
 
-        // Store original widths (measure once with all items visible)
-        const itemWidths = [];
-        navItems.forEach(item => {
-            item.classList.remove('nav-hidden');
-            itemWidths.push(item.offsetWidth + 13); // Include margin
-        });
-        const overflowBtnWidth = 40; // Approximate width of overflow button
+        // Overflow button width (measured once, includes padding)
+        const overflowBtnWidth = 48;
 
         const updateNav = () => {
-            // Get the nav's actual available width based on its position
-            const navRect = navVisible.getBoundingClientRect();
-            const viewportWidth = window.innerWidth;
-            // Available width is from nav's left edge to viewport right, minus button and some padding
-            const rightPadding = 20;
-            const availableWidth = viewportWidth - navRect.left - overflowBtnWidth - rightPadding;
-
-            // First, show all items to measure properly
+            // === STEP 1: Reset to clean state ===
+            // Remove ALL hidden classes and overflow state first
             navItems.forEach(item => item.classList.remove('nav-hidden'));
+            overflowBtn.classList.remove('has-overflow');
 
-            // Calculate which items fit based on their cumulative right edge
+            // === STEP 2: Force synchronous layout reflow ===
+            void navVisible.offsetWidth;
+
+            // === STEP 3: Get container boundary ===
+            // Use the PARENT container (.hdr-left) as the stable boundary reference
+            // This is stable and won't change based on nav content
+            const hdrLeft = nav.closest('.hdr-left');
+            const containerRight = hdrLeft ? hdrLeft.getBoundingClientRect().right : navVisible.getBoundingClientRect().right;
+
+            // === STEP 4: Check if last item overflows (needs hamburger) ===
+            const lastItem = navItems[navItems.length - 1];
+            const lastItemRect = lastItem.getBoundingClientRect();
+
+            // If last item fits within container, all items fit - done
+            if (lastItemRect.right <= containerRight) {
+                return;
+            }
+
+            // === STEP 5: Some items overflow - need hamburger ===
+            // Calculate boundary accounting for overflow button
+            const boundaryWithBtn = containerRight - overflowBtnWidth;
+
+            // === STEP 6: Find which items fit by checking their actual position ===
             let lastVisibleIndex = -1;
-            let totalWidth = 0;
-
             for (let i = 0; i < navItems.length; i++) {
-                totalWidth += itemWidths[i];
-                if (totalWidth <= availableWidth) {
+                const itemRect = navItems[i].getBoundingClientRect();
+                // Item fits if its right edge is within the boundary
+                if (itemRect.right <= boundaryWithBtn) {
                     lastVisibleIndex = i;
                 } else {
                     break;
                 }
             }
 
-            // Ensure at least one item is visible
-            if (lastVisibleIndex < 0) lastVisibleIndex = 0;
-
-            // Update visibility
+            // === STEP 7: Apply visibility ===
             navItems.forEach((item, i) => {
-                if (i <= lastVisibleIndex) {
-                    item.classList.remove('nav-hidden');
-                } else {
+                if (i > lastVisibleIndex) {
                     item.classList.add('nav-hidden');
                 }
             });
 
-            // Show/hide overflow button
-            const hasOverflow = lastVisibleIndex < navItems.length - 1;
-            overflowBtn.classList.toggle('has-overflow', hasOverflow);
+            // === STEP 8: Show overflow button ===
+            overflowBtn.classList.add('has-overflow');
         };
 
         // Toggle dropdown

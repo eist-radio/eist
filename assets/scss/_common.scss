@@ -97,6 +97,7 @@ table caption {
     display: flex;
     align-items: center;
     position: relative;
+    width: 100%;  // Fill parent width
 }
 
 .nav-visible {
@@ -104,6 +105,7 @@ table caption {
     align-items: center;
     overflow: hidden;
     white-space: nowrap;
+    flex: 1 0 auto;  // Grow but don't shrink
 }
 
 .nav-item {
