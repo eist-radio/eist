@@ -15,7 +15,6 @@ Options:
 import json
 import os
 import re
-import subprocess
 import sys
 import time
 import unicodedata
@@ -24,6 +23,15 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import requests
+
+# Import SoundCloud API client (replaces yt-dlp scraping)
+from soundcloud_api import (
+    SoundCloudClient,
+    SoundCloudAuthError,
+    SoundCloudAPIError,
+    fetch_soundcloud_tracks_api,
+    fetch_soundcloud_tracks_api_incremental,
+)
 
 # Import matching logic from dedicated module
 from match_mcsc_to_rc import (
@@ -39,7 +47,6 @@ RADIOCULT_BASE_URL = "https://api.radiocult.fm/api/station/eist-radio"
 MIXCLOUD_BASE_URL = "https://api.mixcloud.com"
 MIXCLOUD_USER = "eistcork"
 SOUNDCLOUD_USER = "eistcork"
-SOUNDCLOUD_TRACKS_URL = f"https://soundcloud.com/{SOUNDCLOUD_USER}/tracks"
 DATA_DIR = Path("data")
 SHOWS_FILE = DATA_DIR / "shows.json"
 UPCOMING_SCHEDULE_FILE = DATA_DIR / "upcoming_schedule.json"
@@ -398,12 +405,10 @@ def fetch_mixcloud_cloudcasts_full(fetch_descriptions=True):
 
 def fetch_soundcloud_tracks_incremental(existing_cache=None):
     """
-    Fetch SoundCloud tracks incrementally using yt-dlp hybrid approach.
+    Fetch SoundCloud tracks incrementally using the official API.
 
-    Uses a two-phase approach:
-    1. Fast scan with --flat-playlist to get list of track IDs (~4s for all)
-    2. Stop when we find a known ID from cache
-    3. Fetch full metadata only for new tracks (~1.8s each)
+    Uses OAuth 2.0 Client Credentials flow with cursor-based pagination.
+    Stops when we encounter a track ID that's already in the cache.
 
     Args:
         existing_cache: List of existing cached tracks (newest first)
@@ -412,160 +417,59 @@ def fetch_soundcloud_tracks_incremental(existing_cache=None):
         Tuple of (merged_tracks, new_count) where merged_tracks is the
         complete list with new items prepended, and new_count is how many were new.
     """
-    # Build set of known IDs for O(1) lookup
-    known_ids = set()
     if existing_cache:
-        known_ids = {str(t.get('id')) for t in existing_cache if t.get('id')}
-        print(f"  Loaded {len(known_ids)} known SoundCloud IDs from cache")
-
-    # Phase 1: Fast scan to find new track IDs
-    print("  Phase 1: Scanning for new tracks...")
-    new_ids = []
+        print(f"  Loaded {len(existing_cache)} known SoundCloud tracks from cache")
 
     try:
-        result = subprocess.run(
-            ['yt-dlp', '--flat-playlist', '-j', SOUNDCLOUD_TRACKS_URL],
-            capture_output=True,
-            text=True,
-            timeout=120
+        merged, new_count = fetch_soundcloud_tracks_api_incremental(
+            username=SOUNDCLOUD_USER,
+            existing_cache=existing_cache
         )
 
-        if result.returncode != 0:
-            print(f"  Error running yt-dlp: {result.stderr[:200]}")
-            return existing_cache or [], 0
+        if new_count > 0:
+            print(f"  Found {new_count} new tracks via SoundCloud API")
+        else:
+            print("  No new tracks found")
 
-        # Parse each line of JSON output
-        for line in result.stdout.strip().split('\n'):
-            if not line:
-                continue
-            try:
-                item = json.loads(line)
-                track_id = str(item.get('id', ''))
+        return merged, new_count
 
-                if track_id in known_ids:
-                    # Found known content - stop scanning
-                    print(f"  Reached known content at ID: {track_id}")
-                    break
-
-                new_ids.append({
-                    'id': track_id,
-                    'url': item.get('url', '')
-                })
-            except json.JSONDecodeError:
-                continue
-
-    except subprocess.TimeoutExpired:
-        print("  Error: yt-dlp scan timed out")
+    except SoundCloudAuthError as e:
+        print(f"  Authentication error: {e}")
         return existing_cache or [], 0
-    except FileNotFoundError:
-        print("  Error: yt-dlp not installed. Install with: pip3 install yt-dlp")
+    except SoundCloudAPIError as e:
+        print(f"  API error: {e}")
         return existing_cache or [], 0
-
-    print(f"  Found {len(new_ids)} new tracks")
-
-    if not new_ids:
+    except Exception as e:
+        print(f"  Unexpected error: {e}")
         return existing_cache or [], 0
-
-    # Phase 2: Fetch full metadata for new tracks only
-    print(f"  Phase 2: Fetching full metadata for {len(new_ids)} new tracks...")
-    new_tracks = []
-
-    for i, item in enumerate(new_ids):
-        if (i + 1) % 5 == 0:
-            print(f"    Progress: {i + 1}/{len(new_ids)}")
-
-        try:
-            result = subprocess.run(
-                ['yt-dlp', '-j', '--no-download', item['url']],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
-
-            if result.returncode != 0:
-                continue
-
-            data = json.loads(result.stdout)
-
-            new_tracks.append({
-                'id': str(data.get('id', item['id'])),
-                'title': data.get('title', ''),
-                'url': data.get('webpage_url', item['url']),
-                'upload_date': data.get('upload_date', ''),
-                'timestamp': data.get('timestamp', 0),
-                'duration': data.get('duration', 0),
-                'thumbnail': data.get('thumbnail', ''),
-                'description': data.get('description', '')
-            })
-
-        except (subprocess.TimeoutExpired, json.JSONDecodeError):
-            continue
-
-    print(f"  Fetched metadata for {len(new_tracks)} new tracks")
-
-    # Merge: new items first (they're newest), then existing cache
-    if existing_cache:
-        merged = new_tracks + existing_cache
-    else:
-        merged = new_tracks
-
-    return merged, len(new_tracks)
 
 
 def fetch_soundcloud_tracks_full():
     """
-    Fetch ALL SoundCloud tracks (full refresh).
+    Fetch ALL SoundCloud tracks (full refresh) using the official API.
 
-    Uses yt-dlp without --flat-playlist to get complete metadata for all tracks.
-    This is slower but gets everything in one pass.
+    Uses OAuth 2.0 Client Credentials flow with cursor-based pagination.
+    Fetches all tracks in a single pass.
 
     Returns:
         List of all tracks with full metadata.
     """
-    print("  Fetching all SoundCloud tracks (full refresh)...")
-
-    tracks = []
+    print("  Fetching all SoundCloud tracks via API (full refresh)...")
 
     try:
-        result = subprocess.run(
-            ['yt-dlp', '-j', '--no-download', SOUNDCLOUD_TRACKS_URL],
-            capture_output=True,
-            text=True,
-            timeout=600  # 10 minutes for full fetch
-        )
+        tracks = fetch_soundcloud_tracks_api(username=SOUNDCLOUD_USER)
+        print(f"  Fetched {len(tracks)} SoundCloud tracks via API")
+        return tracks
 
-        if result.returncode != 0:
-            print(f"  Error running yt-dlp: {result.stderr[:200]}")
-            return tracks
-
-        # Parse each line of JSON output
-        for line in result.stdout.strip().split('\n'):
-            if not line:
-                continue
-            try:
-                data = json.loads(line)
-
-                tracks.append({
-                    'id': str(data.get('id', '')),
-                    'title': data.get('title', ''),
-                    'url': data.get('webpage_url', ''),
-                    'upload_date': data.get('upload_date', ''),
-                    'timestamp': data.get('timestamp', 0),
-                    'duration': data.get('duration', 0),
-                    'thumbnail': data.get('thumbnail', ''),
-                    'description': data.get('description', '')
-                })
-            except json.JSONDecodeError:
-                continue
-
-        print(f"  Fetched {len(tracks)} SoundCloud tracks")
-
-    except subprocess.TimeoutExpired:
-        print("  Error: yt-dlp full fetch timed out")
-    except FileNotFoundError:
-        print("  Error: yt-dlp not installed. Install with: pip3 install yt-dlp")
-
-    return tracks
+    except SoundCloudAuthError as e:
+        print(f"  Authentication error: {e}")
+        return []
+    except SoundCloudAPIError as e:
+        print(f"  API error: {e}")
+        return []
+    except Exception as e:
+        print(f"  Unexpected error: {e}")
+        return []
 
 
 def generate_artist_slug(name):
