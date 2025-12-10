@@ -31,7 +31,7 @@ jobs:
           && sudo dpkg -i ${{ runner.temp }}/hugo.deb
 
       - name: Install Dart Sass
-        run: sudo snap install dart-sass
+        run: npm install -g sass
 
       - name: Install Node.js dependencies
         run: |
