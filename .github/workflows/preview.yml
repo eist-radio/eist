@@ -37,6 +37,9 @@ jobs:
         run: |
           [[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true
 
+      - name: Install Python dependencies
+        run: pip3 install thefuzz python-Levenshtein requests
+
       - name: Set and export API keys
         run: |
           echo "API_KEY=${{ secrets.RADIOCULT_API_KEY }}" >> $GITHUB_ENV
@@ -44,9 +47,16 @@ jobs:
           echo "SOUNDCLOUD_CLIENT_SECRET=${{ secrets.SOUNDCLOUD_CLIENT_SECRET }}" >> $GITHUB_ENV
 
       - name: Generate artist pages
-        run: |
-          sudo chmod +x ./generate-artist-pages.sh
-          ./generate-artist-pages.sh
+        run: python3 generate-artist-pages.py
+
+      - name: Align artist images for hero sections
+        run: python3 scripts/detect-faces.py
+
+      - name: Generate show cache
+        run: python3 generate-show-cache.py
+
+      - name: Generate show pages
+        run: python3 generate-show-pages.py
 
       - name: Build with Hugo
         env:
