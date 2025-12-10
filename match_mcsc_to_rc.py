@@ -36,22 +36,238 @@ except ImportError:
 MATCH_THRESHOLD = 60  # Minimum score to accept a match
 HIGH_CONFIDENCE_THRESHOLD = 80  # Score for high confidence matches
 
+# Known abbreviations/expansions
+ABBREVIATIONS = {
+    'iwd': 'international womens day',
+    'rsd': 'record store day',
+    'ep': 'episode',
+    'vol': 'volume',
+}
+
+# Known nickname mappings (normalized forms)
+NICKNAMES = {
+    'amy mcnamara': 'amy mac',
+    'amy mac': 'amy mcnamara',
+}
+
+
+def split_camel_case(text):
+    """Split CamelCase or joinedwords into separate words.
+
+    Examples:
+        MutualAffinities -> Mutual Affinities
+        SubTransmissions -> Sub Transmissions
+        DigWhereYouStand -> Dig Where You Stand
+    """
+    if not text:
+        return text
+    # Insert space before uppercase letters that follow lowercase
+    result = re.sub(r'([a-z])([A-Z])', r'\1 \2', text)
+    # Insert space before uppercase letters that are followed by lowercase (for acronyms)
+    result = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', result)
+    return result
+
+
+# Common compound words that should be split (all-lowercase for matching)
+COMPOUND_WORDS = {
+    'subtransmissions': 'sub transmissions',
+    'soundsystems': 'sound systems',
+    'soundsystem': 'sound system',
+    'digwhereyoustand': 'dig where you stand',
+    'wherearewhere': 'where are we',
+}
+
+# Common typos/misspellings to normalize (all-lowercase)
+# Applied after lowercase conversion but before removing special chars
+TYPO_CORRECTIONS = {
+    "c'meer": "c'mere",      # C'meer to Me -> C'mere to me
+    "cmeer": "cmere",        # Without apostrophe
+    "damsha": "damhsa",      # Damsha -> Damhsa (letter swap)
+}
+
+# Show name variants that should all normalize to the same form
+# These are applied after all other normalization (on final text)
+SHOW_NAME_VARIANTS = {
+    # HhÉirwaVves - various CamelCase/accent combinations normalize differently
+    "hheirwa vves": "hheirwavves",       # Show name: HhÉirwaVves
+    "hhei rwav ves": "hheirwavves",      # Archive: HhÉiRwavVes
+    "hh eii rwav ves": "hheirwavves",    # Archive: HhEÌiRwavVes
+}
+
+
+def split_compound_words(text):
+    """Split known compound words that aren't CamelCase.
+
+    Handles all-caps or all-lowercase compound words like SUBTRANSMISSIONS.
+    """
+    if not text:
+        return text
+    result = text.lower()
+    for compound, split in COMPOUND_WORDS.items():
+        result = result.replace(compound, split)
+    return result
+
+
+def fix_typos(text):
+    """Fix known typos and misspellings.
+
+    Handles cases like:
+        C'meer -> C'mere
+        Damsha -> Damhsa
+    """
+    if not text:
+        return text
+    result = text.lower()
+    for typo, correction in TYPO_CORRECTIONS.items():
+        result = result.replace(typo, correction)
+    return result
+
+
+def normalize_show_name_variants(text):
+    """Normalize known show name variants to canonical form.
+
+    Applied at the end of normalization to handle cases where
+    CamelCase splitting creates different results for the same show name.
+    """
+    if not text:
+        return text
+    for variant, canonical in SHOW_NAME_VARIANTS.items():
+        if variant in text:
+            text = text.replace(variant, canonical)
+    return text
+
+
+def extract_from_brackets(text):
+    """Extract text from within brackets [like this] if it looks like a show name.
+
+    Only extracts from SQUARE brackets, not parentheses (which often contain dates/metadata).
+    Returns the bracketed content if found, otherwise the original text.
+    """
+    if not text:
+        return text
+    # Only try square brackets - these typically contain show names
+    # e.g., "201019-[Airegin Offagain]"
+    match = re.search(r'\[([^\]]+)\]', text)
+    if match:
+        content = match.group(1)
+        # Only extract if it looks like a show name (not just numbers or a date)
+        if not re.match(r'^[\d\s\-/\.]+$', content) and len(content) > 3:
+            return content
+    return text
+
 
 def normalize_text(text):
     """Normalize text for comparison: lowercase, remove accents, simplify."""
     if not text:
         return ""
+    # Split CamelCase before other processing
+    text = split_camel_case(text)
+    # Replace underscores and hyphens with spaces
+    text = text.replace('_', ' ').replace('-', ' ')
     # Normalize unicode
     text = unicodedata.normalize('NFKD', text)
     # Remove accents
     text = ''.join(c for c in text if not unicodedata.combining(c))
     # Lowercase
     text = text.lower()
+    # Fix known typos (before removing special chars so apostrophes are still present)
+    text = fix_typos(text)
+    # Split known compound words (handles SUBTRANSMISSIONS -> sub transmissions)
+    text = split_compound_words(text)
     # Remove special characters, keep alphanumeric and spaces
     text = re.sub(r'[^a-z0-9\s]', '', text)
     # Collapse whitespace
     text = ' '.join(text.split())
+    # Normalize known show name variants (at the end to catch all variations)
+    text = normalize_show_name_variants(text)
     return text
+
+
+def strip_episode_info(text):
+    """Strip episode numbers and related info from a title to get the series name.
+
+    Examples:
+        Caribbean Voyage #7 -> Caribbean Voyage
+        Cinema in Absentia Episode 6 -> Cinema in Absentia
+        Vestibular episodes 9 -> Vestibular
+        Sub Transmissions 16 -> Sub Transmissions
+        CEOLCHAR 3 -> CEOLCHAR
+    """
+    if not text:
+        return text
+    # Remove various episode patterns
+    patterns = [
+        r'\s*#\s*\d+',           # #7, # 7
+        r'\s+episode\s*\d+',     # Episode 6, episode6
+        r'\s+episodes?\s*\d+',   # episodes 9
+        r'\s+ep\.?\s*\d+',       # ep 5, ep.5, ep5
+        r'\s+vol\.?\s*\d+',      # vol 2, vol.2
+        r'\s+show\s*#?\s*\d+',   # Show #7, show 1
+        r'\s+\d+\s*$',           # trailing number (e.g., "CEOLCHAR 3")
+    ]
+    result = text
+    for pattern in patterns:
+        result = re.sub(pattern, '', result, flags=re.IGNORECASE)
+    return result.strip()
+
+
+def strip_the_prefix(text):
+    """Remove 'The ' prefix from start of text for comparison."""
+    if not text:
+        return text
+    if text.lower().startswith('the '):
+        return text[4:]
+    return text
+
+
+def expand_abbreviations(text):
+    """Expand known abbreviations in text.
+
+    IWD -> International Women's Day
+    """
+    if not text:
+        return text
+    words = text.lower().split()
+    expanded = []
+    for word in words:
+        if word in ABBREVIATIONS:
+            expanded.append(ABBREVIATIONS[word])
+        else:
+            expanded.append(word)
+    return ' '.join(expanded)
+
+
+def get_nickname_variants(name):
+    """Get nickname variants for a name.
+
+    Returns a list of name variants including the original.
+    """
+    norm_name = normalize_text(name)
+    variants = [norm_name]
+    if norm_name in NICKNAMES:
+        variants.append(NICKNAMES[norm_name])
+    return variants
+
+
+def extract_series_name(title):
+    """Extract the base series name from a show title.
+
+    Handles patterns like:
+    - Caribbean Voyage #6 -> Caribbean Voyage
+    - Cinema in Absentia: Jazz, I Suppose -> Cinema in Absentia
+    - The Sky Was Pink | Episode 2 -> The Sky Was Pink
+    """
+    if not title:
+        return title
+    # Remove content after colon (often a subtitle)
+    if ':' in title:
+        title = title.split(':')[0].strip()
+    # Remove content after pipe
+    if '|' in title:
+        title = title.split('|')[0].strip()
+    # Strip episode info
+    title = strip_episode_info(title)
+    return title
 
 
 def extract_date_from_title(title):
@@ -327,6 +543,9 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
         best_show = None
         best_score = 0
 
+        # Pre-process archive title: try bracket extraction
+        processed_archive_title = extract_from_brackets(archive_title)
+
         # Parse date from archive
         archive_dt = None
         if archive_date:
@@ -345,7 +564,8 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
         # PRIORITY: If we have a specific date in the title, check for exact match first
         # This handles cases like "Aus der Ferne #8 (2025-10-19)" definitively
         if title_date_is_specific:
-            norm_archive = normalize_text(archive_title)
+            norm_archive = normalize_text(processed_archive_title)
+            norm_archive_series = normalize_text(strip_episode_info(processed_archive_title))
 
             # Try both the extracted date AND the swapped day/month version
             # This handles DD/MM vs MM/DD ambiguity (e.g., 05/09 could be May 9 or Sep 5)
@@ -365,6 +585,8 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
                 for show in exact_date_shows:
                     show_title = show.get('title', '')
                     norm_show = normalize_text(show_title)
+                    norm_show_series = normalize_text(extract_series_name(show_title))
+                    norm_show_no_the = normalize_text(strip_the_prefix(show_title))
 
                     # Check if show title appears in archive title (e.g., "Aus der Ferne" in "John O'Callaghan - Aus der Ferne #8")
                     if len(norm_show) > 3 and norm_show in norm_archive:
@@ -372,10 +594,22 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
                         # Return immediately with very high score
                         return show, 200
 
+                    # Check series name match (e.g., "Caribbean Voyage" matches "Caribbean Voyage #7")
+                    if len(norm_show_series) > 3 and norm_show_series in norm_archive:
+                        return show, 200
+
+                    # Check without "The" prefix (e.g., "Expanded Field" matches "The Expanded Field")
+                    if len(norm_show_no_the) > 3 and norm_show_no_the in norm_archive:
+                        return show, 200
+
                     # Also check fuzzy match for edge cases
                     if HAS_FUZZ:
                         similarity = fuzz.token_set_ratio(norm_show, norm_archive)
                         if similarity >= 80:
+                            return show, 200
+                        # Also try series name fuzzy match
+                        series_similarity = fuzz.token_set_ratio(norm_show_series, norm_archive_series)
+                        if series_similarity >= 85:
                             return show, 200
 
         # Determine which dates to search for fallback matching
@@ -427,14 +661,29 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
             show_title = show.get('title', '')
             show_date = show.get('start', '')
 
+            # Normalize both titles
             norm_show = normalize_text(show_title)
-            norm_archive = normalize_text(archive_title)
+            norm_archive = normalize_text(processed_archive_title)
 
-            # Artist name in archive title
+            # Also get series names (without episode numbers)
+            norm_show_series = normalize_text(extract_series_name(show_title))
+            norm_archive_series = normalize_text(strip_episode_info(processed_archive_title))
+
+            # Get versions without "The" prefix
+            norm_show_no_the = normalize_text(strip_the_prefix(show_title))
+            norm_archive_no_the = normalize_text(strip_the_prefix(processed_archive_title))
+
+            # Expand abbreviations for comparison
+            norm_show_expanded = expand_abbreviations(norm_show)
+            norm_archive_expanded = expand_abbreviations(norm_archive)
+
+            # Artist name in archive title (with nickname variants)
             if artist_name:
-                norm_artist = normalize_text(artist_name)
-                if norm_artist and len(norm_artist) > 2 and norm_artist in norm_archive:
-                    score += 25
+                artist_variants = get_nickname_variants(artist_name)
+                for variant in artist_variants:
+                    if variant and len(variant) > 2 and variant in norm_archive:
+                        score += 25
+                        break
 
             # Username match: artist's platform username appears in archive URL or title
             # Use MC-USERNAME for Mixcloud, SC-USERNAME for SoundCloud
@@ -448,20 +697,49 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
                     score += 40
 
             # Title similarity
-            if HAS_FUZZ and show_title and archive_title:
+            if HAS_FUZZ and show_title and processed_archive_title:
                 similarity = fuzz.token_set_ratio(norm_show, norm_archive)
                 score += int(similarity * 0.35)
+
+                # Bonus: high fuzzy similarity (85+) indicates strong match
+                if similarity >= 85:
+                    score += 15
 
                 # Bonus: show title appears in archive name (common for "Show Name Episode X" patterns)
                 if len(norm_show) > 3 and norm_show in norm_archive:
                     score += 25
 
+                # Bonus: series name match (e.g., "Caribbean Voyage" matches "Caribbean Voyage #7")
+                if len(norm_show_series) > 3 and norm_show_series in norm_archive:
+                    score += 20
+
+                # Bonus: match without "The" prefix (higher bonus since it's a strong signal)
+                if len(norm_show_no_the) > 3 and norm_show_no_the in norm_archive_no_the:
+                    score += 25
+
+                # Bonus: expanded abbreviation match (e.g., "IWD" -> "International Women's Day")
+                if norm_show_expanded != norm_show or norm_archive_expanded != norm_archive:
+                    expanded_similarity = fuzz.token_set_ratio(norm_show_expanded, norm_archive_expanded)
+                    if expanded_similarity > similarity:
+                        # Strong bonus for abbreviation matches, especially high-confidence ones
+                        expansion_boost = int((expanded_similarity - similarity) * 0.5)
+                        if expanded_similarity >= 95:
+                            expansion_boost += 15  # Extra boost for near-perfect expanded match
+                        score += expansion_boost
+
                 # Extra bonus: exact title match (after normalization)
                 if norm_show == norm_archive:
                     score += 15
-            elif show_title and archive_title:
+
+                # Extra bonus: series name exact match
+                if norm_show_series == norm_archive_series and len(norm_show_series) > 3:
+                    score += 20
+
+            elif show_title and processed_archive_title:
                 if norm_show in norm_archive or norm_archive in norm_show:
                     score += 25
+                elif norm_show_series in norm_archive or norm_archive_series in norm_show:
+                    score += 20
 
             # Date match - THIS IS THE PRIORITY SIGNAL
             # An exact date match combined with title similarity is a definitive match
