@@ -141,12 +141,14 @@ def process_artist(artist_path: Path, dry_run: bool = False, existing_data: dict
     image_url = frontmatter.get('image', '')
     if not image_url or image_url == '/eist_online.png':
         result["status"] = "no_image"
+        result["hero_focus"] = "none"  # Cache negative result
         return result
 
     # Download image
     temp_path = download_image(image_url)
     if not temp_path:
         result["status"] = "download_failed"
+        result["hero_focus"] = "none"  # Cache negative result
         return result
 
     try:
@@ -155,6 +157,7 @@ def process_artist(artist_path: Path, dry_run: bool = False, existing_data: dict
 
         if position is None:
             result["status"] = "no_face"
+            result["hero_focus"] = "none"  # Cache negative result
             return result
 
         x_percent, y_percent = position
@@ -257,6 +260,9 @@ def main():
                 existing_data[r['name']] = r['hero_focus']
             elif status == "already_set" and r.get('hero_focus'):
                 # Keep existing values in the JSON
+                existing_data[r['name']] = r['hero_focus']
+            elif status in ("no_face", "no_image", "download_failed") and r.get('hero_focus'):
+                # Cache negative results to skip on future runs
                 existing_data[r['name']] = r['hero_focus']
             elif status == "error":
                 print(f"✗ {r['name']}: {r.get('error', 'unknown error')}")
