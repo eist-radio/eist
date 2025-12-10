@@ -52,18 +52,39 @@ REVIEW_QUEUE_FILE = DATA_DIR / "review-queue.json"
 REQUEST_DELAY = 0.5  # Seconds between API requests
 
 
+def load_api_keys():
+    """Load API keys from .env file or environment variables.
+
+    .env format (key=value, one per line):
+        API_KEY=your_radiocult_key
+        SOUNDCLOUD_API_KEY=your_soundcloud_key
+    """
+    keys = {}
+    env_file = Path(".env")
+
+    if env_file.exists():
+        for line in env_file.read_text().strip().split('\n'):
+            line = line.strip()
+            if line and '=' in line and not line.startswith('#'):
+                name, value = line.split('=', 1)
+                keys[name.strip()] = value.strip()
+
+    # Environment variables override file
+    for key_name in ['API_KEY', 'SOUNDCLOUD_API_KEY']:
+        env_val = os.environ.get(key_name)
+        if env_val:
+            keys[key_name] = env_val
+
+    return keys
+
+
 def get_api_key():
-    """Read RadioCult API key from file."""
-    key_file = Path("RADIOCULT_API_KEY")
-    if key_file.exists():
-        return key_file.read_text().strip()
+    """Get RadioCult API key."""
+    keys = load_api_keys()
+    if 'API_KEY' in keys:
+        return keys['API_KEY']
 
-    # Try environment variable
-    key = os.environ.get("API_KEY") or os.environ.get("RADIOCULT_API_KEY")
-    if key:
-        return key
-
-    print("Error: No API key found. Create RADIOCULT_API_KEY file or set API_KEY env var.")
+    print("Error: No API key found. Create .env file with API_KEY or set API_KEY env var.")
     sys.exit(1)
 
 
