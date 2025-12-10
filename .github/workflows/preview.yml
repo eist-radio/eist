@@ -50,7 +50,7 @@ jobs:
         run: python3 generate-artist-pages.py
 
       - name: Align artist images for hero sections
-        run: python3 scripts/detect-faces.py
+        run: python3 scripts/detect-faces.py || true
 
       - name: Generate show cache
         run: python3 generate-show-cache.py
