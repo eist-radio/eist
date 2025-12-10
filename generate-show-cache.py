@@ -19,6 +19,7 @@ import subprocess
 import sys
 import time
 import unicodedata
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -743,6 +744,170 @@ def save_cache_meta(meta):
     CACHE_META_FILE.write_text(json.dumps(meta, indent=2))
 
 
+def fetch_radiocult_data(api_key, full_refresh, existing_shows):
+    """
+    Fetch all RadioCult data: artists, past schedule, and upcoming schedule.
+
+    Returns:
+        Tuple of (artists, all_shows, upcoming_schedule_raw)
+    """
+    # Fetch artists
+    print("[RadioCult] Fetching artists...")
+    artists = fetch_radiocult_artists(api_key)
+    print(f"[RadioCult] Fetched {len(artists)} artists")
+
+    # Fetch schedule
+    print("[RadioCult] Fetching schedule...")
+    now = datetime.now()
+    current_month_start = datetime(now.year, now.month, 1)
+
+    if full_refresh or not existing_shows:
+        print("[RadioCult]   Full refresh - fetching all months...")
+        start_date = datetime(2025, 1, 1)
+        end_date = now + timedelta(days=1)
+
+        all_shows = []
+        current_start = start_date
+
+        while current_start < end_date:
+            current_end = min(current_start + timedelta(days=31), end_date)
+            time.sleep(REQUEST_DELAY)
+            schedule = fetch_radiocult_schedule(api_key, current_start, current_end)
+
+            if schedule and 'schedules' in schedule:
+                shows = schedule['schedules']
+                now_iso = now.isoformat()
+                past_shows = [s for s in shows if s.get('end', '') < now_iso]
+                all_shows.extend(past_shows)
+
+            current_start = current_end
+
+        print(f"[RadioCult]   Fetched {len(all_shows)} past shows")
+    else:
+        fetch_start = current_month_start - timedelta(days=7)
+
+        cached_shows_before_current = []
+        for show_data in existing_shows.values():
+            show_start = show_data.get('start', '')
+            if show_start and show_start < fetch_start.isoformat():
+                cached_shows_before_current.append({
+                    'id': show_data.get('id'),
+                    'title': show_data.get('title'),
+                    'start': show_data.get('start'),
+                    'end': show_data.get('end'),
+                    'artistIds': show_data.get('artistIds', []),
+                    'description': show_data.get('description'),
+                })
+
+        print(f"[RadioCult]   Using {len(cached_shows_before_current)} cached shows")
+
+        end_date = now + timedelta(days=1)
+        time.sleep(REQUEST_DELAY)
+        schedule = fetch_radiocult_schedule(api_key, fetch_start, end_date)
+
+        current_month_shows = []
+        if schedule and 'schedules' in schedule:
+            shows = schedule['schedules']
+            now_iso = now.isoformat()
+            current_month_shows = [s for s in shows if s.get('end', '') < now_iso]
+
+        print(f"[RadioCult]   Fetched {len(current_month_shows)} from current month")
+
+        all_shows = cached_shows_before_current + current_month_shows
+
+    # Fetch upcoming schedule
+    print("[RadioCult] Fetching upcoming schedule...")
+    upcoming_start = now
+    upcoming_end = now + timedelta(days=30)
+    time.sleep(REQUEST_DELAY)
+    upcoming_schedule = fetch_radiocult_schedule(api_key, upcoming_start, upcoming_end)
+
+    return artists, all_shows, upcoming_schedule
+
+
+def fetch_mixcloud_data(full_refresh):
+    """
+    Fetch Mixcloud archives (incremental or full).
+
+    Returns:
+        Tuple of (mixcloud_cache, new_count)
+    """
+    print("[Mixcloud] Loading archives...")
+    mixcloud_cache = []
+    new_count = 0
+
+    if full_refresh:
+        print("[Mixcloud]   Full refresh requested...")
+        mixcloud_cache = fetch_mixcloud_cloudcasts_full()
+        new_count = len(mixcloud_cache)
+        MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
+    elif MIXCLOUD_CACHE_FILE.exists():
+        try:
+            existing_cache = json.loads(MIXCLOUD_CACHE_FILE.read_text())
+            print(f"[Mixcloud]   Loaded {len(existing_cache)} cached cloudcasts")
+            mixcloud_cache, new_count = fetch_mixcloud_cloudcasts_incremental(existing_cache)
+            if new_count > 0:
+                MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
+                print(f"[Mixcloud]   Updated cache with {new_count} new items")
+            else:
+                print("[Mixcloud]   Cache is up to date")
+        except Exception as e:
+            print(f"[Mixcloud]   Error loading cache: {e}")
+            mixcloud_cache = fetch_mixcloud_cloudcasts_full()
+            new_count = len(mixcloud_cache)
+            MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
+    else:
+        print("[Mixcloud]   No cache found - fetching all...")
+        mixcloud_cache = fetch_mixcloud_cloudcasts_full()
+        new_count = len(mixcloud_cache)
+        MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
+
+    return mixcloud_cache, new_count
+
+
+def fetch_soundcloud_data(full_refresh):
+    """
+    Fetch SoundCloud archives (incremental or full).
+
+    Returns:
+        Tuple of (soundcloud_cache, new_count)
+    """
+    print("[SoundCloud] Loading archives...")
+    soundcloud_cache = []
+    new_count = 0
+
+    if full_refresh:
+        print("[SoundCloud]   Full refresh requested...")
+        soundcloud_cache = fetch_soundcloud_tracks_full()
+        new_count = len(soundcloud_cache)
+        if soundcloud_cache:
+            SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
+    elif SOUNDCLOUD_CACHE_FILE.exists():
+        try:
+            existing_cache = json.loads(SOUNDCLOUD_CACHE_FILE.read_text())
+            print(f"[SoundCloud]   Loaded {len(existing_cache)} cached tracks")
+            soundcloud_cache, new_count = fetch_soundcloud_tracks_incremental(existing_cache)
+            if new_count > 0:
+                SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
+                print(f"[SoundCloud]   Updated cache with {new_count} new items")
+            else:
+                print("[SoundCloud]   Cache is up to date")
+        except Exception as e:
+            print(f"[SoundCloud]   Error loading cache: {e}")
+            soundcloud_cache = fetch_soundcloud_tracks_full()
+            new_count = len(soundcloud_cache)
+            if soundcloud_cache:
+                SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
+    else:
+        print("[SoundCloud]   No cache found - fetching all...")
+        soundcloud_cache = fetch_soundcloud_tracks_full()
+        new_count = len(soundcloud_cache)
+        if soundcloud_cache:
+            SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
+
+    return soundcloud_cache, new_count
+
+
 def main():
     # Parse arguments
     full_refresh = '--full' in sys.argv
@@ -766,96 +931,46 @@ def main():
         except:
             pass
 
-    # Fetch artists
-    print("\nFetching artists from RadioCult...")
-    artists = fetch_radiocult_artists(api_key)
-    print(f"Fetched {len(artists)} artists")
+    # Fetch all data sources in parallel
+    print("\nFetching data from all sources in parallel...")
+    artists = {}
+    all_shows = []
+    upcoming_schedule = None
+    mixcloud_cache = []
+    new_mixcloud_count = 0
+    soundcloud_cache = []
+    new_soundcloud_count = 0
 
-    # Fetch schedule - incremental approach
-    print("\nFetching schedule from RadioCult...")
-    now = datetime.now()
-    current_month_start = datetime(now.year, now.month, 1)
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        # Submit all fetch tasks
+        futures = {
+            executor.submit(fetch_radiocult_data, api_key, full_refresh, existing_shows): 'radiocult',
+            executor.submit(fetch_mixcloud_data, full_refresh): 'mixcloud',
+            executor.submit(fetch_soundcloud_data, full_refresh): 'soundcloud',
+        }
 
-    if full_refresh or not existing_shows:
-        # Full refresh: fetch everything from Jan 2025
-        print("  Full refresh - fetching all months...")
-        start_date = datetime(2025, 1, 1)
-        end_date = now + timedelta(days=1)
-
-        all_shows = []
-        current_start = start_date
-
-        while current_start < end_date:
-            current_end = min(current_start + timedelta(days=31), end_date)
-            print(f"  Fetching {current_start.strftime('%Y-%m-%d')} to {current_end.strftime('%Y-%m-%d')}...")
-
-            time.sleep(REQUEST_DELAY)
-            schedule = fetch_radiocult_schedule(api_key, current_start, current_end)
-
-            if schedule and 'schedules' in schedule:
-                shows = schedule['schedules']
-                now_iso = now.isoformat()
-                past_shows = [s for s in shows if s.get('end', '') < now_iso]
-                all_shows.extend(past_shows)
-
-            current_start = current_end
-
-        print(f"  Fetched {len(all_shows)} past shows from RadioCult")
-    else:
-        # Incremental: use cached shows for old months, fetch current month + 7 day buffer
-        # The 7 day buffer catches shows that may have been missed at month boundaries
-        fetch_start = current_month_start - timedelta(days=7)
-
-        # Extract raw show data from existing cache (before matching was applied)
-        cached_shows_before_current = []
-        for show_data in existing_shows.values():
-            show_start = show_data.get('start', '')
-            if show_start and show_start < fetch_start.isoformat():
-                # Reconstruct raw show format from cached data
-                cached_shows_before_current.append({
-                    'id': show_data.get('id'),
-                    'title': show_data.get('title'),
-                    'start': show_data.get('start'),
-                    'end': show_data.get('end'),
-                    'artistIds': show_data.get('artistIds', []),
-                    'description': show_data.get('description'),
-                })
-
-        print(f"  Using {len(cached_shows_before_current)} cached shows before {fetch_start.strftime('%Y-%m-%d')}")
-
-        # Fetch from fetch_start (7 days before month start) to now
-        end_date = now + timedelta(days=1)
-        print(f"  Fetching {fetch_start.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}...")
-
-        time.sleep(REQUEST_DELAY)
-        schedule = fetch_radiocult_schedule(api_key, fetch_start, end_date)
-
-        current_month_shows = []
-        if schedule and 'schedules' in schedule:
-            shows = schedule['schedules']
-            now_iso = now.isoformat()
-            current_month_shows = [s for s in shows if s.get('end', '') < now_iso]
-
-        print(f"  Fetched {len(current_month_shows)} shows from current month")
-
-        all_shows = cached_shows_before_current + current_month_shows
-        print(f"  Total: {len(all_shows)} past shows")
+        # Collect results as they complete
+        for future in as_completed(futures):
+            source = futures[future]
+            try:
+                if source == 'radiocult':
+                    artists, all_shows, upcoming_schedule = future.result()
+                elif source == 'mixcloud':
+                    mixcloud_cache, new_mixcloud_count = future.result()
+                elif source == 'soundcloud':
+                    soundcloud_cache, new_soundcloud_count = future.result()
+            except Exception as e:
+                print(f"Error fetching {source}: {e}")
 
     # Filter out excluded shows (repeats, tests, pre-archive-start-date)
     original_shows = [s for s in all_shows if not should_exclude_show(s)]
-    print(f"After filtering excluded shows: {len(original_shows)} original broadcasts")
+    print(f"\nAfter filtering: {len(original_shows)} original broadcasts")
 
-    # Fetch upcoming schedule for "next show" feature on artist pages
-    print("\nFetching upcoming schedule...")
-    upcoming_start = now
-    upcoming_end = now + timedelta(days=30)
-    time.sleep(REQUEST_DELAY)
-    upcoming_schedule = fetch_radiocult_schedule(api_key, upcoming_start, upcoming_end)
-
+    # Process upcoming schedule (needs artists data)
+    now = datetime.now()
     if upcoming_schedule and 'schedules' in upcoming_schedule:
         future_shows = [s for s in upcoming_schedule['schedules'] if s.get('start', '') > now.isoformat()]
 
-        # Process future shows with artist info
         upcoming_data = []
         for show in future_shows:
             artist_ids = show.get('artistIds', [])
@@ -879,94 +994,40 @@ def main():
                 'artistSlug': artist_slug,
             })
 
-        # Sort by start time
         upcoming_data.sort(key=lambda x: x.get('start', ''))
-
         UPCOMING_SCHEDULE_FILE.write_text(json.dumps(upcoming_data, indent=2))
-        print(f"  Saved {len(upcoming_data)} upcoming shows to {UPCOMING_SCHEDULE_FILE}")
+        print(f"Saved {len(upcoming_data)} upcoming shows")
     else:
-        print("  No upcoming schedule data received")
         UPCOMING_SCHEDULE_FILE.write_text('[]')
 
-    # Fetch Mixcloud cloudcasts
-    print("\nLoading Mixcloud archives...")
-    mixcloud_cache = []
-    new_mixcloud_count = 0
-
-    if full_refresh:
-        # Full refresh: fetch everything from scratch
-        print("  Full refresh requested - fetching all Mixcloud cloudcasts...")
-        mixcloud_cache = fetch_mixcloud_cloudcasts_full()
-        new_mixcloud_count = len(mixcloud_cache)
-        MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
-    elif MIXCLOUD_CACHE_FILE.exists():
-        # Incremental: load existing cache and fetch only new items
-        try:
-            existing_cache = json.loads(MIXCLOUD_CACHE_FILE.read_text())
-            print(f"  Loaded {len(existing_cache)} cached Mixcloud cloudcasts")
-            mixcloud_cache, new_mixcloud_count = fetch_mixcloud_cloudcasts_incremental(existing_cache)
-            if new_mixcloud_count > 0:
-                MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
-                print(f"  Updated cache with {new_mixcloud_count} new items")
-            else:
-                print("  Cache is up to date")
-        except Exception as e:
-            print(f"  Error loading cache: {e}")
-            print("  Falling back to full fetch...")
-            mixcloud_cache = fetch_mixcloud_cloudcasts_full()
-            new_mixcloud_count = len(mixcloud_cache)
-            MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
-    else:
-        # No cache exists - do full fetch
-        print("  No cache found - fetching all Mixcloud cloudcasts...")
-        mixcloud_cache = fetch_mixcloud_cloudcasts_full()
-        new_mixcloud_count = len(mixcloud_cache)
-        MIXCLOUD_CACHE_FILE.write_text(json.dumps(mixcloud_cache, indent=2))
-
-    # Fetch SoundCloud tracks
-    print("\nLoading SoundCloud archives...")
-    soundcloud_cache = []
-    new_soundcloud_count = 0
-
-    if full_refresh:
-        # Full refresh: fetch everything from scratch
-        print("  Full refresh requested - fetching all SoundCloud tracks...")
-        soundcloud_cache = fetch_soundcloud_tracks_full()
-        new_soundcloud_count = len(soundcloud_cache)
-        if soundcloud_cache:
-            SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
-    elif SOUNDCLOUD_CACHE_FILE.exists():
-        # Incremental: load existing cache and fetch only new items
-        try:
-            existing_cache = json.loads(SOUNDCLOUD_CACHE_FILE.read_text())
-            print(f"  Loaded {len(existing_cache)} cached SoundCloud tracks")
-            soundcloud_cache, new_soundcloud_count = fetch_soundcloud_tracks_incremental(existing_cache)
-            if new_soundcloud_count > 0:
-                SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
-                print(f"  Updated cache with {new_soundcloud_count} new items")
-            else:
-                print("  Cache is up to date")
-        except Exception as e:
-            print(f"  Error loading cache: {e}")
-            print("  Falling back to full fetch...")
-            soundcloud_cache = fetch_soundcloud_tracks_full()
-            new_soundcloud_count = len(soundcloud_cache)
-            if soundcloud_cache:
-                SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
-    else:
-        # No cache exists - do full fetch
-        print("  No cache found - fetching all SoundCloud tracks...")
-        soundcloud_cache = fetch_soundcloud_tracks_full()
-        new_soundcloud_count = len(soundcloud_cache)
-        if soundcloud_cache:
-            SOUNDCLOUD_CACHE_FILE.write_text(json.dumps(soundcloud_cache, indent=2))
-
     # Match archives to shows (FLIPPED DIRECTION)
-    print("\nMatching archives to RadioCult shows...")
-    show_matches, review_queue = match_archives_to_shows(
-        original_shows, mixcloud_cache, soundcloud_cache, artists,
-        should_exclude_fn=should_exclude_show
-    )
+    # Optimization: skip matching if no new archives were added
+    if new_mixcloud_count == 0 and new_soundcloud_count == 0 and existing_shows:
+        print("\nNo new archives - reusing existing matches...")
+        # Build show_matches from existing cached data
+        show_matches = {}
+        for show_id, show_data in existing_shows.items():
+            mc_match = show_data.get('mixcloud_match')
+            sc_match = show_data.get('soundcloud_match')
+            if mc_match or sc_match:
+                show_matches[show_id] = {
+                    'mixcloud': mc_match,
+                    'soundcloud': sc_match
+                }
+        print(f"  Restored {len(show_matches)} existing matches")
+        # Load existing review queue
+        review_queue = []
+        if REVIEW_QUEUE_FILE.exists():
+            try:
+                review_queue = json.loads(REVIEW_QUEUE_FILE.read_text())
+            except:
+                pass
+    else:
+        print("\nMatching archives to RadioCult shows...")
+        show_matches, review_queue = match_archives_to_shows(
+            original_shows, mixcloud_cache, soundcloud_cache, artists,
+            should_exclude_fn=should_exclude_show
+        )
 
     # Build final output
     all_show_data, matched_count = build_show_output(original_shows, show_matches, artists)
