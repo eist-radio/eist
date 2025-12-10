@@ -1,12 +1,12 @@
 {
-  "last_updated": "2025-12-10T20:54:53.806364",
+  "last_updated": "2025-12-10T22:20:58.074763",
   "full_refresh": false,
-  "total_shows": 1340,
-  "shows_with_archives": 602,
-  "mixcloud_matches": 325,
-  "soundcloud_matches": 490,
-  "both_platforms": 213,
-  "review_queue_size": 23,
+  "total_shows": 1342,
+  "shows_with_archives": 614,
+  "mixcloud_matches": 321,
+  "soundcloud_matches": 505,
+  "both_platforms": 212,
+  "review_queue_size": 22,
   "new_mixcloud_this_run": 0,
-  "total_mixcloud_cached": 380
+  "total_mixcloud_cached": 381
 }
