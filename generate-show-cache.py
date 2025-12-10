@@ -57,7 +57,8 @@ def load_api_keys():
 
     .env format (key=value, one per line):
         API_KEY=your_radiocult_key
-        SOUNDCLOUD_API_KEY=your_soundcloud_key
+        SOUNDCLOUD_CLIENT_ID=your_soundcloud_client_id
+        SOUNDCLOUD_CLIENT_SECRET=your_soundcloud_client_secret
     """
     keys = {}
     env_file = Path(".env")
@@ -70,7 +71,7 @@ def load_api_keys():
                 keys[name.strip()] = value.strip()
 
     # Environment variables override file
-    for key_name in ['API_KEY', 'SOUNDCLOUD_API_KEY']:
+    for key_name in ['API_KEY', 'SOUNDCLOUD_CLIENT_ID', 'SOUNDCLOUD_CLIENT_SECRET']:
         env_val = os.environ.get(key_name)
         if env_val:
             keys[key_name] = env_val
