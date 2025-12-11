@@ -3,10 +3,13 @@
 Face detection script for artist images.
 Analyzes artist images and outputs hero_focus values to data/hero-focus.json.
 
+Does not need to run on every build. Run manually when needed when new artist images are added.
+
 Requires: pip install face_recognition Pillow requests
 
 Usage:
-    python scripts/detect-faces.py                    # Process all artists
+    python scripts/detect-faces.py                   # Process all artists
+    python scripts/detect-faces.py aidan-reilly      # Process single artist
     python scripts/detect-faces.py ailbhe-c          # Process single artist
     python scripts/detect-faces.py --dry-run         # Preview changes without writing
 """
