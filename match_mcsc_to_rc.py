@@ -490,6 +490,243 @@ def calculate_match_score(show, cloudcast, artist_name=None, artist_mc_username=
     return score
 
 
+def apply_sequential_matching(shows, soundcloud_archives, mixcloud_archives, show_matches,
+                               should_exclude_fn=None):
+    """
+    Post-process matches to apply 1-to-1 sequential matching where counts align.
+
+    When a show series has exactly N non-repeat RadioCult airings (excluding future
+    and recent shows within 5 days) AND exactly N uploads on a single platform
+    (SoundCloud or Mixcloud), we can confidently match them 1-to-1 chronologically.
+
+    This fixes cases where score-based matching fails due to inconsistent naming
+    (e.g., "GTown Sound 5" matched to wrong date because title lacks date info).
+
+    Args:
+        shows: List of all RadioCult shows
+        soundcloud_archives: List of all SoundCloud archives
+        mixcloud_archives: List of all Mixcloud archives
+        show_matches: Current match results from score-based matching
+        should_exclude_fn: Optional function to exclude certain shows
+
+    Returns:
+        Updated show_matches dict with sequential matches applied
+    """
+    from collections import defaultdict
+
+    now = datetime.now()
+    five_days_ago = now - timedelta(days=5)
+
+    # Group non-repeat shows by normalized series title
+    shows_by_series = defaultdict(list)
+    for show in shows:
+        if should_exclude_fn and should_exclude_fn(show):
+            continue
+        if show.get('isRepeat'):
+            continue
+
+        title = show.get('title', '')
+        series_name = normalize_text(extract_series_name(title))
+        if not series_name:
+            continue
+
+        # Parse show date
+        start = show.get('start', '')
+        if not start:
+            continue
+        try:
+            show_dt = datetime.fromisoformat(start.replace('Z', '+00:00')).replace(tzinfo=None)
+        except:
+            continue
+
+        # Skip future shows and shows within past 5 days
+        if show_dt > now:
+            continue
+        if show_dt > five_days_ago:
+            continue
+
+        shows_by_series[series_name].append({
+            'show': show,
+            'date': show_dt,
+            'id': show.get('id')
+        })
+
+    # Build archive lookup by normalized title -> list of archives
+    def get_archive_series_name(archive_title):
+        """Extract series name from archive title (strip artist prefix, episode info)."""
+        # Common pattern: "Artist - Show Name #3" or "Artist - Show Name (date)"
+        # Try to extract just the show name part
+        title = archive_title
+        if ' - ' in title:
+            # Take part after first " - " (usually the show name)
+            title = title.split(' - ', 1)[1]
+        # Strip trailing parenthetical content (often dates or subtitles)
+        title = re.sub(r'\s*\([^)]*\)\s*$', '', title)
+        return normalize_text(strip_episode_info(title))
+
+    def find_matching_series(archive_series_name, rc_series_names):
+        """Find the RC series that best matches this archive series name using fuzzy matching."""
+        if not archive_series_name or not HAS_FUZZ:
+            return archive_series_name
+
+        # First try exact match
+        if archive_series_name in rc_series_names:
+            return archive_series_name
+
+        # Try fuzzy matching - archive series name should be contained in or very similar to RC name
+        best_match = None
+        best_score = 0
+        for rc_series in rc_series_names:
+            # Check if RC series name is a prefix/substring of archive name
+            if rc_series in archive_series_name:
+                # Strong match - RC name is contained in archive name
+                # e.g., "g town sound" in "g town sound doomsday"
+                score = 95
+            else:
+                score = fuzz.ratio(archive_series_name, rc_series)
+
+            if score > best_score and score >= 80:
+                best_score = score
+                best_match = rc_series
+
+        return best_match if best_match else archive_series_name
+
+    # Get all RC series names for fuzzy matching
+    rc_series_names = set(shows_by_series.keys())
+
+    sc_by_series = defaultdict(list)
+    for archive in soundcloud_archives:
+        title = archive.get('title', '')
+        raw_series_name = get_archive_series_name(title)
+        if raw_series_name:
+            # Map to RC series name if possible
+            series_name = find_matching_series(raw_series_name, rc_series_names)
+            sc_by_series[series_name].append(archive)
+
+    mc_by_series = defaultdict(list)
+    for archive in mixcloud_archives:
+        title = archive.get('name', '')
+        raw_series_name = get_archive_series_name(title)
+        if raw_series_name:
+            # Map to RC series name if possible
+            series_name = find_matching_series(raw_series_name, rc_series_names)
+            mc_by_series[series_name].append(archive)
+
+    # Build mapping of archives to the series they're currently matched to
+    # This helps us avoid stealing archives from OTHER series
+    HIGH_CONFIDENCE_THRESHOLD = 100
+    sc_archive_series = {}  # archive_id -> (series_name, score)
+    mc_archive_series = {}  # archive_slug -> (series_name, score)
+
+    for match in show_matches.values():
+        show = match.get('show', {})
+        show_series = normalize_text(extract_series_name(show.get('title', '')))
+
+        sc = match.get('soundcloud') or {}
+        mc = match.get('mixcloud') or {}
+
+        if sc.get('id') and sc.get('score', 0) >= HIGH_CONFIDENCE_THRESHOLD:
+            sc_archive_series[sc['id']] = (show_series, sc['score'])
+        if mc.get('slug') and mc.get('score', 0) >= HIGH_CONFIDENCE_THRESHOLD:
+            mc_archive_series[mc['slug']] = (show_series, mc['score'])
+
+    # For each series, check if 1-to-1 matching is possible
+    sequential_applied = 0
+    for series_name, show_entries in shows_by_series.items():
+        if len(show_entries) < 2:
+            # Need at least 2 shows for sequential matching to be meaningful
+            continue
+
+        # Sort shows by date ascending
+        show_entries.sort(key=lambda x: x['date'])
+        num_shows = len(show_entries)
+
+        # Check SoundCloud
+        sc_archives = sc_by_series.get(series_name, [])
+        # Filter out archives claimed by a DIFFERENT series with high confidence
+        available_sc = []
+        for a in sc_archives:
+            archive_id = a.get('id')
+            if archive_id in sc_archive_series:
+                claimed_series, score = sc_archive_series[archive_id]
+                # Only exclude if claimed by a different series
+                if claimed_series != series_name:
+                    continue
+            available_sc.append(a)
+
+        if len(available_sc) == num_shows:
+            # Sort archives by upload_date or ID (SC IDs are sequential)
+            sc_archives_sorted = sorted(available_sc, key=lambda x: (
+                x.get('upload_date', ''),
+                x.get('id', '')
+            ))
+
+            # Apply 1-to-1 mapping
+            for i, show_entry in enumerate(show_entries):
+                archive = sc_archives_sorted[i]
+                show_id = show_entry['id']
+
+                if show_id not in show_matches:
+                    show_matches[show_id] = {'show': show_entry['show'], 'mixcloud': None, 'soundcloud': None}
+
+                # Always override - sequential matching is high confidence when counts match
+                show_matches[show_id]['soundcloud'] = {
+                    'id': archive.get('id'),
+                    'title': archive.get('title', ''),
+                    'url': archive.get('url'),
+                    'thumbnail': archive.get('thumbnail'),
+                    'description': archive.get('description', ''),
+                    'score': 300  # High score to indicate sequential match
+                }
+
+            sequential_applied += 1
+            print(f"  Sequential match applied: {series_name} ({num_shows} SC archives)")
+
+        # Check Mixcloud (only if SC didn't match)
+        else:
+            mc_archives = mc_by_series.get(series_name, [])
+            # Filter out archives claimed by a DIFFERENT series with high confidence
+            available_mc = []
+            for a in mc_archives:
+                archive_slug = a.get('slug')
+                if archive_slug in mc_archive_series:
+                    claimed_series, score = mc_archive_series[archive_slug]
+                    # Only exclude if claimed by a different series
+                    if claimed_series != series_name:
+                        continue
+                available_mc.append(a)
+
+            if len(available_mc) == num_shows:
+                # Sort by created_time
+                mc_archives_sorted = sorted(available_mc, key=lambda x: x.get('created_time', ''))
+
+                # Apply 1-to-1 mapping
+                for i, show_entry in enumerate(show_entries):
+                    archive = mc_archives_sorted[i]
+                    show_id = show_entry['id']
+
+                    if show_id not in show_matches:
+                        show_matches[show_id] = {'show': show_entry['show'], 'mixcloud': None, 'soundcloud': None}
+
+                    # Always override - sequential matching is high confidence when counts match
+                    show_matches[show_id]['mixcloud'] = {
+                        'slug': archive.get('slug'),
+                        'name': archive.get('name', ''),
+                        'url': archive.get('url'),
+                        'pictures': archive.get('pictures', {}),
+                        'description': archive.get('description', ''),
+                        'score': 300  # High score to indicate sequential match
+                    }
+
+                sequential_applied += 1
+                print(f"  Sequential match applied: {series_name} ({num_shows} MC archives)")
+
+    if sequential_applied:
+        print(f"  Total series with sequential matching: {sequential_applied}")
+
+    return show_matches
+
+
 def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artists,
                             should_exclude_fn=None):
     """
@@ -835,5 +1072,10 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
 
     print(f"  Mixcloud matched: {mixcloud_matched}/{len(mixcloud_archives)}")
     print(f"  SoundCloud matched: {soundcloud_matched}/{len(soundcloud_archives)}")
+
+    # Post-process: apply 1-to-1 sequential matching where counts align
+    show_matches = apply_sequential_matching(
+        shows, soundcloud_archives, mixcloud_archives, show_matches, should_exclude_fn
+    )
 
     return show_matches, archive_review_queue

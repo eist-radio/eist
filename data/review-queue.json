@@ -2,8 +2,8 @@
   {
     "source": "mixcloud",
     "archive_title": "North south EIST west",
-    "candidate_show": "\u00e9ist on the streets!",
-    "candidate_date": "2025-09-07",
+    "candidate_show": "b\u00e1nh \u00e9ist",
+    "candidate_date": "2025-09-14",
     "score": 21
   },
   {
@@ -65,8 +65,8 @@
   {
     "source": "mixcloud",
     "archive_title": "Cormac O Caoimh",
-    "candidate_show": "seomra folamh",
-    "candidate_date": "2025-03-01",
+    "candidate_show": "Not another disco!",
+    "candidate_date": "2025-03-14",
     "score": 17
   },
   {
@@ -78,16 +78,9 @@
   },
   {
     "source": "soundcloud",
-    "archive_title": "Where Are We? Episode 6 - Denmark",
-    "candidate_show": "Caribbean Voyage - Episode #10",
-    "candidate_date": "2025-11-06",
-    "score": 18
-  },
-  {
-    "source": "soundcloud",
     "archive_title": "December 06 mercy salvation mix",
     "candidate_show": "Music for Sound Systems with Mercy & Salvation",
-    "candidate_date": "2025-11-08",
+    "candidate_date": "2025-12-06",
     "score": 47
   },
   {
@@ -103,13 +96,6 @@
     "candidate_show": "bug.core",
     "candidate_date": "2025-09-12",
     "score": 30
-  },
-  {
-    "source": "soundcloud",
-    "archive_title": "Where Ae We? Episode 4 - Egypt",
-    "candidate_show": "Where are we?",
-    "candidate_date": "2025-06-23",
-    "score": 28
   },
   {
     "source": "soundcloud",

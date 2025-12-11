@@ -58,6 +58,11 @@ REVIEW_QUEUE_FILE = DATA_DIR / "review-queue.json"
 # Rate limiting
 REQUEST_DELAY = 0.5  # Seconds between API requests
 
+# Artist slug overrides for names that don't normalize cleanly
+ARTIST_SLUG_OVERRIDES = {
+    "CHɅCHØU": "chachou",
+}
+
 
 def load_api_keys():
     """Load API keys from .env file or environment variables.
@@ -100,6 +105,9 @@ def normalize_to_slug(name):
     """Normalize name to URL slug, matching generate-artist-pages.sh behavior."""
     if not name:
         return ""
+    # Check for override first
+    if name in ARTIST_SLUG_OVERRIDES:
+        return ARTIST_SLUG_OVERRIDES[name]
     # Normalize unicode and remove accents
     text = unicodedata.normalize('NFKD', name)
     text = ''.join(c for c in text if not unicodedata.combining(c))
@@ -476,6 +484,9 @@ def generate_artist_slug(name):
     """Generate URL-friendly slug from artist name."""
     if not name:
         return ""
+    # Check for override first
+    if name in ARTIST_SLUG_OVERRIDES:
+        return ARTIST_SLUG_OVERRIDES[name]
     # Normalize unicode
     slug = unicodedata.normalize('NFKD', name)
     # Remove accents
@@ -927,8 +938,8 @@ def main():
         UPCOMING_SCHEDULE_FILE.write_text('[]')
 
     # Match archives to shows (FLIPPED DIRECTION)
-    # Optimization: skip matching if no new archives were added
-    if new_mixcloud_count == 0 and new_soundcloud_count == 0 and existing_shows:
+    # Optimization: skip matching if no new archives were added (unless --full refresh)
+    if new_mixcloud_count == 0 and new_soundcloud_count == 0 and existing_shows and not full_refresh:
         print("\nNo new archives - reusing existing matches...")
         # Build show_matches from existing cached data
         show_matches = {}
