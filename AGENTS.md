@@ -270,7 +270,7 @@ The site matches RadioCult show schedules with archives uploaded to SoundCloud a
 
 ```
 RadioCult API ──┐
-                ├──► generate-show-cache.py ──► data/shows.json ──► generate-show-pages.py ──► content/shows/*.md
+                ├──► generate-show-cache.py ──► data/shows.json ──► generate-show-pages.py ──► content/archive/*.md
 SoundCloud API ─┤         │
 Mixcloud API ───┘         ▼
                    data/soundcloud-cache.json

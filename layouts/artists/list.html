@@ -92,7 +92,7 @@
 {{ end }}
 
 {{/* Get all shows to find genres with archives */}}
-{{ $allShows := site.GetPage "/shows" }}
+{{ $allShows := site.GetPage "/archive" }}
 {{ $genresWithArchives := slice }}
 {{ if $allShows }}
     {{ range $allShows.RegularPages }}

@@ -2,7 +2,7 @@
 """
 Generate show pages from cached show data.
 
-Reads from data/shows.json and creates content/shows/*.md
+Reads from data/shows.json and creates content/archive/*.md
 
 OPTIMIZATION: This Python version replaces the bash script and is ~10-20x faster
 because it processes all shows in a single pass without spawning subprocesses.
@@ -23,7 +23,7 @@ from pathlib import Path
 from collections import defaultdict
 
 SHOWS_FILE = "data/shows.json"
-OUTPUT_DIR = "content/shows"
+OUTPUT_DIR = "content/archive"
 
 
 def extract_description(desc_obj):
