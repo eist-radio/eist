@@ -8,51 +8,65 @@
 
 {{/*
     Build set of "active" artist slugs. An artist is active if:
-    1. They have had a show in the past 30 days (always active), OR
+    1. They had a scheduled (non-repeat) show in the past 40 days (always active), OR
     2. They have archived shows in the last 3 months, OR
     3. They have more than 3 total archived shows
 
-    Put another way: inactive = no archived shows in 3 months AND 3 or fewer total archived shows
+    Put another way: inactive = no scheduled non-repeat shows in 40 days AND no archived shows in 3 months AND 3 or fewer total archived shows
 */}}
 {{ $showsData := site.Data.shows }}
-{{ $thirtyDaysAgo := now.AddDate 0 0 -30 }}
+{{ $fortyDaysAgo := now.AddDate 0 0 -40 }}
 {{ $threeMonthsAgo := now.AddDate 0 -3 0 }}
 
-{{/* First pass: gather stats per artist (only count shows with archives) */}}
+{{/* First pass: gather stats per artist */}}
 {{ $artistStats := dict }}
 {{ range $showsData }}
     {{ $slug := .artistSlug }}
-    {{ $hasArchive := or .mixcloud_match .soundcloud_match }}
-    {{ if and $slug $hasArchive }}
-        {{ $stats := index $artistStats $slug | default (dict "total" 0 "recent30" false "recent3mo" false) }}
-        {{ $newTotal := add (index $stats "total") 1 }}
-        {{ $recent30 := index $stats "recent30" }}
-        {{ $recent3mo := index $stats "recent3mo" }}
-        {{ if .start }}
-            {{ $showDate := time .start }}
-            {{ if $showDate.After $thirtyDaysAgo }}
-                {{ $recent30 = true }}
-            {{ end }}
-            {{ if $showDate.After $threeMonthsAgo }}
-                {{ $recent3mo = true }}
+    {{ if $slug }}
+        {{ $hasArchive := or .mixcloud_match .soundcloud_match }}
+        {{/* Check if this is a repeat show (title contains "éist arís") */}}
+        {{ $isRepeat := in .title "ist ar" }}
+
+        {{ $stats := index $artistStats $slug | default (dict "totalArchived" 0 "recent40NonRepeat" false "recent3moArchived" false) }}
+        {{ $totalArchived := index $stats "totalArchived" }}
+        {{ $recent40NonRepeat := index $stats "recent40NonRepeat" }}
+        {{ $recent3moArchived := index $stats "recent3moArchived" }}
+
+        {{/* Count archived shows */}}
+        {{ if $hasArchive }}
+            {{ $totalArchived = add $totalArchived 1 }}
+            {{ if .start }}
+                {{ $showDate := time .start }}
+                {{ if $showDate.After $threeMonthsAgo }}
+                    {{ $recent3moArchived = true }}
+                {{ end }}
             {{ end }}
         {{ end }}
-        {{ $artistStats = merge $artistStats (dict $slug (dict "total" $newTotal "recent30" $recent30 "recent3mo" $recent3mo)) }}
+
+        {{/* Check for recent non-repeat scheduled shows (regardless of archive status) */}}
+        {{ if and .start (not $isRepeat) }}
+            {{ $showDate := time .start }}
+            {{ if $showDate.After $fortyDaysAgo }}
+                {{ $recent40NonRepeat = true }}
+            {{ end }}
+        {{ end }}
+
+        {{ $artistStats = merge $artistStats (dict $slug (dict "totalArchived" $totalArchived "recent40NonRepeat" $recent40NonRepeat "recent3moArchived" $recent3moArchived)) }}
     {{ end }}
 {{ end }}
 
 {{/* Second pass: determine active status */}}
 {{ $activeArtists := dict }}
 {{ range $slug, $stats := $artistStats }}
-    {{ $total := index $stats "total" }}
-    {{ $recent30 := index $stats "recent30" }}
-    {{ $recent3mo := index $stats "recent3mo" }}
+    {{ $totalArchived := index $stats "totalArchived" }}
+    {{ $recent40NonRepeat := index $stats "recent40NonRepeat" }}
+    {{ $recent3moArchived := index $stats "recent3moArchived" }}
 
-    {{/* Rule 1: Show in past 30 days = always active */}}
-    {{ $isActive := $recent30 }}
+    {{/* Rule 1: Scheduled non-repeat show in past 40 days = always active */}}
+    {{ $isActive := $recent40NonRepeat }}
 
-    {{/* Rule 2: No archived shows in 3 months AND ≤3 total = inactive */}}
-    {{ if and (not $isActive) (not $recent3mo) (le $total 3) }}
+    {{/* Rule 2: No recent scheduled shows AND no archived shows in 3 months AND ≤3 total archived = inactive */}}
+    {{ if and (not $isActive) (not $recent3moArchived) (le $totalArchived 3) }}
         {{ $isActive = false }}
     {{/* Rule 3: Has archived shows = active (unless caught by rule 2) */}}
     {{ else if not $isActive }}
