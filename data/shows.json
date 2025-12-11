@@ -670,36 +670,6 @@
     "episode_info": null
   },
   {
-    "id": "e78e6ef0-984d-49eb-9391-ac6abcd48dc3",
-    "title": "\u00e9ist san o\u00edche",
-    "slug": "eist-san-oiche-2025-12-07",
-    "start": "2025-12-07T23:00:00.000Z",
-    "end": "2025-12-08T09:00:00.000Z",
-    "artistIds": [
-      "4e92892f-db9b-43e9-9821-2e481c635d72"
-    ],
-    "artistName": "\u00e9ist DJs",
-    "artistSlug": "eist-djs",
-    "description": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "Catch up on recent \u00e9ist shows broadcast through the night."
-            }
-          ]
-        }
-      ]
-    },
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
     "id": "c61d9088-2423-431b-a430-59da4b6b94f4-r_index-2025-12-07T22:00:00.000Z",
     "title": "Sub Transmissions",
     "slug": "sub-transmissions-2025-12-07",
@@ -4668,6 +4638,36 @@
     "soundcloud_match": null,
     "match_score": 120,
     "episode_info": "Vol. 1"
+  },
+  {
+    "id": "1b5f8a8f-eb32-4465-8173-b742adffb565-r_index-2025-11-23T23:00:00.000Z",
+    "title": "\u00e9ist san o\u00edche",
+    "slug": "eist-san-oiche-2025-11-23",
+    "start": "2025-11-23T23:00:00.000Z",
+    "end": "2025-11-24T09:00:00.000Z",
+    "artistIds": [
+      "4e92892f-db9b-43e9-9821-2e481c635d72"
+    ],
+    "artistName": "\u00e9ist DJs",
+    "artistSlug": "eist-djs",
+    "description": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Catch up on recent \u00e9ist shows broadcast through the night."
+            }
+          ]
+        }
+      ]
+    },
+    "mixcloud_match": null,
+    "soundcloud_match": null,
+    "match_score": 0,
+    "episode_info": null
   },
   {
     "id": "1b5f8a8f-eb32-4465-8173-b742adffb565-r_index-2025-11-23T23:00:00.000Z",
@@ -17825,23 +17825,6 @@
     "episode_info": "Ep. 3"
   },
   {
-    "id": "8ead39c2-bb4e-45e3-a521-62830271fb1a",
-    "title": "The Weather with Barry Mullins (\u00e9ist ar\u00eds)",
-    "slug": "the-weather-with-barry-mullins-esit-aris-2025-10-15",
-    "start": "2025-10-15T08:00:00.000Z",
-    "end": "2025-10-15T10:00:00.000Z",
-    "artistIds": [
-      "e598e579-ac52-41a9-9169-e0e1303cdc62"
-    ],
-    "artistName": "Barry Mullins",
-    "artistSlug": "barry-mullins",
-    "description": null,
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
     "id": "427aa00b-c81c-460b-92db-06909227e627",
     "title": "The Ports of the Archipelago",
     "slug": "the-ports-of-the-archipelago-2025-10-14",
@@ -17869,23 +17852,6 @@
     ],
     "artistName": "HousEffect",
     "artistSlug": "houseffect",
-    "description": null,
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
-    "id": "fd2b9e9e-c9a3-4fc0-94de-8e67ea95a1e4",
-    "title": "Void Zones (\u00e9ist ar\u00eds)",
-    "slug": "void-zones-eis-aris-2025-10-14",
-    "start": "2025-10-14T14:00:00.000Z",
-    "end": "2025-10-14T15:00:00.000Z",
-    "artistIds": [
-      "3a156604-02a8-4df1-b653-e13d04eaba35"
-    ],
-    "artistName": "Ray Macken",
-    "artistSlug": "ray-macken",
     "description": null,
     "mixcloud_match": null,
     "soundcloud_match": null,
@@ -23721,7 +23687,7 @@
       "score": 300
     },
     "match_score": 300,
-    "episode_info": "Ep. 3"
+    "episode_info": "Ep. 2"
   },
   {
     "id": "cc8ec228-936d-4e18-9a9d-1585cec5a41e",
@@ -24036,7 +24002,7 @@
       "score": 200
     },
     "match_score": 300,
-    "episode_info": "Ep. 1"
+    "episode_info": null
   },
   {
     "id": "19925f21-ed80-47b1-b009-5d38e56f35fd",
@@ -26864,34 +26830,6 @@
     "episode_info": null
   },
   {
-    "id": "9d1e2608-3dc5-4114-8c15-e22602d35da0",
-    "title": "Night Noises (\u00e9ist ar\u00eds)",
-    "slug": "night-noises-eist-aris-2025-09-15",
-    "start": "2025-09-15T14:00:00.000Z",
-    "end": "2025-09-15T16:00:00.000Z",
-    "artistIds": [],
-    "artistName": "",
-    "artistSlug": "",
-    "description": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "Replay of Elinor's July show 'Night Noises'."
-            }
-          ]
-        }
-      ]
-    },
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
     "id": "f301cbcc-42d2-4729-b9c9-e38eb2e1b4d1",
     "title": "b\u00e1nh \u00e9ist",
     "slug": "banh-eist-2025-09-14",
@@ -29297,36 +29235,6 @@
     "episode_info": null
   },
   {
-    "id": "21863d0c-cca7-4f3e-867d-957cc9aaee3b",
-    "title": "The Eclectic (\u00e9ist ar\u00eds)",
-    "slug": "the-eclectic-eist-aris-2025-09-09",
-    "start": "2025-09-09T08:00:00.000Z",
-    "end": "2025-09-09T09:00:00.000Z",
-    "artistIds": [
-      "dbb5b45e-39e4-43cd-8ef9-01192acaec50"
-    ],
-    "artistName": "THE ECLECTIC ECCENTRIC",
-    "artistSlug": "the-eclectic-eccentric",
-    "description": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "THE ECLECTIC is a show about taking songs & sounds out of their context, and then putting them back in."
-            }
-          ]
-        }
-      ]
-    },
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
     "id": "cc7b0b7f-cb35-4b03-b184-3d0120806e13",
     "title": "Under a Plastic Cloud",
     "slug": "under-a-plastic-cloud-2025-09-08",
@@ -30541,45 +30449,6 @@
     },
     "match_score": 300,
     "episode_info": "#4"
-  },
-  {
-    "id": "1da21d64-0c45-4304-b499-02d5a3dacac9",
-    "title": "Dee's Gamelan Time (\u00e9ist ar\u00eds)",
-    "slug": "dees-gamelan-time-eist-aris-2025-09-04",
-    "start": "2025-09-04T15:00:00.000Z",
-    "end": "2025-09-04T16:00:00.000Z",
-    "artistIds": [
-      "b79b21bc-2019-41f7-ada3-58e52ea109c0"
-    ],
-    "artistName": "Dee Gannon",
-    "artistSlug": "dee-gannon",
-    "description": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "An educational show spreading the good word and tunes of the Javanese Gamelan and how it ended up in Cork. Exploring traditional pieces and modern compositions. Including how the gamelan influenced Debussy all the way to featuring in The Hobbit: Desolation of Smaug."
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "To hear about performances and workshops follow Cork Community Gamelan on Instagram."
-            }
-          ]
-        }
-      ]
-    },
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
   },
   {
     "id": "e3b5bf97-d427-49d5-b032-4985e6bb1131",
@@ -32712,7 +32581,7 @@
       "score": 145
     },
     "match_score": 145,
-    "episode_info": "#04"
+    "episode_info": "#03"
   },
   {
     "id": "e6e4c62a-699f-4b73-aec0-61e1e5175364",
@@ -39438,76 +39307,6 @@
     "episode_info": null
   },
   {
-    "id": "556f8268-08da-49a8-87de-feb88513b58d",
-    "title": "Land of some other (\u00e9ist ar\u00eds)",
-    "slug": "land-of-some-other-eist-aris-2025-07-20",
-    "start": "2025-07-20T18:00:00.000Z",
-    "end": "2025-07-20T19:00:00.000Z",
-    "artistIds": [
-      "a7d9618d-a8c9-4fad-97cf-e422c31c92c4"
-    ],
-    "artistName": "Christopher Steenson",
-    "artistSlug": "christopher-steenson",
-    "description": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "bold"
-                }
-              ],
-              "text": "Christopher Steenson"
-            },
-            {
-              "type": "text",
-              "text": " hosts "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": "The Land of Some Other"
-            },
-            {
-              "type": "text",
-              "text": " \u2013 a radio show that uses the concept of the 'frontier' as a departure point for an exploration in music that ranges from field recordings and folk, to alternative country, drone and noise. "
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": "The Land of Some Other "
-            },
-            {
-              "type": "text",
-              "text": "airs every four weeks on Wednesdays from 5:00 to 6:00PM (IST)"
-            }
-          ]
-        }
-      ]
-    },
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
     "id": "216e6e1c-1358-469a-b21f-5a081b8a7f94",
     "title": "Domhan",
     "slug": "domhan-2025-07-20",
@@ -43997,7 +43796,7 @@
       "score": 145
     },
     "match_score": 155,
-    "episode_info": "#2"
+    "episode_info": null
   },
   {
     "id": "19dcd898-c28d-4c9d-b14e-7d05a7dd630f",
@@ -44254,36 +44053,6 @@
     "artistName": "Julie Landers",
     "artistSlug": "julie-landers",
     "description": null,
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
-    "id": "15c2c90a-7876-43d8-bd6d-7ba3f5950ad7",
-    "title": "bug.core (\u00e9ist ar\u00eds)",
-    "slug": "bugcore-eist-aris-2025-06-27",
-    "start": "2025-06-27T17:00:00.000Z",
-    "end": "2025-06-27T18:00:00.000Z",
-    "artistIds": [
-      "87cca5cc-5765-4d2e-a990-9d735e12c952"
-    ],
-    "artistName": "esm\u00e92k",
-    "artistSlug": "esme2k",
-    "description": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "A replay of my Radio Solstice show from last Sunday <3"
-            }
-          ]
-        }
-      ]
-    },
     "mixcloud_match": null,
     "soundcloud_match": null,
     "match_score": 0,
@@ -50453,54 +50222,6 @@
     "episode_info": null
   },
   {
-    "id": "9c6efd3e-b8e2-4179-b746-97651393e005",
-    "title": "bug.core (\u00e9ist ar\u00eds)",
-    "slug": "bugcore-eist-ar-is-2025-06-07",
-    "start": "2025-06-07T15:00:00.000Z",
-    "end": "2025-06-07T17:00:00.000Z",
-    "artistIds": [
-      "87cca5cc-5765-4d2e-a990-9d735e12c952"
-    ],
-    "artistName": "esm\u00e92k",
-    "artistSlug": "esme2k",
-    "description": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "soft-launching my new ambient alias 'feithid' with an ambient dub set. open ear folks wish they could hear that live!!!!"
-            }
-          ]
-        }
-      ]
-    },
-    "mixcloud_match": {
-      "slug": "esme2k-tribal-landscapes-radio-solstice",
-      "name": "Esme2k - Tribal Landscapes (Radio Solstice)",
-      "url": "https://www.mixcloud.com/eistcork/esme2k-tribal-landscapes-radio-solstice/",
-      "pictures": {
-        "small": "https://thumbnailer.mixcloud.com/unsafe/25x25/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "thumbnail": "https://thumbnailer.mixcloud.com/unsafe/50x50/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "medium_mobile": "https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "medium": "https://thumbnailer.mixcloud.com/unsafe/100x100/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "large": "https://thumbnailer.mixcloud.com/unsafe/300x300/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "320wx320h": "https://thumbnailer.mixcloud.com/unsafe/320x320/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "extra_large": "https://thumbnailer.mixcloud.com/unsafe/600x600/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "640wx640h": "https://thumbnailer.mixcloud.com/unsafe/640x640/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "768wx768h": "https://thumbnailer.mixcloud.com/unsafe/768x768/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413",
-        "1024wx1024h": "https://thumbnailer.mixcloud.com/unsafe/1024x1024/extaudio/e/9/1/c/4f68-cc6d-4b0a-b0d7-0b73106b1413"
-      },
-      "description": "A one-time special by esme2k for Radio Solstice, making you travel around the world with tribal electronica, a genre that incorporates traditional music and folklore into contemporary music.",
-      "score": 76
-    },
-    "soundcloud_match": null,
-    "match_score": 76,
-    "episode_info": null
-  },
-  {
     "id": "bb42b1ae-7aa8-425f-b47f-d10077656e14",
     "title": "seomra folamh",
     "slug": "seomra-folamh-2025-06-07",
@@ -51283,7 +51004,7 @@
       "score": 300
     },
     "match_score": 300,
-    "episode_info": "Ep. 04"
+    "episode_info": "Ep. 05"
   },
   {
     "id": "b9ce95e0-3d28-42b0-881f-3bc3e49317de",
@@ -53667,21 +53388,6 @@
     "episode_info": null
   },
   {
-    "id": "d173de01-4800-49f8-9c54-79e468dbb688",
-    "title": "bug.core (\u00e9ist ar\u00eds)",
-    "slug": "bugcore-eist-aris-2025-05-16",
-    "start": "2025-05-16T17:00:00.000Z",
-    "end": "2025-05-16T18:00:00.000Z",
-    "artistIds": [],
-    "artistName": "",
-    "artistSlug": "",
-    "description": null,
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
     "id": "b903a1c9-3997-422a-af1a-044d4614d889",
     "title": "S\u00fagradh",
     "slug": "sugradh-2025-05-16",
@@ -54614,21 +54320,6 @@
     },
     "match_score": 200,
     "episode_info": "#4"
-  },
-  {
-    "id": "0e1f4c38-876f-4edc-ab20-56694df7b6ba",
-    "title": "Joyous Invasion (\u00e9ist ar\u00eds)",
-    "slug": "joyous-invasion-eist-aris-2025-05-10",
-    "start": "2025-05-10T13:06:00.000Z",
-    "end": "2025-05-10T15:00:00.000Z",
-    "artistIds": [],
-    "artistName": "",
-    "artistSlug": "",
-    "description": null,
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
   },
   {
     "id": "493dfbde-1d09-47fa-9c1c-7749295d7d6b",
@@ -55865,23 +55556,6 @@
     "episode_info": null
   },
   {
-    "id": "7e99b1a7-7f84-4a52-94a4-9e1d2095196b",
-    "title": "Silent Listener (\u00e9ist ar\u00eds)",
-    "slug": "silent-listener-eist-aris-2025-05-02",
-    "start": "2025-05-02T16:00:00.000Z",
-    "end": "2025-05-02T17:00:00.000Z",
-    "artistIds": [
-      "01493eb8-0162-49e9-87c7-35b7d7035675"
-    ],
-    "artistName": "Ali Daly",
-    "artistSlug": "ali-daly",
-    "description": null,
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
     "id": "8f49f8bc-4880-41a8-a491-a9cc4f5a8eb3",
     "title": "S\u00fagradh",
     "slug": "sugradh-2025-05-02",
@@ -56152,7 +55826,7 @@
       "score": 300
     },
     "match_score": 300,
-    "episode_info": "Ep. 03"
+    "episode_info": "Ep. 04"
   },
   {
     "id": "7cc27aff-bb89-488b-b750-982c4c6f838b",
@@ -56983,7 +56657,7 @@
       "score": 200
     },
     "match_score": 200,
-    "episode_info": "Ep. 2"
+    "episode_info": "Ep. 1"
   },
   {
     "id": "8563c74c-36fe-40cd-a278-265b0c0578e4",
@@ -57173,7 +56847,7 @@
       "score": 120
     },
     "match_score": 300,
-    "episode_info": "Ep. 3"
+    "episode_info": null
   },
   {
     "id": "ec710387-8ef7-4f05-ae0f-6dffd3e5e52b",
@@ -59391,23 +59065,6 @@
         }
       ]
     },
-    "mixcloud_match": null,
-    "soundcloud_match": null,
-    "match_score": 0,
-    "episode_info": null
-  },
-  {
-    "id": "7952814f-7c0a-46a3-ba5f-e04a66fe6a10",
-    "title": "Keep Sketch (\u00e9ist ar\u00eds)",
-    "slug": "keep-sketch-eist-aris-2025-04-14",
-    "start": "2025-04-14T17:00:00.000Z",
-    "end": "2025-04-14T19:00:00.000Z",
-    "artistIds": [
-      "35eaa192-745e-4059-960b-2988c26f5558"
-    ],
-    "artistName": "Neil Flynn",
-    "artistSlug": "neil-flynn",
-    "description": null,
     "mixcloud_match": null,
     "soundcloud_match": null,
     "match_score": 0,
@@ -61661,7 +61318,7 @@
       "score": 300
     },
     "match_score": 300,
-    "episode_info": "Ep. 02"
+    "episode_info": "#02"
   },
   {
     "id": "888d3749-bb1a-43bb-ac17-ddaeb1cb90db",
@@ -64215,7 +63872,7 @@
       "score": 200
     },
     "match_score": 200,
-    "episode_info": "#2"
+    "episode_info": "#3"
   },
   {
     "id": "c5df90f0-1c17-441e-844a-1d6b5781ad0b",
@@ -65314,7 +64971,7 @@
       "score": 300
     },
     "match_score": 300,
-    "episode_info": "Ep. 01"
+    "episode_info": "Ep. 02"
   },
   {
     "id": "81b9d62b-a0d9-4282-83fc-aa2ef36d5bf4",

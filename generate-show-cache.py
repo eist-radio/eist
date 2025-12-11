@@ -647,18 +647,25 @@ def build_show_output(shows, show_matches, artists):
         episode_info = None
         if show_id in show_matches:
             matches = show_matches[show_id]
-            if matches.get('mixcloud'):
-                show_data['mixcloud_match'] = matches['mixcloud']
-                show_data['match_score'] = max(show_data['match_score'], matches['mixcloud'].get('score', 0))
-                # Try to extract episode info from Mixcloud title
-                if not episode_info:
-                    episode_info = extract_episode_info(matches['mixcloud'].get('name', ''), show.get('title', ''))
-            if matches.get('soundcloud'):
-                show_data['soundcloud_match'] = matches['soundcloud']
-                show_data['match_score'] = max(show_data['match_score'], matches['soundcloud'].get('score', 0))
-                # Try to extract episode info from SoundCloud title if not found yet
-                if not episode_info:
-                    episode_info = extract_episode_info(matches['soundcloud'].get('title', ''), show.get('title', ''))
+            mc_match = matches.get('mixcloud')
+            sc_match = matches.get('soundcloud')
+
+            if mc_match:
+                show_data['mixcloud_match'] = mc_match
+                show_data['match_score'] = max(show_data['match_score'], mc_match.get('score', 0))
+            if sc_match:
+                show_data['soundcloud_match'] = sc_match
+                show_data['match_score'] = max(show_data['match_score'], sc_match.get('score', 0))
+
+            # Extract episode info from the higher-scored match
+            mc_score = mc_match.get('score', 0) if mc_match else 0
+            sc_score = sc_match.get('score', 0) if sc_match else 0
+
+            if sc_score >= mc_score and sc_match:
+                episode_info = extract_episode_info(sc_match.get('title', ''), show.get('title', ''))
+            if not episode_info and mc_match:
+                episode_info = extract_episode_info(mc_match.get('name', ''), show.get('title', ''))
+
             matched_count += 1
 
         # Store episode info if found
