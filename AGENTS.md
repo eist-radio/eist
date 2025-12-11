@@ -50,7 +50,6 @@ This document describes the architecture and structure of the éist radio websit
 ├── generate-show-cache.py      # Main data pipeline script
 ├── generate-show-pages.py      # Generate Hugo pages for shows
 ├── generate-artist-pages.py    # Generate Hugo pages from RadioCult API
-├── generate-artist-pages.sh    # Shell wrapper for artist generation
 └── match_mcsc_to_rc.py         # Archive-to-show matching algorithm
 ```
 
@@ -199,7 +198,7 @@ $eist-highlight: #96BFE6    // Light blue
 export API_KEY="your-radiocult-api-key"
 
 # Generate artist pages
-./generate-artist-pages.sh
+python3 generate-artist-pages.py
 
 # Start dev server
 hugo server

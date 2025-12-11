@@ -2,9 +2,6 @@
 """
 Generate markdown files for artists from the RadioCult API.
 
-This is a Python rewrite of generate-artist-pages.sh for better performance.
-The bash script now calls this Python script.
-
 Usage:
     python3 generate-artist-pages.py
 
