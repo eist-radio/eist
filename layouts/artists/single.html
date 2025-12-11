@@ -159,7 +159,7 @@
     {{/* Show History Section */}}
     {{ $artistSlug := .File.BaseFileName }}
     {{ $artistShows := slice }}
-    {{ range where .Site.RegularPages "Section" "shows" }}
+    {{ range where .Site.RegularPages "Section" "archive" }}
         {{/* Only include shows that have an archive (Mixcloud or SoundCloud) */}}
         {{ if and (eq .Params.artist_slug $artistSlug) .Params.has_archive }}
             {{ $artistShows = $artistShows | append . }}
