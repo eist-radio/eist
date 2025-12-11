@@ -784,6 +784,11 @@
     pointer-events: auto;
 }
 
+/* When header is scrolled, player moves inline so indicator sits right below header */
+.header-scrolled .floating-month-indicator {
+    top: $header-height + 10px;
+}
+
 .floating-month-indicator .floating-month-content {
     display: flex;
     flex-direction: column;

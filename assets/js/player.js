@@ -342,6 +342,7 @@ function initPlayerMorph() {
         if (shouldBeScrolled !== isScrolled) {
             isScrolled = shouldBeScrolled;
             header.classList.toggle('header-scrolled', isScrolled);
+            document.body.classList.toggle('header-scrolled', isScrolled);
         }
 
         ticking = false;
