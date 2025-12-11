@@ -23,10 +23,10 @@
     {{ $showDate = (time $showStart).Format "2 January 2006" }}
 {{ end }}
 
-{{/* Determine image: prefer Mixcloud, then SoundCloud, then fallback */}}
-{{ $showImage := $mixcloudImage }}
+{{/* Determine image: use preferred_image (based on higher match score), then fallback */}}
+{{ $showImage := .Params.preferred_image }}
 {{ if not $showImage }}
-    {{ $showImage = $soundcloudImage }}
+    {{ $showImage = $mixcloudImage | default $soundcloudImage }}
 {{ end }}
 {{ if not $showImage }}
     {{ $showImage = "/eist_online.png" }}
@@ -178,7 +178,7 @@
             {{ range $relatedSlugs }}
             {{ $show := site.GetPage (printf "/archive/%s" .) }}
             {{ if $show }}
-            {{ $otherImage := $show.Params.mixcloud_image | default $show.Params.soundcloud_image | default "/eist_online.png" }}
+            {{ $otherImage := $show.Params.preferred_image | default $show.Params.mixcloud_image | default $show.Params.soundcloud_image | default "/eist_online.png" }}
             {{ $otherDate := "" }}
             {{ if $show.Params.show_start }}
                 {{ $otherDate = (time $show.Params.show_start).Format "2 Jan 2006" }}

@@ -150,6 +150,7 @@ def generate_show_page(show, artist_shows):
     mc_pictures = mc_match.get("pictures") or {}
     mc_image = mc_pictures.get("large") or mc_pictures.get("medium") or ""
     mc_desc = mc_match.get("description", "")
+    mc_score = mc_match.get("score", 0)
 
     # SoundCloud data
     sc_match = show.get("soundcloud_match") or {}
@@ -157,12 +158,21 @@ def generate_show_page(show, artist_shows):
     sc_url = sc_match.get("url", "")
     sc_image = sc_match.get("thumbnail", "")
     sc_desc = sc_match.get("description") or ""
+    sc_score = sc_match.get("score", 0)
 
     # Has archive?
     has_archive = "true" if mc_slug or sc_id else "false"
 
-    # Match score
+    # Match score (max of both)
     match_score = show.get("match_score", 0)
+
+    # Preferred image - use image from higher-scored match
+    if sc_score >= mc_score and sc_image:
+        preferred_image = sc_image
+    elif mc_image:
+        preferred_image = mc_image
+    else:
+        preferred_image = sc_image or ""
 
     # Extract RadioCult description
     rc_desc = extract_description(show.get("description"))
@@ -196,6 +206,7 @@ def generate_show_page(show, artist_shows):
         f'soundcloud_id = "{sc_id}"',
         f'soundcloud_url = "{sc_url}"',
         f'soundcloud_image = "{sc_image}"',
+        f'preferred_image = "{preferred_image}"',
         f"has_archive = {has_archive}",
         f"match_score = {match_score}",
     ]

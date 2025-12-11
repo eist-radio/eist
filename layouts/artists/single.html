@@ -177,7 +177,7 @@
 
         <div class="artist-shows-grid" id="shows-grid">
             {{ range $index, $show := $artistShows }}
-            {{ $showImage := $show.Params.mixcloud_image | default $show.Params.soundcloud_image | default "/eist_online.png" }}
+            {{ $showImage := $show.Params.preferred_image | default $show.Params.mixcloud_image | default $show.Params.soundcloud_image | default "/eist_online.png" }}
             {{ $showDate := "" }}
             {{ if $show.Params.show_start }}
                 {{ $showDate = (time $show.Params.show_start).Format "2 Jan 2006" }}

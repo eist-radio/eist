@@ -232,7 +232,7 @@
                 <div class="archive-grid">
                     {{ range $shows }}
                         {{ $hasArchive := or .Params.mixcloud_slug .Params.soundcloud_id }}
-                        {{ $showImage := .Params.mixcloud_image | default .Params.soundcloud_image | default "/eist_online.png" }}
+                        {{ $showImage := .Params.preferred_image | default .Params.mixcloud_image | default .Params.soundcloud_image | default "/eist_online.png" }}
                         {{ $showDate := "" }}
                         {{ if .Params.show_start }}
                             {{ $showDate = (time .Params.show_start).Format "Mon 2 Jan" }}
