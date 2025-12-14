@@ -737,6 +737,11 @@ def apply_manual_matches(shows, mixcloud_archives, soundcloud_archives, show_mat
     Manual overrides have the highest priority (score=600) and override
     any automatic matching, including ground-truth URL matches.
 
+    Supported fields per show:
+        - mixcloud: URL string or null to clear
+        - soundcloud: URL string or null to clear
+        - episode_info: Override episode suffix (e.g., "Ep. 1", "#5", null to clear)
+
     Args:
         shows: List of RadioCult show dicts
         mixcloud_archives: List of Mixcloud cloudcast dicts
@@ -825,6 +830,12 @@ def apply_manual_matches(shows, mixcloud_archives, soundcloud_archives, show_mat
                 applied['soundcloud'] = archive.get('url')
             else:
                 print(f"  Warning: Manual SoundCloud URL not found in cache: {sc_url}")
+
+        # Apply episode_info override
+        if 'episode_info' in override:
+            ep_info = override.get('episode_info')
+            show_matches[show_id]['episode_info'] = ep_info  # Can be string or None
+            applied['episode_info'] = ep_info if ep_info else 'cleared'
 
         if applied:
             applied_log[show_slug] = {

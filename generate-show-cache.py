@@ -659,14 +659,18 @@ def build_show_output(shows, show_matches, artists):
                 show_data['soundcloud_match'] = sc_match
                 show_data['match_score'] = max(show_data['match_score'], sc_match.get('score', 0))
 
-            # Extract episode info from the higher-scored match
-            mc_score = mc_match.get('score', 0) if mc_match else 0
-            sc_score = sc_match.get('score', 0) if sc_match else 0
+            # Check for manual episode_info override first
+            if 'episode_info' in matches:
+                episode_info = matches.get('episode_info')  # Can be string or None
+            else:
+                # Extract episode info from the higher-scored match
+                mc_score = mc_match.get('score', 0) if mc_match else 0
+                sc_score = sc_match.get('score', 0) if sc_match else 0
 
-            if sc_score >= mc_score and sc_match:
-                episode_info = extract_episode_info(sc_match.get('title', ''), show.get('title', ''))
-            if not episode_info and mc_match:
-                episode_info = extract_episode_info(mc_match.get('name', ''), show.get('title', ''))
+                if sc_score >= mc_score and sc_match:
+                    episode_info = extract_episode_info(sc_match.get('title', ''), show.get('title', ''))
+                if not episode_info and mc_match:
+                    episode_info = extract_episode_info(mc_match.get('name', ''), show.get('title', ''))
 
             matched_count += 1
 
