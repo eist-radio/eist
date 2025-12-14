@@ -166,6 +166,7 @@
                 <h1 class="page-title">Artists</h1>
                 <p class="page-subtitle">The voices of éist.</p>
             </div>
+            {{/* Temporarily hidden
             <div class="page-stats">
                 <div class="stat-item">
                     <span class="stat-number">{{ $totalArtists }}</span>
@@ -177,6 +178,7 @@
                     <span class="stat-label">Genres</span>
                 </div>
             </div>
+            */}}
         </div>
         {{/* Decorative waveform element */}}
         <div class="page-hero-wave" aria-hidden="true">
@@ -203,7 +205,7 @@
                     </select>
                 </div>
 
-                {{/* Search Input */}}
+                {{/* Search Input - temporarily hidden
                 <div class="filter-group search-filter">
                     <label class="filter-label">Search</label>
                     <div class="search-input-wrapper">
@@ -213,8 +215,9 @@
                         </svg>
                     </div>
                 </div>
+                */}}
 
-                {{/* Results count and inactive toggle */}}
+                {{/* Temporarily hidden - results count and inactive toggle
                 <div class="filter-group results-toggle">
                     <span class="results-text" id="results-count">Showing {{ $activeArtistsCount }} artists</span>
                     <label class="toggle-label">
@@ -223,6 +226,7 @@
                         <span class="toggle-text">Include inactive</span>
                     </label>
                 </div>
+                */}}
 
                 {{/* Expand filters button (mobile only, shows when scrolled) */}}
                 <button class="filter-expand-btn" id="filter-expand-btn" aria-label="Show filters">
@@ -233,16 +237,16 @@
                 </button>
             </div>
 
-            {{/* Genre Tags - show filtered inline genres */}}
+            {{/* Genre Tags - limited to one row */}}
             {{ if $inlineGenres }}
             <div class="genre-filter-row">
                 <span class="filter-label">Genres</span>
                 <div class="genre-tags" id="genre-tags">
-                    {{ range first 20 $inlineGenres }}
+                    {{ range first 10 $inlineGenres }}
                     <button class="genre-filter-tag" data-genre="{{ . | lower }}">{{ . }}</button>
                     {{ end }}
-                    {{ if gt (len $modalGenres) 20 }}
-                    <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 20 }} more</button>
+                    {{ if gt (len $modalGenres) 10 }}
+                    <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 10 }} more</button>
                     {{ end }}
                 </div>
             </div>

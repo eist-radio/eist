@@ -26,6 +26,12 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Genre tags - single row, no wrapping */
+.artists-filters .genre-tags {
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
 /* Search Input */
 .search-input-wrapper {
     position: relative;
