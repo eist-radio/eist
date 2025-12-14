@@ -35,6 +35,7 @@ except ImportError:
 # Matching thresholds
 MATCH_THRESHOLD = 60  # Minimum score to accept a match
 HIGH_CONFIDENCE_THRESHOLD = 80  # Score for high confidence matches
+GROUND_TRUTH_SCORE = 500  # Score for ground-truth URL matches (overrides fuzzy matching)
 
 # Known abbreviations/expansions
 ABBREVIATIONS = {
@@ -49,6 +50,108 @@ NICKNAMES = {
     'amy mcnamara': 'amy mac',
     'amy mac': 'amy mcnamara',
 }
+
+
+# =============================================================================
+# Ground-truth URL extraction from RadioCult descriptions
+# =============================================================================
+
+def extract_text_from_description(desc_obj):
+    """Extract all plain text from RadioCult description JSON, including link hrefs.
+
+    RadioCult uses a ProseMirror-style JSON structure for descriptions.
+    This function walks the tree and extracts both text content and link URLs.
+    """
+    if not desc_obj or not isinstance(desc_obj, dict):
+        return ""
+
+    texts = []
+
+    def walk(node):
+        if isinstance(node, dict):
+            # Extract text content
+            if node.get("type") == "text":
+                texts.append(node.get("text", ""))
+            # Extract link href from marks
+            for mark in node.get("marks", []):
+                if mark.get("type") == "link":
+                    href = mark.get("attrs", {}).get("href", "")
+                    if href:
+                        texts.append(f" {href} ")  # Add spaces to separate from surrounding text
+            # Recurse into content
+            for child in node.get("content", []):
+                walk(child)
+        elif isinstance(node, list):
+            for item in node:
+                walk(item)
+
+    walk(desc_obj)
+    return " ".join(texts)
+
+
+def normalize_archive_url(url):
+    """Normalize URL by removing query params and trailing slashes."""
+    if not url:
+        return ""
+    # Remove query string
+    if '?' in url:
+        url = url.split('?')[0]
+    # Remove trailing slash
+    url = url.rstrip('/')
+    return url
+
+
+def extract_archive_urls(text):
+    """
+    Extract Mixcloud and SoundCloud episode URLs from text.
+
+    Returns dict: {'mixcloud': [...], 'soundcloud': [...]}
+    Only returns episode-specific URLs, not profile URLs.
+
+    Examples of valid episode URLs:
+        - https://www.mixcloud.com/djgwadamike/caribbean-voyage-10/
+        - https://soundcloud.com/dj-gwada-mike/caribbean-voyage-10
+
+    Examples of rejected profile URLs:
+        - https://www.mixcloud.com/djgwadamike/
+        - https://soundcloud.com/dj-gwada-mike
+    """
+    results = {'mixcloud': [], 'soundcloud': []}
+
+    if not text:
+        return results
+
+    # Mixcloud episode URL pattern: mixcloud.com/{user}/{slug}
+    # Must have BOTH user AND slug (not just profile)
+    mc_pattern = r'https?://(?:www\.)?mixcloud\.com/([^/\s]+)/([^/\s?]+)'
+    for match in re.finditer(mc_pattern, text, re.IGNORECASE):
+        user, slug = match.groups()
+        # Skip if slug looks like a profile-only URL (no actual slug)
+        if slug and not slug.startswith('?'):
+            url = f"https://www.mixcloud.com/{user}/{slug}/"
+            results['mixcloud'].append({
+                'url': normalize_archive_url(url),
+                'user': user,
+                'slug': slug
+            })
+
+    # SoundCloud episode URL pattern: soundcloud.com/{user}/{track}
+    # Must have BOTH user AND track (not just profile)
+    sc_pattern = r'https?://(?:www\.)?soundcloud\.com/([^/\s]+)/([^/\s?]+)'
+    for match in re.finditer(sc_pattern, text, re.IGNORECASE):
+        user, track = match.groups()
+        # Skip common non-track paths (profile sub-pages)
+        skip_paths = {'sets', 'likes', 'followers', 'following', 'tracks',
+                      'albums', 'playlists', 'reposts', 'comments', 'popular-tracks'}
+        if track.lower() not in skip_paths:
+            url = f"https://soundcloud.com/{user}/{track}"
+            results['soundcloud'].append({
+                'url': normalize_archive_url(url),
+                'user': user,
+                'track': track
+            })
+
+    return results
 
 
 def split_camel_case(text):
@@ -490,6 +593,117 @@ def calculate_match_score(show, cloudcast, artist_name=None, artist_mc_username=
     return score
 
 
+def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, show_matches):
+    """
+    Apply ground-truth matches from URLs in show descriptions.
+
+    Extracts MC/SC URLs from RadioCult descriptions and directly matches
+    to the corresponding archives. These matches override fuzzy matching.
+
+    Args:
+        shows: List of RadioCult show dicts
+        mixcloud_archives: List of Mixcloud cloudcast dicts
+        soundcloud_archives: List of SoundCloud track dicts
+        show_matches: Dict to populate with matches
+
+    Returns:
+        dict: {show_id: {'show_title': ..., 'mixcloud_url': ..., 'soundcloud_url': ...}}
+              for logging purposes
+    """
+    ground_truth_log = {}
+
+    # Build archive lookup by normalized URL
+    mc_by_url = {}
+    mc_by_slug = {}
+    for archive in mixcloud_archives:
+        url = normalize_archive_url(archive.get('url', ''))
+        if url:
+            mc_by_url[url] = archive
+        slug = archive.get('slug', '')
+        if slug:
+            mc_by_slug[slug] = archive
+
+    sc_by_url = {}
+    for archive in soundcloud_archives:
+        url = normalize_archive_url(archive.get('url', ''))
+        if url:
+            sc_by_url[url] = archive
+
+    for show in shows:
+        show_id = show.get('id')
+        description = show.get('description')
+        if not description:
+            continue
+
+        # Extract text (including link hrefs) from description
+        text = extract_text_from_description(description)
+        if not text:
+            continue
+
+        # Find archive URLs in the text
+        urls = extract_archive_urls(text)
+
+        matched = {}
+
+        # Match Mixcloud URLs
+        for mc_info in urls['mixcloud']:
+            mc_url = mc_info['url']
+            # Try exact URL match first
+            archive = mc_by_url.get(mc_url)
+            # Try matching just by slug if exact URL not found
+            # (handles case where host links to their own MC account, not eistcork)
+            if not archive:
+                archive = mc_by_slug.get(mc_info['slug'])
+
+            if archive:
+                if show_id not in show_matches:
+                    show_matches[show_id] = {'show': show, 'mixcloud': None, 'soundcloud': None}
+
+                show_matches[show_id]['mixcloud'] = {
+                    'slug': archive.get('slug'),
+                    'name': archive.get('name', ''),
+                    'url': archive.get('url'),
+                    'pictures': archive.get('pictures', {}),
+                    'description': archive.get('description', ''),
+                    'score': GROUND_TRUTH_SCORE
+                }
+                matched['mixcloud_url'] = mc_url
+                matched['mixcloud_slug'] = archive.get('slug')
+
+        # Match SoundCloud URLs
+        for sc_info in urls['soundcloud']:
+            sc_url = sc_info['url']
+            archive = sc_by_url.get(sc_url)
+            # Also try with www prefix
+            if not archive:
+                alt_url = sc_url.replace('https://soundcloud.com', 'https://www.soundcloud.com')
+                archive = sc_by_url.get(alt_url)
+
+            if archive:
+                if show_id not in show_matches:
+                    show_matches[show_id] = {'show': show, 'mixcloud': None, 'soundcloud': None}
+
+                show_matches[show_id]['soundcloud'] = {
+                    'id': archive.get('id'),
+                    'title': archive.get('title', ''),
+                    'url': archive.get('url'),
+                    'thumbnail': archive.get('thumbnail'),
+                    'description': archive.get('description', ''),
+                    'score': GROUND_TRUTH_SCORE
+                }
+                matched['soundcloud_url'] = sc_url
+                matched['soundcloud_id'] = archive.get('id')
+
+        if matched:
+            ground_truth_log[show_id] = {
+                'show_title': show.get('title'),
+                'show_date': show.get('start', '')[:10],
+                **matched
+            }
+
+    return ground_truth_log
+
+
 def apply_sequential_matching(shows, soundcloud_archives, mixcloud_archives, show_matches,
                                should_exclude_fn=None):
     """
@@ -744,9 +958,10 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
         should_exclude_fn: Optional function(show) -> bool to filter shows
 
     Returns:
-        Tuple of (show_matches, review_queue) where:
+        Tuple of (show_matches, review_queue, ground_truth_log) where:
         - show_matches: dict of show_id -> {'show': ..., 'mixcloud': ..., 'soundcloud': ...}
         - review_queue: list of low-confidence matches for manual review
+        - ground_truth_log: dict of ground-truth URL matches from descriptions
     """
     # Build show lookup by date for faster matching
     shows_by_date = {}
@@ -774,6 +989,14 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
     # Track which shows have been matched to archives
     show_matches = {}  # show_id -> {mixcloud: {...}, soundcloud: {...}}
     archive_review_queue = []
+
+    # Apply ground-truth matches from description URLs FIRST
+    # These take precedence over fuzzy matching (score=500)
+    ground_truth_log = apply_ground_truth_matches(
+        shows, mixcloud_archives, soundcloud_archives, show_matches
+    )
+    if ground_truth_log:
+        print(f"  Ground-truth matches from descriptions: {len(ground_truth_log)}")
 
     def find_best_show_for_archive(archive_title, archive_date, archive_source, archive_url=None):
         """Find the best matching RadioCult show for an archive."""
@@ -1078,4 +1301,4 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
         shows, soundcloud_archives, mixcloud_archives, show_matches, should_exclude_fn
     )
 
-    return show_matches, archive_review_queue
+    return show_matches, archive_review_queue, ground_truth_log

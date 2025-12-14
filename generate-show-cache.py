@@ -54,6 +54,7 @@ MIXCLOUD_CACHE_FILE = DATA_DIR / "mixcloud-cache.json"
 SOUNDCLOUD_CACHE_FILE = DATA_DIR / "soundcloud-cache.json"
 CACHE_META_FILE = DATA_DIR / "cache-meta.json"
 REVIEW_QUEUE_FILE = DATA_DIR / "review-queue.json"
+GROUND_TRUTH_FILE = DATA_DIR / "ground-truth-matches.json"
 
 # Rate limiting
 REQUEST_DELAY = 0.5  # Seconds between API requests
@@ -966,12 +967,24 @@ def main():
                 review_queue = json.loads(REVIEW_QUEUE_FILE.read_text())
             except:
                 pass
+        # Load existing ground-truth log
+        ground_truth_log = {}
+        if GROUND_TRUTH_FILE.exists():
+            try:
+                ground_truth_log = json.loads(GROUND_TRUTH_FILE.read_text())
+            except:
+                pass
     else:
         print("\nMatching archives to RadioCult shows...")
-        show_matches, review_queue = match_archives_to_shows(
+        show_matches, review_queue, ground_truth_log = match_archives_to_shows(
             original_shows, mixcloud_cache, soundcloud_cache, artists,
             should_exclude_fn=should_exclude_show
         )
+
+        # Save ground-truth matches for visibility
+        if ground_truth_log:
+            GROUND_TRUTH_FILE.write_text(json.dumps(ground_truth_log, indent=2))
+            print(f"  Saved {len(ground_truth_log)} ground-truth matches to {GROUND_TRUTH_FILE}")
 
     # Build final output
     all_show_data, matched_count = build_show_output(original_shows, show_matches, artists)
@@ -1000,6 +1013,7 @@ def main():
         'mixcloud_matches': mixcloud_count,
         'soundcloud_matches': soundcloud_count,
         'both_platforms': both_count,
+        'ground_truth_matches': len(ground_truth_log),
         'review_queue_size': len(review_queue),
         'new_mixcloud_this_run': new_mixcloud_count,
         'total_mixcloud_cached': len(mixcloud_cache)
@@ -1016,11 +1030,15 @@ def main():
     print(f"  - SoundCloud:        {soundcloud_count}")
     print(f"  - Both platforms:    {both_count}")
     print(f"New Mixcloud this run: {new_mixcloud_count}")
+    if ground_truth_log:
+        print(f"Ground-truth matches:  {len(ground_truth_log)}")
     print(f"Review queue:          {len(review_queue)}")
     print(f"\nOutput files:")
     print(f"  {SHOWS_FILE}")
     print(f"  {MIXCLOUD_CACHE_FILE}")
     print(f"  {SOUNDCLOUD_CACHE_FILE}")
+    if ground_truth_log:
+        print(f"  {GROUND_TRUTH_FILE}")
     if review_queue:
         print(f"  {REVIEW_QUEUE_FILE}")
     print(f"  {CACHE_META_FILE}")
