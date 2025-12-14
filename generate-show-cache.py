@@ -743,6 +743,7 @@ def fetch_radiocult_data(api_key, full_refresh, existing_shows):
                 cached_shows_before_current.append({
                     'id': show_data.get('id'),
                     'title': show_data.get('title'),
+                    'slug': show_data.get('slug'),  # Needed for manual override lookup
                     'start': show_data.get('start'),
                     'end': show_data.get('end'),
                     'artistIds': show_data.get('artistIds', []),
