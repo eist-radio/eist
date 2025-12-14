@@ -178,6 +178,10 @@
         <div class="artist-shows-grid" id="shows-grid">
             {{ range $index, $show := $artistShows }}
             {{ $showImage := $show.Params.preferred_image | default $show.Params.mixcloud_image | default $show.Params.soundcloud_image | default "/eist_online.png" }}
+            {{/* Fallback: prefer MC (stable URLs) if different from primary */}}
+            {{ $fallbackImage := $show.Params.mixcloud_image }}
+            {{ if or (not $fallbackImage) (eq $fallbackImage $showImage) }}{{ $fallbackImage = $show.Params.soundcloud_image }}{{ end }}
+            {{ if or (not $fallbackImage) (eq $fallbackImage $showImage) }}{{ $fallbackImage = "/eist_online.png" }}{{ end }}
             {{ $showDate := "" }}
             {{ if $show.Params.show_start }}
                 {{ $showDate = (time $show.Params.show_start).Format "2 Jan 2006" }}
@@ -185,7 +189,7 @@
             {{ $isHidden := ge $index 8 }}
             <a href="{{ $show.Permalink }}" class="artist-show-card{{ if $isHidden }} show-hidden{{ end }}"{{ if $isHidden }} style="display: none;"{{ end }}>
                 <div class="artist-show-image-wrapper">
-                    <img src="{{ $showImage }}" alt="{{ $show.Title }}" class="artist-show-image" loading="lazy" onerror="this.onerror=null; this.src='/eist_online.png';">
+                    <img src="{{ $showImage }}" alt="{{ $show.Title }}" class="artist-show-image" loading="lazy" data-fallback="{{ $fallbackImage }}" onerror="this.onerror=null; this.src=this.dataset.fallback;">
                     {{ if or $show.Params.mixcloud_slug $show.Params.soundcloud_id }}
                     <span class="artist-show-has-archive">▶</span>
                     {{ end }}

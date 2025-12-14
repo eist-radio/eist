@@ -166,10 +166,16 @@ def generate_show_page(show, artist_shows):
     # Match score (max of both)
     match_score = show.get("match_score", 0)
 
-    # Preferred image - use image from higher-scored match
-    if sc_score >= mc_score and sc_image:
+    # Preferred image selection logic:
+    # - SC thumbnail URLs can expire (return 404), so MC is generally more reliable
+    # - BUT if SC score is significantly higher (50+ points), the MC match might be wrong
+    #   (e.g., matched to wrong episode), so prefer SC in that case
+    # - Otherwise default to MC for stability
+    if sc_image and sc_score >= mc_score + 50:
+        # SC match is significantly better - MC match might be wrong
         preferred_image = sc_image
     elif mc_image:
+        # Default to MC (more stable URLs)
         preferred_image = mc_image
     else:
         preferred_image = sc_image or ""

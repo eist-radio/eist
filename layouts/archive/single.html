@@ -23,13 +23,21 @@
     {{ $showDate = (time $showStart).Format "2 January 2006" }}
 {{ end }}
 
-{{/* Determine image: use preferred_image (based on higher match score), then fallback */}}
+{{/* Determine image: use preferred_image (based on match score heuristics), then fallback */}}
 {{ $showImage := .Params.preferred_image }}
 {{ if not $showImage }}
     {{ $showImage = $mixcloudImage | default $soundcloudImage }}
 {{ end }}
 {{ if not $showImage }}
     {{ $showImage = "/eist_online.png" }}
+{{ end }}
+{{/* Fallback image for onerror - prefer MC (more stable URLs) if different from primary */}}
+{{ $fallbackImage := $mixcloudImage }}
+{{ if or (not $fallbackImage) (eq $fallbackImage $showImage) }}
+    {{ $fallbackImage = $soundcloudImage }}
+{{ end }}
+{{ if or (not $fallbackImage) (eq $fallbackImage $showImage) }}
+    {{ $fallbackImage = "/eist_online.png" }}
 {{ end }}
 
 <main class="show-page">
@@ -41,7 +49,7 @@
         {{ $platformUrl := cond (ne $soundcloudId "") $soundcloudUrl $mixcloudUrl }}
 
         <div class="show-hero-artwork">
-            <img src="{{ $showImage }}" alt="{{ $title }}" class="show-artwork-image" loading="eager" onerror="this.onerror=null; this.src='/eist_online.png';">
+            <img src="{{ $showImage }}" alt="{{ $title }}" class="show-artwork-image" loading="eager" data-fallback="{{ $fallbackImage }}" onerror="this.onerror=null; this.src=this.dataset.fallback;">
             {{/* Play button overlay - triggers archive player via event delegation */}}
             {{ if $hasArchive }}
             <button class="show-play-overlay"
@@ -179,13 +187,17 @@
             {{ $show := site.GetPage (printf "/archive/%s" .) }}
             {{ if $show }}
             {{ $otherImage := $show.Params.preferred_image | default $show.Params.mixcloud_image | default $show.Params.soundcloud_image | default "/eist_online.png" }}
+            {{/* Fallback: prefer MC if different from primary */}}
+            {{ $otherFallback := $show.Params.mixcloud_image }}
+            {{ if or (not $otherFallback) (eq $otherFallback $otherImage) }}{{ $otherFallback = $show.Params.soundcloud_image }}{{ end }}
+            {{ if or (not $otherFallback) (eq $otherFallback $otherImage) }}{{ $otherFallback = "/eist_online.png" }}{{ end }}
             {{ $otherDate := "" }}
             {{ if $show.Params.show_start }}
                 {{ $otherDate = (time $show.Params.show_start).Format "2 Jan 2006" }}
             {{ end }}
             <a href="{{ $show.Permalink }}" class="more-show-card">
                 <div class="more-show-image-wrapper">
-                    <img src="{{ $otherImage }}" alt="{{ $show.Title }}" class="more-show-image" loading="lazy" onerror="this.onerror=null; this.src='/eist_online.png';">
+                    <img src="{{ $otherImage }}" alt="{{ $show.Title }}" class="more-show-image" loading="lazy" data-fallback="{{ $otherFallback }}" onerror="this.onerror=null; this.src=this.dataset.fallback;">
                     {{ if or $show.Params.mixcloud_slug $show.Params.soundcloud_id }}
                     <span class="more-show-has-archive">▶</span>
                     {{ end }}
