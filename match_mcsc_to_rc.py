@@ -19,9 +19,11 @@ Usage:
     )
 """
 
+import json
 import re
 import unicodedata
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Try to import thefuzz for fuzzy matching, fall back to basic matching if not available
 try:
@@ -36,6 +38,10 @@ except ImportError:
 MATCH_THRESHOLD = 60  # Minimum score to accept a match
 HIGH_CONFIDENCE_THRESHOLD = 80  # Score for high confidence matches
 GROUND_TRUTH_SCORE = 500  # Score for ground-truth URL matches (overrides fuzzy matching)
+MANUAL_OVERRIDE_SCORE = 600  # Score for manual overrides (highest priority)
+
+# Manual matches file
+MANUAL_MATCHES_FILE = Path("data/manual-matches.json")
 
 # Known abbreviations/expansions
 ABBREVIATIONS = {
@@ -704,6 +710,132 @@ def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, sh
     return ground_truth_log
 
 
+def load_manual_matches():
+    """
+    Load manual match overrides from data/manual-matches.json.
+
+    Returns:
+        dict: {show_slug: {'mixcloud': url_or_none, 'soundcloud': url_or_none}}
+    """
+    if not MANUAL_MATCHES_FILE.exists():
+        return {}
+
+    try:
+        with open(MANUAL_MATCHES_FILE, 'r') as f:
+            data = json.load(f)
+        # Filter out comment keys
+        return {k: v for k, v in data.items() if not k.startswith('_')}
+    except (json.JSONDecodeError, IOError) as e:
+        print(f"Warning: Could not load manual matches: {e}")
+        return {}
+
+
+def apply_manual_matches(shows, mixcloud_archives, soundcloud_archives, show_matches):
+    """
+    Apply manual match overrides from data/manual-matches.json.
+
+    Manual overrides have the highest priority (score=600) and override
+    any automatic matching, including ground-truth URL matches.
+
+    Args:
+        shows: List of RadioCult show dicts
+        mixcloud_archives: List of Mixcloud cloudcast dicts
+        soundcloud_archives: List of SoundCloud track dicts
+        show_matches: Dict to populate/update with matches
+
+    Returns:
+        dict: Log of applied manual overrides for reporting
+    """
+    manual_overrides = load_manual_matches()
+    if not manual_overrides:
+        return {}
+
+    # Build archive lookup by normalized URL
+    mc_by_url = {}
+    for archive in mixcloud_archives:
+        url = normalize_archive_url(archive.get('url', ''))
+        if url:
+            mc_by_url[url] = archive
+
+    sc_by_url = {}
+    for archive in soundcloud_archives:
+        url = normalize_archive_url(archive.get('url', ''))
+        if url:
+            sc_by_url[url] = archive
+
+    # Build show lookup by slug
+    shows_by_slug = {s.get('slug'): s for s in shows if s.get('slug')}
+
+    applied_log = {}
+
+    for show_slug, override in manual_overrides.items():
+        show = shows_by_slug.get(show_slug)
+        if not show:
+            print(f"  Warning: Manual override for unknown show slug: {show_slug}")
+            continue
+
+        show_id = show.get('id')
+        if show_id not in show_matches:
+            show_matches[show_id] = {'show': show, 'mixcloud': None, 'soundcloud': None}
+
+        applied = {}
+
+        # Apply Mixcloud override
+        mc_url = override.get('mixcloud')
+        if mc_url is None:
+            # Explicit null - clear any existing match
+            show_matches[show_id]['mixcloud'] = None
+            applied['mixcloud'] = 'cleared'
+        elif mc_url:
+            # URL provided - look up archive
+            normalized_url = normalize_archive_url(mc_url)
+            archive = mc_by_url.get(normalized_url)
+            if archive:
+                show_matches[show_id]['mixcloud'] = {
+                    'slug': archive.get('slug'),
+                    'name': archive.get('name', ''),
+                    'url': archive.get('url'),
+                    'pictures': archive.get('pictures', {}),
+                    'description': archive.get('description', ''),
+                    'score': MANUAL_OVERRIDE_SCORE
+                }
+                applied['mixcloud'] = archive.get('url')
+            else:
+                print(f"  Warning: Manual Mixcloud URL not found in cache: {mc_url}")
+
+        # Apply SoundCloud override
+        sc_url = override.get('soundcloud')
+        if sc_url is None:
+            # Explicit null - clear any existing match
+            show_matches[show_id]['soundcloud'] = None
+            applied['soundcloud'] = 'cleared'
+        elif sc_url:
+            # URL provided - look up archive
+            normalized_url = normalize_archive_url(sc_url)
+            archive = sc_by_url.get(normalized_url)
+            if archive:
+                show_matches[show_id]['soundcloud'] = {
+                    'id': archive.get('id'),
+                    'title': archive.get('title', ''),
+                    'url': archive.get('url'),
+                    'thumbnail': archive.get('thumbnail'),
+                    'description': archive.get('description', ''),
+                    'score': MANUAL_OVERRIDE_SCORE
+                }
+                applied['soundcloud'] = archive.get('url')
+            else:
+                print(f"  Warning: Manual SoundCloud URL not found in cache: {sc_url}")
+
+        if applied:
+            applied_log[show_slug] = {
+                'show_title': show.get('title'),
+                'show_date': show.get('start', '')[:10] if show.get('start') else '',
+                **applied
+            }
+
+    return applied_log
+
+
 def apply_sequential_matching(shows, soundcloud_archives, mixcloud_archives, show_matches,
                                should_exclude_fn=None):
     """
@@ -1300,5 +1432,10 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
     show_matches = apply_sequential_matching(
         shows, soundcloud_archives, mixcloud_archives, show_matches, should_exclude_fn
     )
+
+    # Apply manual overrides LAST (highest priority, can override everything)
+    manual_log = apply_manual_matches(shows, mixcloud_archives, soundcloud_archives, show_matches)
+    if manual_log:
+        print(f"  Manual overrides applied: {len(manual_log)}")
 
     return show_matches, archive_review_queue, ground_truth_log

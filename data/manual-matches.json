@@ -1,0 +1,31 @@
+{
+  "_comment": "Manual match overrides. Key is RadioCult show slug, values are URLs or null to explicitly block matching.",
+  "transcontinental-2025-02-02": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/transcontinental-mix-cadence-02022025/",
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-250202"
+  },
+  "transcontinental-2025-02-22": {
+    "mixcloud": null,
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-episode-2"
+  },
+  "transcontinental-2025-04-26": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/transcontinental-episode-3/",
+    "soundcloud": "https://soundcloud.com/eistcork/caroline-mudingo-dipanda"
+  },
+  "transcontinental-2025-05-24": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-transcontinental-episode-4-labdi-ommes-2/",
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-episode-4-mp3"
+  },
+  "transcontinental-2025-07-26": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-250726-transcontinental/",
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-episode-5"
+  },
+  "transcontinental-2025-08-23": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-250823-transcontinental/",
+    "soundcloud": "https://soundcloud.com/eistcork/caroline-mudingo-dipanda-1"
+  },
+  "transcontinental-2025-10-18": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-251018-transcontinental/",
+    "soundcloud": "https://soundcloud.com/eistcork/caroline-mudingo-dipanda-2"
+  }
+}
