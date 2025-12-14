@@ -14,8 +14,11 @@
     min-height: 100vh;
 }
 
-// Archive-specific hero overrides (if any needed in future)
+// Archive-specific hero overrides
 // Base styles come from .page-hero, .page-title, .page-stats in _hero.scss
+.archive-page .page-title {
+    font-size: clamp(1.8rem, 6vw, 3.6rem); // 60% of default
+}
 
 /* Filter Controls */
 .archive-filters {
