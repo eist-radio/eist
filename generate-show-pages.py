@@ -170,15 +170,22 @@ def generate_show_page(show, artist_shows):
     # - SC thumbnail URLs can expire (return 404), so MC is generally more reliable
     # - BUT if SC score is significantly higher (50+ points), the MC match might be wrong
     #   (e.g., matched to wrong episode), so prefer SC in that case
+    # - MC images with /profile/ in URL are station profile pics, not episode artwork
     # - Otherwise default to MC for stability
+    mc_is_profile_pic = mc_image and '/profile/' in mc_image
+    mc_has_episode_artwork = mc_image and not mc_is_profile_pic
+
     if sc_image and sc_score >= mc_score + 50:
         # SC match is significantly better - MC match might be wrong
         preferred_image = sc_image
-    elif mc_image:
-        # Default to MC (more stable URLs)
+    elif mc_has_episode_artwork:
+        # MC has episode-specific artwork (more stable URLs)
         preferred_image = mc_image
+    elif sc_image:
+        # SC has artwork, MC only has profile pic or nothing
+        preferred_image = sc_image
     else:
-        preferred_image = sc_image or ""
+        preferred_image = mc_image or ""
 
     # Extract RadioCult description
     rc_desc = extract_description(show.get("description"))
