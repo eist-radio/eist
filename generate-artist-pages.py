@@ -23,6 +23,11 @@ import requests
 # Configuration
 STATION_ID = "eist-radio"
 ARTISTS_URL = f"https://api.radiocult.fm/api/station/{STATION_ID}/artists"
+
+# Artist slug overrides for names that don't normalize cleanly
+ARTIST_SLUG_OVERRIDES = {
+    "CHɅCHØU": "chachou",
+}
 OUTPUT_DIR = Path("content/artists")
 OUTPUT_FILE = Path("content/artists.md")
 HERO_FOCUS_FILE = Path("data/hero-focus.json")
@@ -167,7 +172,8 @@ def generate_artist_page(artist, hero_focus_data):
     if not name:
         return None, None
 
-    slug = normalize_filename(name)
+    # Check for slug override before normalizing
+    slug = ARTIST_SLUG_OVERRIDES.get(name, normalize_filename(name))
     tags = artist.get('tags', [])
     socials = artist.get('socials', {}) or {}
 
