@@ -15,13 +15,6 @@
   },
   {
     "source": "mixcloud",
-    "archive_title": "Where Ae We? Episode 4 - Egypt",
-    "candidate_show": "Where are we?",
-    "candidate_date": "2025-06-23",
-    "score": 28
-  },
-  {
-    "source": "mixcloud",
     "archive_title": "Radio Solstice - Celtic Reflections - Talechasing",
     "candidate_show": "Radio Solstice Deejays",
     "candidate_date": "2025-06-21",
@@ -45,7 +38,7 @@
     "source": "mixcloud",
     "archive_title": "ENHANCING LIFE WITH OUR DOGS",
     "candidate_show": "Soft Starts with Aisling",
-    "candidate_date": "2025-05-22",
+    "candidate_date": "2025-04-10",
     "score": 17
   },
   {
@@ -65,15 +58,15 @@
   {
     "source": "mixcloud",
     "archive_title": "Cormac O Caoimh",
-    "candidate_show": "Not another disco!",
-    "candidate_date": "2025-03-14",
+    "candidate_show": "seomra folamh",
+    "candidate_date": "2025-03-01",
     "score": 17
   },
   {
     "source": "mixcloud",
     "archive_title": "Noreen murphy, debbie shaw, christy moore, anne rynn, jimi cullen, martin leahy and cormac o caoimh,",
-    "candidate_show": "C'mere to me with Noreen Murphy",
-    "candidate_date": "2025-03-16",
+    "candidate_show": "C'mere to Me with Noreen Murphy",
+    "candidate_date": "2025-03-02",
     "score": 46
   },
   {
@@ -108,7 +101,7 @@
     "source": "soundcloud",
     "archive_title": "ENHANCING LIFE WITH OUR DOGS",
     "candidate_show": "Soft Starts with Aisling",
-    "candidate_date": "2025-05-22",
+    "candidate_date": "2025-04-10",
     "score": 17
   },
   {
@@ -135,8 +128,8 @@
   {
     "source": "soundcloud",
     "archive_title": "noreen murphy, debbie shaw, christy moore, anne rynn, jimi cullen, martin leahy and cormac o caoimh, don henley,rolling tav review and dots and henrey - songs of protest and hope",
-    "candidate_show": "C'mere to me with Noreen Murphy",
-    "candidate_date": "2025-03-16",
+    "candidate_show": "C'mere to Me with Noreen Murphy",
+    "candidate_date": "2025-03-02",
     "score": 46
   }
 ]

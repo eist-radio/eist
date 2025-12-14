@@ -620,7 +620,13 @@ def build_show_output(shows, show_matches, artists):
             continue
 
         show_id = show.get('id')
-        slug = generate_slug(show.get('title', ''), show.get('start', ''))
+        original_title = show.get('title', '')
+        slug = generate_slug(original_title, show.get('start', ''))
+
+        # Check for title override from manual matches
+        display_title = original_title
+        if show_id in show_matches and 'title' in show_matches[show_id]:
+            display_title = show_matches[show_id]['title']
 
         # Get first artist name and slug
         artist_ids = show.get('artistIds', [])
@@ -632,7 +638,7 @@ def build_show_output(shows, show_matches, artists):
 
         show_data = {
             'id': show_id,
-            'title': normalize_title(show.get('title')),
+            'title': normalize_title(display_title),
             'slug': slug,
             'start': show.get('start'),
             'end': show.get('end'),

@@ -1,432 +1,5 @@
 [
   {
-    "id": "98fd708d-bd37-4cdd-9d1d-d04b9682563f",
-    "title": "\u00e9ist san o\u00edche",
-    "start": "2025-12-10T23:00:00.000Z",
-    "end": "2025-12-11T09:00:00.000Z",
-    "artistIds": [
-      "4e92892f-db9b-43e9-9821-2e481c635d72"
-    ],
-    "artistName": "\u00e9ist DJs",
-    "artistSlug": "eist-djs"
-  },
-  {
-    "id": "691fd53a-e6be-4ae8-91ea-088a208fc076",
-    "title": "Under a Plastic Cloud (\u00e9ist ar\u00eds)",
-    "start": "2025-12-11T09:00:00.000Z",
-    "end": "2025-12-11T11:00:00.000Z",
-    "artistIds": [
-      "18b943c9-1cb7-41a9-a7c3-aba5d2592ed3"
-    ],
-    "artistName": "Phil Hope",
-    "artistSlug": "phil-hope"
-  },
-  {
-    "id": "bef22bb1-8ed3-40c2-9c26-f177a241c426",
-    "title": "Ti\u00fain",
-    "start": "2025-12-11T11:00:00.000Z",
-    "end": "2025-12-11T12:00:00.000Z",
-    "artistIds": [
-      "738e9e7c-98e1-4899-9f3d-1741e9ffa15c"
-    ],
-    "artistName": "John \u00d3 R\u00edord\u00e1in",
-    "artistSlug": "john-o-riordain"
-  },
-  {
-    "id": "3af6dea2-2e79-4c90-bb04-a58479bb6d49-r_index-2025-12-11T12:00:00.000Z",
-    "title": "Cinema in Absentia",
-    "start": "2025-12-11T12:00:00.000Z",
-    "end": "2025-12-11T13:00:00.000Z",
-    "artistIds": [
-      "5fe35db5-a424-4886-bf23-a0293292b9bc"
-    ],
-    "artistName": "Conor McCarthy",
-    "artistSlug": "conor-mccarthy"
-  },
-  {
-    "id": "115b273c-665a-4146-b7d4-3eb987eab142",
-    "title": "Mutual Affinities (\u00e9ist ar\u00eds)",
-    "start": "2025-12-11T13:00:00.000Z",
-    "end": "2025-12-11T15:00:00.000Z",
-    "artistIds": [
-      "7c08669c-7493-4f52-a6f1-2eca443960c8"
-    ],
-    "artistName": "Brian O'Shaughnessy",
-    "artistSlug": "brian-o-shaughnessy"
-  },
-  {
-    "id": "7978bb1e-3ea4-454f-8054-6b1b5f130d35",
-    "title": "34119 (\u00e9ist ar\u00eds)",
-    "start": "2025-12-11T15:00:00.000Z",
-    "end": "2025-12-11T16:00:00.000Z",
-    "artistIds": [
-      "3a7e5352-ff67-4b1a-889e-e9734dfe411e"
-    ],
-    "artistName": "Fionnuala Bloem Doran and Samual Julian Grace",
-    "artistSlug": "fionnuala-bloem-doran-and-samual-julian-grace"
-  },
-  {
-    "id": "08128770-02f0-48df-94cc-7ef4e637b381",
-    "title": "It's Different (\u00e9ist ar\u00eds)",
-    "start": "2025-12-11T16:00:00.000Z",
-    "end": "2025-12-11T17:00:00.000Z",
-    "artistIds": [
-      "6d1626e4-836c-4212-b44c-d2471b26b2ec"
-    ],
-    "artistName": "Ronan Burke",
-    "artistSlug": "ronan-burke"
-  },
-  {
-    "id": "635a0aba-6848-4fbf-abdb-4c3962a2db0d",
-    "title": "Raidi\u00f3 Mar Dhea (\u00e9ist ar\u00eds)",
-    "start": "2025-12-11T17:00:00.000Z",
-    "end": "2025-12-11T18:00:00.000Z",
-    "artistIds": [
-      "0a5b6eed-4152-4614-bec9-a686ed5703f6"
-    ],
-    "artistName": "Mike McGrath-Bryan",
-    "artistSlug": "mike-mcgrath-bryan"
-  },
-  {
-    "id": "dad3c7e2-8dbc-42b9-8cdb-c2fcbb1562e2",
-    "title": "Mindset Radio Show with CHACH\u00d8U",
-    "start": "2025-12-11T18:00:00.000Z",
-    "end": "2025-12-11T19:00:00.000Z",
-    "artistIds": [
-      "8ef47014-38a2-4239-8668-e78be6b2e421"
-    ],
-    "artistName": "CH\u0245CH\u00d8U",
-    "artistSlug": "ch-ch-u"
-  },
-  {
-    "id": "b56e63ad-4af0-4e0b-b343-ee1fa14ce474",
-    "title": "Qwer-key (qweeer-key) (\u00e9ist ar\u00eds)",
-    "start": "2025-12-11T19:00:00.000Z",
-    "end": "2025-12-11T21:00:00.000Z",
-    "artistIds": [
-      "7a4a96ab-7ba3-412d-aa08-9096174d90da"
-    ],
-    "artistName": "Eoin MacCarthy",
-    "artistSlug": "eoin-maccarthy"
-  },
-  {
-    "id": "aefbe4b1-e5b0-4f53-a3d1-04f71bf5721c",
-    "title": "Living Rhythms - 010 Afrofuturism",
-    "start": "2025-12-11T21:00:00.000Z",
-    "end": "2025-12-11T23:00:00.000Z",
-    "artistIds": [
-      "fcd9773f-8c4b-4375-b3ac-2f463f03484e"
-    ],
-    "artistName": "Living Rhythms",
-    "artistSlug": "living-rhythms"
-  },
-  {
-    "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2025-12-11T23:00:00.000Z",
-    "title": "\u00e9ist san o\u00edche",
-    "start": "2025-12-11T23:00:00.000Z",
-    "end": "2025-12-12T09:00:00.000Z",
-    "artistIds": [
-      "4e92892f-db9b-43e9-9821-2e481c635d72"
-    ],
-    "artistName": "\u00e9ist DJs",
-    "artistSlug": "eist-djs"
-  },
-  {
-    "id": "15a2c073-fc3d-4153-b307-8ac86220c7c7",
-    "title": "Sub Transmissions (\u00e9ist ar\u00eds)",
-    "start": "2025-12-12T09:00:00.000Z",
-    "end": "2025-12-12T10:00:00.000Z",
-    "artistIds": [
-      "1620785a-27df-4784-bc50-c4c6050772b9"
-    ],
-    "artistName": "Gary Fitz",
-    "artistSlug": "gary-fitz"
-  },
-  {
-    "id": "079eeb82-1441-4189-b01b-65bd4fc6ceed",
-    "title": "Grapevine",
-    "start": "2025-12-12T10:00:00.000Z",
-    "end": "2025-12-12T11:00:00.000Z",
-    "artistIds": [
-      "bf4e6e75-0594-4cb5-a6b3-9ed7584296a6"
-    ],
-    "artistName": "Sin\u00e9ad Gallagher & Justine Lepage",
-    "artistSlug": "sinead-gallagher-justine-lepage"
-  },
-  {
-    "id": "88551dac-75d1-4f97-9ea6-24c95fd27c9e",
-    "title": "Hopecore: Reflections",
-    "start": "2025-12-12T11:00:00.000Z",
-    "end": "2025-12-12T13:00:00.000Z",
-    "artistIds": [
-      "560993ec-a39b-45ac-b238-3233cf4df6fa"
-    ],
-    "artistName": "gorsefireradio",
-    "artistSlug": "gorsefireradio"
-  },
-  {
-    "id": "f4be4434-8de3-4b7d-bc33-56bafbb7cfb9",
-    "title": "Good Day Cork - Meeting the Archives",
-    "start": "2025-12-12T13:00:00.000Z",
-    "end": "2025-12-12T15:00:00.000Z",
-    "artistIds": [],
-    "artistName": null,
-    "artistSlug": null
-  },
-  {
-    "id": "4769eb24-6082-4e91-886a-30812421585b-r_index-2025-12-12T15:00:00.000Z",
-    "title": "GTown Sound",
-    "start": "2025-12-12T15:00:00.000Z",
-    "end": "2025-12-12T16:00:00.000Z",
-    "artistIds": [
-      "cfbcce91-b7fe-4413-8d18-8b62be5df691"
-    ],
-    "artistName": "Kabelo",
-    "artistSlug": "kabelo"
-  },
-  {
-    "id": "7e57b3aa-8e3c-4f29-be8a-2e77835f61cf-r_index-2025-12-12T16:00:00.000Z",
-    "title": "S\u00fagradh",
-    "start": "2025-12-12T16:00:00.000Z",
-    "end": "2025-12-12T17:00:00.000Z",
-    "artistIds": [
-      "98cd1653-22ce-4479-be27-0d1c1691c3f1"
-    ],
-    "artistName": "Press Play Repeat",
-    "artistSlug": "press-play-repeat"
-  },
-  {
-    "id": "99abb61e-f45c-4764-b6ad-ea4e77aa9ec4",
-    "title": "sonic core of new statues (\u00e9ist ar\u00eds)",
-    "start": "2025-12-12T17:00:00.000Z",
-    "end": "2025-12-12T19:00:00.000Z",
-    "artistIds": [
-      "c6cebf56-c8a7-48fd-8183-1ba1662968a5"
-    ],
-    "artistName": "japhet santana",
-    "artistSlug": "japhet-santana"
-  },
-  {
-    "id": "6342fc90-b6b6-48f8-8e0c-9bf5e6ed5563-r_index-2025-12-12T19:00:00.000Z",
-    "title": "The Flying Machine",
-    "start": "2025-12-12T19:00:00.000Z",
-    "end": "2025-12-12T21:00:00.000Z",
-    "artistIds": [
-      "247e242f-04e0-4b08-adfe-3518ed72ae23"
-    ],
-    "artistName": "Sonny Emerald",
-    "artistSlug": "sonny-emerald"
-  },
-  {
-    "id": "f8cba5e9-4beb-4154-bef8-567811f5a581",
-    "title": "Carmina (\u00e9ist ar\u00eds)",
-    "start": "2025-12-12T21:00:00.000Z",
-    "end": "2025-12-12T23:00:00.000Z",
-    "artistIds": [
-      "adb80950-87dc-4105-89b9-aa20dee315bc"
-    ],
-    "artistName": "Carmina",
-    "artistSlug": "carmina"
-  },
-  {
-    "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2025-12-12T23:00:00.000Z",
-    "title": "\u00e9ist san o\u00edche",
-    "start": "2025-12-12T23:00:00.000Z",
-    "end": "2025-12-13T09:00:00.000Z",
-    "artistIds": [
-      "4e92892f-db9b-43e9-9821-2e481c635d72"
-    ],
-    "artistName": "\u00e9ist DJs",
-    "artistSlug": "eist-djs"
-  },
-  {
-    "id": "1f1745ab-ade2-4db7-b00d-5058b4af2bee",
-    "title": "Mutual Affinities (\u00e9ist ar\u00eds)",
-    "start": "2025-12-13T09:00:00.000Z",
-    "end": "2025-12-13T11:00:00.000Z",
-    "artistIds": [
-      "7c08669c-7493-4f52-a6f1-2eca443960c8"
-    ],
-    "artistName": "Brian O'Shaughnessy",
-    "artistSlug": "brian-o-shaughnessy"
-  },
-  {
-    "id": "e5efd3d7-2f12-4c00-87b0-2eb9e416a541",
-    "title": "Radio D\u00e9-coll/Age (\u00e9ist ar\u00eds)",
-    "start": "2025-12-13T11:00:00.000Z",
-    "end": "2025-12-13T12:00:00.000Z",
-    "artistIds": [
-      "72d5503f-2d2b-4805-8e86-675d1b3e829c"
-    ],
-    "artistName": "Dave Murphy",
-    "artistSlug": "dave-murphy"
-  },
-  {
-    "id": "ca286520-db25-4846-98ca-318cae431a2e",
-    "title": "FUNKSMACK (\u00e9ist ar\u00eds)",
-    "start": "2025-12-13T12:00:00.000Z",
-    "end": "2025-12-13T14:00:00.000Z",
-    "artistIds": [
-      "691d95cf-4d81-4595-a3e0-1ecf2eb7f9bb"
-    ],
-    "artistName": "FUNKSMACK",
-    "artistSlug": "funksmack"
-  },
-  {
-    "id": "0995f87e-a626-4a52-9f05-034807d0646d-r_index-2025-12-13T14:00:00.000Z",
-    "title": "Radio Activity",
-    "start": "2025-12-13T14:00:00.000Z",
-    "end": "2025-12-13T16:00:00.000Z",
-    "artistIds": [
-      "ad4c024d-8ac4-4bc4-b81c-c639aa430ffd"
-    ],
-    "artistName": "Gilbert Steele",
-    "artistSlug": "gilbert-steele"
-  },
-  {
-    "id": "2bbd1848-bad1-4a89-8510-e715eae89f54-r_index-2025-12-13T16:00:00.000Z",
-    "title": "Depth Perception",
-    "start": "2025-12-13T16:00:00.000Z",
-    "end": "2025-12-13T18:00:00.000Z",
-    "artistIds": [
-      "a600bc0f-218f-486e-b977-a51c19bb6790"
-    ],
-    "artistName": "Jon Barry",
-    "artistSlug": "jon-barry"
-  },
-  {
-    "id": "b23cc62c-534d-4b42-a3dc-5111c165e347-r_index-2025-12-13T18:00:00.000Z",
-    "title": "Straight Outta Brumtown: The lost tapes",
-    "start": "2025-12-13T18:00:00.000Z",
-    "end": "2025-12-13T19:00:00.000Z",
-    "artistIds": [
-      "a0a3e5c7-da39-41cd-ba1c-3fdc5a858a16"
-    ],
-    "artistName": "Macaveli",
-    "artistSlug": "macaveli"
-  },
-  {
-    "id": "26f1da9d-8605-48a0-8eef-34ab82ad82d5-r_index-2025-12-13T19:00:00.000Z",
-    "title": "Thumbs Up!",
-    "start": "2025-12-13T19:00:00.000Z",
-    "end": "2025-12-13T20:00:00.000Z",
-    "artistIds": [
-      "ea603190-3be3-48fe-8ba7-1a6ce142457d"
-    ],
-    "artistName": "John Bosteels",
-    "artistSlug": "john-bosteels"
-  },
-  {
-    "id": "ba4f3f37-54ae-4489-9761-f1fddb8871ae-r_index-2025-12-13T20:00:00.000Z",
-    "title": "Transcontinental",
-    "start": "2025-12-13T20:00:00.000Z",
-    "end": "2025-12-13T22:00:00.000Z",
-    "artistIds": [
-      "0af26790-63a4-4cd1-a2c2-0f3610f3e5d3"
-    ],
-    "artistName": "Caroline Dipanda",
-    "artistSlug": "caroline-dipanda"
-  },
-  {
-    "id": "b753c87c-17b7-4712-81b9-184e9ef6592c-r_index-2025-12-13T22:00:00.000Z",
-    "title": "Ceolchar",
-    "start": "2025-12-13T22:00:00.000Z",
-    "end": "2025-12-13T23:00:00.000Z",
-    "artistIds": [
-      "9cc01bf4-e5cf-485c-8faf-89e500815874"
-    ],
-    "artistName": "Eoin Sweeney",
-    "artistSlug": "eoin-sweeney"
-  },
-  {
-    "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2025-12-13T23:00:00.000Z",
-    "title": "\u00e9ist san o\u00edche",
-    "start": "2025-12-13T23:00:00.000Z",
-    "end": "2025-12-14T09:00:00.000Z",
-    "artistIds": [
-      "4e92892f-db9b-43e9-9821-2e481c635d72"
-    ],
-    "artistName": "\u00e9ist DJs",
-    "artistSlug": "eist-djs"
-  },
-  {
-    "id": "0d23221b-10dc-4ac0-9aea-5841bc2aae7e-r_index-2025-12-14T09:00:00.000Z",
-    "title": "The Groove Galaxy",
-    "start": "2025-12-14T09:00:00.000Z",
-    "end": "2025-12-14T10:00:00.000Z",
-    "artistIds": [
-      "3b1387d1-160e-4215-bd42-db41296ffaf8"
-    ],
-    "artistName": "V-Minus",
-    "artistSlug": "v-minus"
-  },
-  {
-    "id": "23002fca-0ccc-4e09-9b63-ef903cfa6fa9",
-    "title": "Benedetto Duetto (\u00e9ist ar\u00eds)",
-    "start": "2025-12-14T10:00:00.000Z",
-    "end": "2025-12-14T11:00:00.000Z",
-    "artistIds": [
-      "ee6668b3-211d-4297-8480-0a93650e0d20"
-    ],
-    "artistName": "Bertie Buckley",
-    "artistSlug": "bertie-buckley"
-  },
-  {
-    "id": "98b38059-6618-4417-97f4-2cb800e0f94d-r_index-2025-12-14T11:00:00.000Z",
-    "title": "Airegin Offagain",
-    "start": "2025-12-14T11:00:00.000Z",
-    "end": "2025-12-14T13:00:00.000Z",
-    "artistIds": [
-      "fa857c41-9e9b-41ec-a6bb-f9ecbcf9c0d9"
-    ],
-    "artistName": "Dave Desmond",
-    "artistSlug": "dave-desmond"
-  },
-  {
-    "id": "5c4a4f9b-d80d-43d7-b2a1-b54556e00b6b-r_index-2025-12-14T13:00:00.000Z",
-    "title": "Shades",
-    "start": "2025-12-14T13:00:00.000Z",
-    "end": "2025-12-14T15:00:00.000Z",
-    "artistIds": [
-      "73e0ee15-2849-4d9e-98c5-c02ee65b53c6"
-    ],
-    "artistName": "George Kingston",
-    "artistSlug": "george-kingston"
-  },
-  {
-    "id": "3df9f46b-caf2-4c4f-966d-900a4d23c75d-r_index-2025-12-14T15:00:00.000Z",
-    "title": "Ceo go Deo",
-    "start": "2025-12-14T15:00:00.000Z",
-    "end": "2025-12-14T16:00:00.000Z",
-    "artistIds": [
-      "6b4331db-ef8b-4943-a329-9c37d769e0fa"
-    ],
-    "artistName": "Niamh Dalton",
-    "artistSlug": "niamh-dalton"
-  },
-  {
-    "id": "867559b9-688c-418e-b5f0-c13a6e062b46-r_index-2025-12-14T16:00:00.000Z",
-    "title": "Aus der Ferne",
-    "start": "2025-12-14T16:00:00.000Z",
-    "end": "2025-12-14T17:00:00.000Z",
-    "artistIds": [
-      "7aeb08bf-6651-41b1-8c82-7315b9d548de"
-    ],
-    "artistName": "John O'Callaghan",
-    "artistSlug": "john-o-callaghan"
-  },
-  {
-    "id": "1e1ab2c2-c08f-4ba3-87f1-e3f714b464c6-r_index-2025-12-14T17:00:00.000Z",
-    "title": "Leafy Garments",
-    "start": "2025-12-14T17:00:00.000Z",
-    "end": "2025-12-14T19:00:00.000Z",
-    "artistIds": [
-      "7b178ac9-6d7a-4b78-8219-6d14da598191"
-    ],
-    "artistName": "Tino",
-    "artistSlug": "tino"
-  },
-  {
     "id": "97badf29-bf1e-44e5-8c4d-b6302725742a-r_index-2025-12-14T19:00:00.000Z",
     "title": "Dig where you stand",
     "start": "2025-12-14T19:00:00.000Z",
@@ -449,7 +22,7 @@
     "artistSlug": "alfie-xavier"
   },
   {
-    "id": "c61d9088-2423-431b-a430-59da4b6b94f4-r_index-2025-12-14T22:00:00.000Z",
+    "id": "6df0dfb4-0556-40c8-aefb-3b8dddd0ab5a",
     "title": "Sub Transmissions",
     "start": "2025-12-14T22:00:00.000Z",
     "end": "2025-12-14T23:00:00.000Z",
@@ -516,7 +89,7 @@
   },
   {
     "id": "5f170b3c-a118-4c22-ab8c-fb610493bf4e",
-    "title": "Space (\u00e9ist ar\u00eds)",
+    "title": "space (\u00e9ist ar\u00eds)",
     "start": "2025-12-15T15:00:00.000Z",
     "end": "2025-12-15T17:00:00.000Z",
     "artistIds": [
@@ -614,26 +187,26 @@
     "artistSlug": "morgan"
   },
   {
-    "id": "1add8b75-a2f4-442e-a5e2-55ccb354e3b4",
-    "title": "Rush Hour (\u00e9ist ar\u00eds)",
-    "start": "2025-12-16T12:00:00.000Z",
-    "end": "2025-12-16T13:00:00.000Z",
-    "artistIds": [
-      "2faea084-f4e8-4b0f-890f-448e67dd84ec"
-    ],
-    "artistName": "Alannah Matthews",
-    "artistSlug": "alannah-matthews"
-  },
-  {
     "id": "cde46a32-d88e-488a-9a5b-b0a3044b3402",
     "title": "Airegin Offagain (\u00e9ist ar\u00eds)",
-    "start": "2025-12-16T13:00:00.000Z",
-    "end": "2025-12-16T15:00:00.000Z",
+    "start": "2025-12-16T12:00:00.000Z",
+    "end": "2025-12-16T14:00:00.000Z",
     "artistIds": [
       "fa857c41-9e9b-41ec-a6bb-f9ecbcf9c0d9"
     ],
     "artistName": "Dave Desmond",
     "artistSlug": "dave-desmond"
+  },
+  {
+    "id": "e797fcbe-6aaf-4cfc-ba8c-2f96c958a911",
+    "title": "Good Day Cork - Meeting the Archives (eist aris)",
+    "start": "2025-12-16T14:00:00.000Z",
+    "end": "2025-12-16T15:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
   },
   {
     "id": "a9ccbf67-1580-4bf1-9ea7-fae2e8431637",
@@ -647,7 +220,7 @@
     "artistSlug": "aidan-reilly"
   },
   {
-    "id": "4ebfb674-165a-4208-bf49-fdf3ab993544-r_index-2025-12-16T17:00:00.000Z",
+    "id": "4bab87c2-831e-4abb-8cb3-4c7523d2d847",
     "title": "Loveless",
     "start": "2025-12-16T17:00:00.000Z",
     "end": "2025-12-16T18:00:00.000Z",
@@ -658,15 +231,15 @@
     "artistSlug": "gene-murphy"
   },
   {
-    "id": "761a35db-1944-40c9-b997-24cff1a8150b",
-    "title": "Joined in Space (\u00e9ist ar\u00eds)",
+    "id": "086f7785-e934-4792-adb8-92d3b16be26d",
+    "title": "Sub Transmissions (\u00e9ist ar\u00eds)",
     "start": "2025-12-16T18:00:00.000Z",
     "end": "2025-12-16T19:00:00.000Z",
     "artistIds": [
-      "09897005-e737-4110-8ff3-e01c99e7e231"
+      "1620785a-27df-4784-bc50-c4c6050772b9"
     ],
-    "artistName": "JusMe",
-    "artistSlug": "jusme"
+    "artistName": "Gary Fitz",
+    "artistSlug": "gary-fitz"
   },
   {
     "id": "b505d410-58aa-4324-94c3-f27db3fb87f5-r_index-2025-12-16T19:00:00.000Z",
@@ -780,14 +353,14 @@
   },
   {
     "id": "d2ccfd30-49e4-42dd-b2ea-c09e6a58ee5e",
-    "title": "Spaces in Between (\u00e9ist ar\u00eds)",
+    "title": "saying, singing (\u00e9ist ar\u00eds)",
     "start": "2025-12-17T17:00:00.000Z",
     "end": "2025-12-17T18:00:00.000Z",
     "artistIds": [
-      "1fbafffc-70b7-478e-bd9c-a96eb66f5e9d"
+      "f5ecae9d-3a80-4703-bf19-1c8afc157870"
     ],
-    "artistName": "Slatts",
-    "artistSlug": "slatts"
+    "artistName": "Sarah McCauley",
+    "artistSlug": "sarah-mccauley"
   },
   {
     "id": "ac8aca9e-e9f4-45e7-9014-fe6f09da1ba6-r_index-2025-12-17T18:00:00.000Z",
@@ -857,14 +430,14 @@
   },
   {
     "id": "710bac21-ddf8-460f-b837-847ab43e0521",
-    "title": "ATBND (\u00e9ist ar\u00eds)",
+    "title": "Living Rhythms (\u00e9ist ar\u00eds)",
     "start": "2025-12-18T09:00:00.000Z",
     "end": "2025-12-18T11:00:00.000Z",
     "artistIds": [
-      "577e3ff5-cb5d-45c4-8250-444c69e72cb3"
+      "fcd9773f-8c4b-4375-b3ac-2f463f03484e"
     ],
-    "artistName": "Cack Jollins",
-    "artistSlug": "cack-jollins"
+    "artistName": "Living Rhythms",
+    "artistSlug": "living-rhythms"
   },
   {
     "id": "afb9d469-1cb2-4f6d-b5b7-e5a5ed4b1b15-r_index-2025-12-18T11:00:00.000Z",
@@ -933,17 +506,6 @@
     "artistSlug": "carmina"
   },
   {
-    "id": "61c7115b-7ed4-474b-a2a2-d2d126ea2836",
-    "title": "Special Broadcast: Live from the Gables Back Room ",
-    "start": "2025-12-18T19:00:00.000Z",
-    "end": "2025-12-18T22:00:00.000Z",
-    "artistIds": [
-      "d0bc5cd2-d169-43ef-a1e2-e2af8cb8bb05"
-    ],
-    "artistName": "Ailbhe C",
-    "artistSlug": "ailbhe-c"
-  },
-  {
     "id": "62895cc1-b1bf-4f94-baa0-a60e644f2bf6-r_index-2025-12-18T19:00:00.000Z",
     "title": "Joyous Invasion",
     "start": "2025-12-18T19:00:00.000Z",
@@ -953,6 +515,17 @@
     ],
     "artistName": "Jordan Rae",
     "artistSlug": "jordan-rae"
+  },
+  {
+    "id": "61c7115b-7ed4-474b-a2a2-d2d126ea2836",
+    "title": "Special Broadcast: Live from the Gables Back Room ",
+    "start": "2025-12-18T21:00:00.000Z",
+    "end": "2025-12-18T23:00:00.000Z",
+    "artistIds": [
+      "d0bc5cd2-d169-43ef-a1e2-e2af8cb8bb05"
+    ],
+    "artistName": "Ailbhe C",
+    "artistSlug": "ailbhe-c"
   },
   {
     "id": "dbdab5a0-e50b-442c-9872-d1197edb5619-r_index-2025-12-18T22:00:00.000Z",
@@ -1002,10 +575,23 @@
     "id": "06c4c4dd-03c0-4647-954b-a02a9a90d352",
     "title": "Good Day Cork - Meeting the Archives",
     "start": "2025-12-19T13:00:00.000Z",
+    "end": "2025-12-19T14:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
+  },
+  {
+    "id": "761a35db-1944-40c9-b997-24cff1a8150b",
+    "title": "Joined in Space (\u00e9ist ar\u00eds)",
+    "start": "2025-12-19T14:00:00.000Z",
     "end": "2025-12-19T15:00:00.000Z",
-    "artistIds": [],
-    "artistName": null,
-    "artistSlug": null
+    "artistIds": [
+      "09897005-e737-4110-8ff3-e01c99e7e231"
+    ],
+    "artistName": "JusMe",
+    "artistSlug": "jusme"
   },
   {
     "id": "08c0a611-f84e-4abb-bf79-cdc9c79f42e4-r_index-2025-12-19T15:00:00.000Z",
@@ -1072,15 +658,15 @@
     "artistSlug": "uncle-pearl"
   },
   {
-    "id": "086f7785-e934-4792-adb8-92d3b16be26d",
-    "title": "Sub Transmissions (\u00e9ist ar\u00eds)",
+    "id": "3aa77a20-3e2b-4e9f-b45f-06bb71b95ec7",
+    "title": "Sound Atlas #3 JOUKO",
     "start": "2025-12-19T22:00:00.000Z",
     "end": "2025-12-19T23:00:00.000Z",
     "artistIds": [
-      "1620785a-27df-4784-bc50-c4c6050772b9"
+      "94daff15-f149-415a-80cf-94406ebef179"
     ],
-    "artistName": "Gary Fitz",
-    "artistSlug": "gary-fitz"
+    "artistName": "Jouko",
+    "artistSlug": "jouko"
   },
   {
     "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2025-12-19T23:00:00.000Z",
@@ -1293,8 +879,8 @@
     "artistSlug": "radio-solstice"
   },
   {
-    "id": "9f6a8105-303e-4ee0-a495-38833086a561-r_index-2025-12-21T20:00:00.000Z",
-    "title": "The SPiCE",
+    "id": "1357016e-efba-47e8-b161-883fc5dd16bb",
+    "title": "The SPiCE (\u00e9ist ar\u00eds)",
     "start": "2025-12-21T20:00:00.000Z",
     "end": "2025-12-21T22:00:00.000Z",
     "artistIds": [
@@ -1401,6 +987,17 @@
     ],
     "artistName": "THE ECLECTIC ECCENTRIC",
     "artistSlug": "the-eclectic-eccentric"
+  },
+  {
+    "id": "18963359-7c88-4ef2-a906-8c02855c8dc5",
+    "title": "Good Day Cork - Meeting the Archives (eist aris)",
+    "start": "2025-12-23T14:00:00.000Z",
+    "end": "2025-12-23T15:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
   },
   {
     "id": "274a611b-448c-4864-a7a6-44e9f822ccad-r_index-2025-12-23T16:00:00.000Z",
@@ -1535,6 +1132,17 @@
     "artistSlug": "eist-djs"
   },
   {
+    "id": "b127d55a-f0ac-4a2f-94fe-ba9718048c99",
+    "title": "Peace Piece ",
+    "start": "2025-12-25T11:00:00.000Z",
+    "end": "2025-12-25T12:00:00.000Z",
+    "artistIds": [
+      "2faea084-f4e8-4b0f-890f-448e67dd84ec"
+    ],
+    "artistName": "Alannah Matthews",
+    "artistSlug": "alannah-matthews"
+  },
+  {
     "id": "f7e8b431-ec8e-4d1b-8424-981b8947ac3c-r_index-2025-12-25T15:00:00.000Z",
     "title": "The Chuggernaut Hour with Chuggy Slowtis",
     "start": "2025-12-25T15:00:00.000Z",
@@ -1615,10 +1223,12 @@
     "id": "71b7038a-63d0-4682-a082-7e541a6aa417",
     "title": "Good Day Cork - Meeting the Archives",
     "start": "2025-12-26T13:00:00.000Z",
-    "end": "2025-12-26T15:00:00.000Z",
-    "artistIds": [],
-    "artistName": null,
-    "artistSlug": null
+    "end": "2025-12-26T14:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
   },
   {
     "id": "4769eb24-6082-4e91-886a-30812421585b-r_index-2025-12-26T15:00:00.000Z",
@@ -1940,6 +1550,17 @@
     "artistSlug": "irrealis-mood"
   },
   {
+    "id": "405bb9da-d4f9-4bdc-97f9-ec78639c4e5f",
+    "title": "Good Day Cork - Meeting the Archives (eist aris)",
+    "start": "2025-12-30T14:00:00.000Z",
+    "end": "2025-12-30T15:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
+  },
+  {
     "id": "4ebfb674-165a-4208-bf49-fdf3ab993544-r_index-2025-12-30T17:00:00.000Z",
     "title": "Loveless",
     "start": "2025-12-30T17:00:00.000Z",
@@ -2083,6 +1704,17 @@
     "artistSlug": "cormac-see"
   },
   {
+    "id": "789415f9-138e-4324-b217-a7c173d90f50",
+    "title": "Infinite details",
+    "start": "2026-01-01T14:00:00.000Z",
+    "end": "2026-01-01T16:00:00.000Z",
+    "artistIds": [
+      "d8d2ac64-d480-4514-a5bd-857a0435e12d"
+    ],
+    "artistName": "Aidan Reilly",
+    "artistSlug": "aidan-reilly"
+  },
+  {
     "id": "7ceaac5c-57c2-4762-bdbf-8ed00faa90ae-r_index-2026-01-01T17:00:00.000Z",
     "title": "HIFI hide and seek",
     "start": "2026-01-01T17:00:00.000Z",
@@ -2103,17 +1735,6 @@
     ],
     "artistName": "DJ Gwada Mike",
     "artistSlug": "dj-gwada-mike"
-  },
-  {
-    "id": "bb54d761-bddc-453a-87af-5d1fde4cf4f2-r_index-2026-01-01T21:00:00.000Z",
-    "title": "Infinite details",
-    "start": "2026-01-01T21:00:00.000Z",
-    "end": "2026-01-01T23:00:00.000Z",
-    "artistIds": [
-      "d8d2ac64-d480-4514-a5bd-857a0435e12d"
-    ],
-    "artistName": "Aidan Reilly",
-    "artistSlug": "aidan-reilly"
   },
   {
     "id": "a285e693-19bb-4041-ac62-282fdb3b0e9e-r_index-2026-01-01T23:00:00.000Z",
@@ -2141,10 +1762,12 @@
     "id": "35f26641-539e-48fa-802a-92b1a7f60eb4",
     "title": "Good Day Cork - Meeting the Archives",
     "start": "2026-01-02T13:00:00.000Z",
-    "end": "2026-01-02T15:00:00.000Z",
-    "artistIds": [],
-    "artistName": null,
-    "artistSlug": null
+    "end": "2026-01-02T14:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
   },
   {
     "id": "7e57b3aa-8e3c-4f29-be8a-2e77835f61cf-r_index-2026-01-02T16:00:00.000Z",
@@ -2159,7 +1782,7 @@
   },
   {
     "id": "7d066e0e-a53f-44d6-9a0d-501b5fc0916c",
-    "title": "Love Can Tame The Wild - eist ar\u00eds - Music for Sleepless",
+    "title": "Love Can Tame The Wild",
     "start": "2026-01-02T18:00:00.000Z",
     "end": "2026-01-02T19:00:00.000Z",
     "artistIds": [
@@ -2400,6 +2023,17 @@
     "artistSlug": "the-eclectic-eccentric"
   },
   {
+    "id": "d0729049-d0d8-4a60-97fc-fe0e0f2b5d8a",
+    "title": "Good Day Cork - Meeting the Archives (eist aris)",
+    "start": "2026-01-06T14:00:00.000Z",
+    "end": "2026-01-06T15:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
+  },
+  {
     "id": "53762e2a-a09a-40f1-948a-8ab3e8090f95-r_index-2026-01-06T18:00:00.000Z",
     "title": "HousEffect Radio Show",
     "start": "2026-01-06T18:00:00.000Z",
@@ -2507,7 +2141,7 @@
       "8ef47014-38a2-4239-8668-e78be6b2e421"
     ],
     "artistName": "CH\u0245CH\u00d8U",
-    "artistSlug": "ch-ch-u"
+    "artistSlug": "chachou"
   },
   {
     "id": "bb2db46d-4b7e-4df7-9423-49a7e069b986-r_index-2026-01-08T19:00:00.000Z",
@@ -2576,6 +2210,17 @@
     "artistSlug": "esme2k"
   },
   {
+    "id": "60a1e5ac-8dda-4336-9779-aece75c58b98",
+    "title": "Good Day Cork - Meeting the Archives ",
+    "start": "2026-01-09T14:00:00.000Z",
+    "end": "2026-01-09T15:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
+  },
+  {
     "id": "4769eb24-6082-4e91-886a-30812421585b-r_index-2026-01-09T15:00:00.000Z",
     "title": "GTown Sound",
     "start": "2026-01-09T15:00:00.000Z",
@@ -2618,5 +2263,324 @@
     ],
     "artistName": "Sonny Emerald",
     "artistSlug": "sonny-emerald"
+  },
+  {
+    "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2026-01-09T23:00:00.000Z",
+    "title": "\u00e9ist san o\u00edche",
+    "start": "2026-01-09T23:00:00.000Z",
+    "end": "2026-01-10T09:00:00.000Z",
+    "artistIds": [
+      "4e92892f-db9b-43e9-9821-2e481c635d72"
+    ],
+    "artistName": "\u00e9ist DJs",
+    "artistSlug": "eist-djs"
+  },
+  {
+    "id": "0995f87e-a626-4a52-9f05-034807d0646d-r_index-2026-01-10T14:00:00.000Z",
+    "title": "Radio Activity",
+    "start": "2026-01-10T14:00:00.000Z",
+    "end": "2026-01-10T16:00:00.000Z",
+    "artistIds": [
+      "ad4c024d-8ac4-4bc4-b81c-c639aa430ffd"
+    ],
+    "artistName": "Gilbert Steele",
+    "artistSlug": "gilbert-steele"
+  },
+  {
+    "id": "2bbd1848-bad1-4a89-8510-e715eae89f54-r_index-2026-01-10T16:00:00.000Z",
+    "title": "Depth Perception",
+    "start": "2026-01-10T16:00:00.000Z",
+    "end": "2026-01-10T18:00:00.000Z",
+    "artistIds": [
+      "a600bc0f-218f-486e-b977-a51c19bb6790"
+    ],
+    "artistName": "Jon Barry",
+    "artistSlug": "jon-barry"
+  },
+  {
+    "id": "b23cc62c-534d-4b42-a3dc-5111c165e347-r_index-2026-01-10T18:00:00.000Z",
+    "title": "Straight Outta Brumtown: The lost tapes",
+    "start": "2026-01-10T18:00:00.000Z",
+    "end": "2026-01-10T19:00:00.000Z",
+    "artistIds": [
+      "a0a3e5c7-da39-41cd-ba1c-3fdc5a858a16"
+    ],
+    "artistName": "Macaveli",
+    "artistSlug": "macaveli"
+  },
+  {
+    "id": "26f1da9d-8605-48a0-8eef-34ab82ad82d5-r_index-2026-01-10T19:00:00.000Z",
+    "title": "Thumbs Up!",
+    "start": "2026-01-10T19:00:00.000Z",
+    "end": "2026-01-10T20:00:00.000Z",
+    "artistIds": [
+      "ea603190-3be3-48fe-8ba7-1a6ce142457d"
+    ],
+    "artistName": "John Bosteels",
+    "artistSlug": "john-bosteels"
+  },
+  {
+    "id": "ba4f3f37-54ae-4489-9761-f1fddb8871ae-r_index-2026-01-10T20:00:00.000Z",
+    "title": "Transcontinental",
+    "start": "2026-01-10T20:00:00.000Z",
+    "end": "2026-01-10T22:00:00.000Z",
+    "artistIds": [
+      "0af26790-63a4-4cd1-a2c2-0f3610f3e5d3"
+    ],
+    "artistName": "Caroline Dipanda",
+    "artistSlug": "caroline-dipanda"
+  },
+  {
+    "id": "b753c87c-17b7-4712-81b9-184e9ef6592c-r_index-2026-01-10T22:00:00.000Z",
+    "title": "Ceolchar",
+    "start": "2026-01-10T22:00:00.000Z",
+    "end": "2026-01-10T23:00:00.000Z",
+    "artistIds": [
+      "9cc01bf4-e5cf-485c-8faf-89e500815874"
+    ],
+    "artistName": "Eoin Sweeney",
+    "artistSlug": "eoin-sweeney"
+  },
+  {
+    "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2026-01-10T23:00:00.000Z",
+    "title": "\u00e9ist san o\u00edche",
+    "start": "2026-01-10T23:00:00.000Z",
+    "end": "2026-01-11T09:00:00.000Z",
+    "artistIds": [
+      "4e92892f-db9b-43e9-9821-2e481c635d72"
+    ],
+    "artistName": "\u00e9ist DJs",
+    "artistSlug": "eist-djs"
+  },
+  {
+    "id": "0d23221b-10dc-4ac0-9aea-5841bc2aae7e-r_index-2026-01-11T09:00:00.000Z",
+    "title": "The Groove Galaxy",
+    "start": "2026-01-11T09:00:00.000Z",
+    "end": "2026-01-11T10:00:00.000Z",
+    "artistIds": [
+      "3b1387d1-160e-4215-bd42-db41296ffaf8"
+    ],
+    "artistName": "V-Minus",
+    "artistSlug": "v-minus"
+  },
+  {
+    "id": "4d793582-1a93-487c-90cd-e696d7d3093e-r_index-2026-01-11T11:00:00.000Z",
+    "title": "Airegin Offagain",
+    "start": "2026-01-11T11:00:00.000Z",
+    "end": "2026-01-11T13:00:00.000Z",
+    "artistIds": [
+      "fa857c41-9e9b-41ec-a6bb-f9ecbcf9c0d9"
+    ],
+    "artistName": "Dave Desmond",
+    "artistSlug": "dave-desmond"
+  },
+  {
+    "id": "5c4a4f9b-d80d-43d7-b2a1-b54556e00b6b-r_index-2026-01-11T13:00:00.000Z",
+    "title": "Shades",
+    "start": "2026-01-11T13:00:00.000Z",
+    "end": "2026-01-11T15:00:00.000Z",
+    "artistIds": [
+      "73e0ee15-2849-4d9e-98c5-c02ee65b53c6"
+    ],
+    "artistName": "George Kingston",
+    "artistSlug": "george-kingston"
+  },
+  {
+    "id": "3df9f46b-caf2-4c4f-966d-900a4d23c75d-r_index-2026-01-11T15:00:00.000Z",
+    "title": "Ceo go Deo",
+    "start": "2026-01-11T15:00:00.000Z",
+    "end": "2026-01-11T16:00:00.000Z",
+    "artistIds": [
+      "6b4331db-ef8b-4943-a329-9c37d769e0fa"
+    ],
+    "artistName": "Niamh Dalton",
+    "artistSlug": "niamh-dalton"
+  },
+  {
+    "id": "867559b9-688c-418e-b5f0-c13a6e062b46-r_index-2026-01-11T16:00:00.000Z",
+    "title": "Aus der Ferne",
+    "start": "2026-01-11T16:00:00.000Z",
+    "end": "2026-01-11T17:00:00.000Z",
+    "artistIds": [
+      "7aeb08bf-6651-41b1-8c82-7315b9d548de"
+    ],
+    "artistName": "John O'Callaghan",
+    "artistSlug": "john-o-callaghan"
+  },
+  {
+    "id": "1e1ab2c2-c08f-4ba3-87f1-e3f714b464c6-r_index-2026-01-11T17:00:00.000Z",
+    "title": "Leafy Garments",
+    "start": "2026-01-11T17:00:00.000Z",
+    "end": "2026-01-11T19:00:00.000Z",
+    "artistIds": [
+      "7b178ac9-6d7a-4b78-8219-6d14da598191"
+    ],
+    "artistName": "Tino",
+    "artistSlug": "tino"
+  },
+  {
+    "id": "97badf29-bf1e-44e5-8c4d-b6302725742a-r_index-2026-01-11T19:00:00.000Z",
+    "title": "Dig where you stand",
+    "start": "2026-01-11T19:00:00.000Z",
+    "end": "2026-01-11T20:00:00.000Z",
+    "artistIds": [
+      "a1734a7a-0a93-4b79-b55b-5128485357a0"
+    ],
+    "artistName": "Diarmuid Lyons",
+    "artistSlug": "diarmuid-lyons"
+  },
+  {
+    "id": "2eb450ba-70aa-467a-b0ab-eabd3cb0e1c4-r_index-2026-01-11T20:00:00.000Z",
+    "title": "Silk Cuts",
+    "start": "2026-01-11T20:00:00.000Z",
+    "end": "2026-01-11T22:00:00.000Z",
+    "artistIds": [
+      "7e2f4934-c861-4be4-b19b-7dd814eff08a"
+    ],
+    "artistName": "Alfie Xavier",
+    "artistSlug": "alfie-xavier"
+  },
+  {
+    "id": "c61d9088-2423-431b-a430-59da4b6b94f4-r_index-2026-01-11T22:00:00.000Z",
+    "title": "Sub Transmissions",
+    "start": "2026-01-11T22:00:00.000Z",
+    "end": "2026-01-11T23:00:00.000Z",
+    "artistIds": [
+      "1620785a-27df-4784-bc50-c4c6050772b9"
+    ],
+    "artistName": "Gary Fitz",
+    "artistSlug": "gary-fitz"
+  },
+  {
+    "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2026-01-11T23:00:00.000Z",
+    "title": "\u00e9ist san o\u00edche",
+    "start": "2026-01-11T23:00:00.000Z",
+    "end": "2026-01-12T09:00:00.000Z",
+    "artistIds": [
+      "4e92892f-db9b-43e9-9821-2e481c635d72"
+    ],
+    "artistName": "\u00e9ist DJs",
+    "artistSlug": "eist-djs"
+  },
+  {
+    "id": "0da88386-2643-4754-bf19-50ca4742bb7f-r_index-2026-01-12T09:00:00.000Z",
+    "title": "In the Interim w/ Paul Dylan",
+    "start": "2026-01-12T09:00:00.000Z",
+    "end": "2026-01-12T10:00:00.000Z",
+    "artistIds": [
+      "2ec61d84-c88d-44a5-b2ca-ce4d15ae6d51"
+    ],
+    "artistName": "Paul Dylan",
+    "artistSlug": "paul-dylan"
+  },
+  {
+    "id": "a0f8088e-95fa-45bc-8946-717a8b40928d-r_index-2026-01-12T11:00:00.000Z",
+    "title": "Under a Plastic Cloud",
+    "start": "2026-01-12T11:00:00.000Z",
+    "end": "2026-01-12T13:00:00.000Z",
+    "artistIds": [
+      "18b943c9-1cb7-41a9-a7c3-aba5d2592ed3"
+    ],
+    "artistName": "Phil Hope",
+    "artistSlug": "phil-hope"
+  },
+  {
+    "id": "75d3a7ab-9401-42bd-b104-c6411b654934-r_index-2026-01-12T17:00:00.000Z",
+    "title": "It's Different",
+    "start": "2026-01-12T17:00:00.000Z",
+    "end": "2026-01-12T18:00:00.000Z",
+    "artistIds": [
+      "6d1626e4-836c-4212-b44c-d2471b26b2ec"
+    ],
+    "artistName": "Ronan Burke",
+    "artistSlug": "ronan-burke"
+  },
+  {
+    "id": "eaa028ce-915b-47a2-a33a-944cf9a8d096",
+    "title": "Benedetto Duetto",
+    "start": "2026-01-12T18:00:00.000Z",
+    "end": "2026-01-12T19:00:00.000Z",
+    "artistIds": [
+      "ee6668b3-211d-4297-8480-0a93650e0d20"
+    ],
+    "artistName": "Bertie Buckley",
+    "artistSlug": "bertie-buckley"
+  },
+  {
+    "id": "a1a3be86-cf64-4ab6-a85e-367b5188da0a",
+    "title": "Vortex of Ironic Calamities",
+    "start": "2026-01-12T19:00:00.000Z",
+    "end": "2026-01-12T21:00:00.000Z",
+    "artistIds": [
+      "a6b68ee9-f722-4dca-a202-aa28c35a21b9"
+    ],
+    "artistName": "Fort Evil Fruit",
+    "artistSlug": "fort-evil-fruit"
+  },
+  {
+    "id": "bd3863bb-9512-4e8e-b904-0de1f05aa154",
+    "title": "Sacred Mechanics",
+    "start": "2026-01-12T21:00:00.000Z",
+    "end": "2026-01-12T23:00:00.000Z",
+    "artistIds": [
+      "9a16c6a1-8b8d-47c9-9be2-369cad49a5c8"
+    ],
+    "artistName": "Pearse O'Halloran",
+    "artistSlug": "pearse-o-halloran"
+  },
+  {
+    "id": "880c665f-a49d-48d5-92bd-8be3c4a5dbe3-r_index-2026-01-12T23:00:00.000Z",
+    "title": "\u00e9ist san o\u00edche",
+    "start": "2026-01-12T23:00:00.000Z",
+    "end": "2026-01-13T09:00:00.000Z",
+    "artistIds": [
+      "4e92892f-db9b-43e9-9821-2e481c635d72"
+    ],
+    "artistName": "\u00e9ist DJs",
+    "artistSlug": "eist-djs"
+  },
+  {
+    "id": "76100af9-3f11-40fc-8cec-3335db037840-r_index-2026-01-13T09:00:00.000Z",
+    "title": "The Eclectic",
+    "start": "2026-01-13T09:00:00.000Z",
+    "end": "2026-01-13T10:00:00.000Z",
+    "artistIds": [
+      "dbb5b45e-39e4-43cd-8ef9-01192acaec50"
+    ],
+    "artistName": "THE ECLECTIC ECCENTRIC",
+    "artistSlug": "the-eclectic-eccentric"
+  },
+  {
+    "id": "0ecaca7d-01fd-4856-94df-1b2419002b82-r_index-2026-01-13T11:00:00.000Z",
+    "title": "Oxbow lakes",
+    "start": "2026-01-13T11:00:00.000Z",
+    "end": "2026-01-13T12:00:00.000Z",
+    "artistIds": [
+      "a1a456af-7720-48f6-a63f-f2e833639038"
+    ],
+    "artistName": "Morgan",
+    "artistSlug": "morgan"
+  },
+  {
+    "id": "9005df6c-8248-4637-b949-56276a025f9e",
+    "title": "Good Day Cork - Meeting the Archives (eist aris)",
+    "start": "2026-01-13T14:00:00.000Z",
+    "end": "2026-01-13T15:00:00.000Z",
+    "artistIds": [
+      "38fdf85d-bebe-428b-ad28-b41db2cc4cd8"
+    ],
+    "artistName": "Joanna Dukkipati",
+    "artistSlug": "joanna-dukkipati"
+  },
+  {
+    "id": "4ebfb674-165a-4208-bf49-fdf3ab993544-r_index-2026-01-13T17:00:00.000Z",
+    "title": "Loveless",
+    "start": "2026-01-13T17:00:00.000Z",
+    "end": "2026-01-13T18:00:00.000Z",
+    "artistIds": [
+      "4784f385-a003-4cc5-a032-b8b2b5753d7d"
+    ],
+    "artistName": "Gene Murphy",
+    "artistSlug": "gene-murphy"
   }
 ]

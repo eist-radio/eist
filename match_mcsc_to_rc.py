@@ -741,6 +741,7 @@ def apply_manual_matches(shows, mixcloud_archives, soundcloud_archives, show_mat
         - mixcloud: URL string or null to clear
         - soundcloud: URL string or null to clear
         - episode_info: Override episode suffix (e.g., "Ep. 1", "#5", null to clear)
+        - title: Override display title (keeps slug unchanged)
 
     Args:
         shows: List of RadioCult show dicts
@@ -836,6 +837,12 @@ def apply_manual_matches(shows, mixcloud_archives, soundcloud_archives, show_mat
             ep_info = override.get('episode_info')
             show_matches[show_id]['episode_info'] = ep_info  # Can be string or None
             applied['episode_info'] = ep_info if ep_info else 'cleared'
+
+        # Apply title override
+        if 'title' in override:
+            title = override.get('title')
+            show_matches[show_id]['title'] = title
+            applied['title'] = title
 
         if applied:
             applied_log[show_slug] = {
