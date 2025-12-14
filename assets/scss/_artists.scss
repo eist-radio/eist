@@ -8,8 +8,11 @@
    Artists Grid Page Styles (Redesigned)
    ============================================ */
 
-// Artists-specific hero overrides (if any needed in future)
+// Artists-specific hero overrides
 // Base styles come from .page-hero, .page-title, .page-stats in _hero.scss
+.artists-page .page-title {
+    font-size: clamp(1.8rem, 6vw, 3.6rem); // 60% of default
+}
 
 /* Artists Filter Controls */
 .artists-filters {
