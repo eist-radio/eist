@@ -964,7 +964,8 @@ def main():
         print(f"  Restored {len(show_matches)} existing matches")
 
         # Apply manual overrides even when reusing cached matches
-        manual_log = apply_manual_matches(original_shows, mixcloud_cache, soundcloud_cache, show_matches)
+        # Use existing_shows (full cache) instead of original_shows (only current month)
+        manual_log = apply_manual_matches(list(existing_shows.values()), mixcloud_cache, soundcloud_cache, show_matches)
         if manual_log:
             print(f"  Manual overrides applied: {len(manual_log)}")
 
