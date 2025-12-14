@@ -36,6 +36,7 @@ from soundcloud_api import (
 # Import matching logic from dedicated module
 from match_mcsc_to_rc import (
     match_archives_to_shows,
+    apply_manual_matches,
     normalize_text,
     extract_date_from_title,
     MATCH_THRESHOLD,
@@ -956,10 +957,17 @@ def main():
             sc_match = show_data.get('soundcloud_match')
             if mc_match or sc_match:
                 show_matches[show_id] = {
+                    'show': show_data,
                     'mixcloud': mc_match,
                     'soundcloud': sc_match
                 }
         print(f"  Restored {len(show_matches)} existing matches")
+
+        # Apply manual overrides even when reusing cached matches
+        manual_log = apply_manual_matches(original_shows, mixcloud_cache, soundcloud_cache, show_matches)
+        if manual_log:
+            print(f"  Manual overrides applied: {len(manual_log)}")
+
         # Load existing review queue
         review_queue = []
         if REVIEW_QUEUE_FILE.exists():
