@@ -996,7 +996,13 @@ def main():
             print(f"  Saved {len(ground_truth_log)} ground-truth matches to {GROUND_TRUTH_FILE}")
 
     # Build final output
-    all_show_data, matched_count = build_show_output(original_shows, show_matches, artists)
+    # In incremental mode (no new archives), use existing_shows to preserve all fields
+    # Otherwise use original_shows (which combines cached + fresh data)
+    if new_mixcloud_count == 0 and new_soundcloud_count == 0 and existing_shows and not full_refresh:
+        shows_for_output = list(existing_shows.values())
+    else:
+        shows_for_output = original_shows
+    all_show_data, matched_count = build_show_output(shows_for_output, show_matches, artists)
 
     # Sort by date (most recent first)
     all_show_data.sort(key=lambda x: x.get('start', ''), reverse=True)
