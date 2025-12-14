@@ -6,6 +6,142 @@
 // Track escape key listener to prevent accumulation
 let artistsEscapeKeyHandler = null;
 
+/**
+ * Custom Dropdown Component
+ * Replaces native select elements with styled, accessible dropdowns
+ */
+function createCustomDropdown(selectElement) {
+    if (!selectElement) return null;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'custom-dropdown';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'custom-dropdown-btn';
+    button.setAttribute('aria-haspopup', 'listbox');
+    button.setAttribute('aria-expanded', 'false');
+
+    const selectedText = document.createElement('span');
+    selectedText.className = 'custom-dropdown-selected';
+    selectedText.textContent = selectElement.options[selectElement.selectedIndex]?.text || 'Select...';
+
+    const arrow = document.createElement('span');
+    arrow.className = 'custom-dropdown-arrow';
+    arrow.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+
+    button.appendChild(selectedText);
+    button.appendChild(arrow);
+
+    const listbox = document.createElement('ul');
+    listbox.className = 'custom-dropdown-list';
+    listbox.setAttribute('role', 'listbox');
+    listbox.setAttribute('tabindex', '-1');
+
+    // Populate options (respecting hidden state)
+    Array.from(selectElement.options).forEach((option, index) => {
+        const li = document.createElement('li');
+        li.className = 'custom-dropdown-option';
+        li.setAttribute('role', 'option');
+        li.setAttribute('data-value', option.value);
+        li.textContent = option.text;
+
+        // Preserve hidden state from native select
+        if (option.hidden) {
+            li.classList.add('hidden');
+        }
+
+        if (option.selected) {
+            li.classList.add('selected');
+            li.setAttribute('aria-selected', 'true');
+        }
+
+        li.addEventListener('click', () => {
+            // Update native select
+            selectElement.value = option.value;
+            selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+
+            // Update custom dropdown
+            selectedText.textContent = option.text;
+            listbox.querySelectorAll('.custom-dropdown-option').forEach(o => {
+                o.classList.remove('selected');
+                o.setAttribute('aria-selected', 'false');
+            });
+            li.classList.add('selected');
+            li.setAttribute('aria-selected', 'true');
+
+            // Close dropdown
+            wrapper.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+        });
+
+        listbox.appendChild(li);
+    });
+
+    wrapper.appendChild(button);
+    wrapper.appendChild(listbox);
+
+    // Toggle dropdown
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isOpen = wrapper.classList.contains('open');
+
+        // Close all other dropdowns
+        document.querySelectorAll('.custom-dropdown.open').forEach(d => {
+            d.classList.remove('open');
+            d.querySelector('.custom-dropdown-btn')?.setAttribute('aria-expanded', 'false');
+        });
+
+        if (!isOpen) {
+            wrapper.classList.add('open');
+            button.setAttribute('aria-expanded', 'true');
+        }
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) {
+            wrapper.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Keyboard navigation
+    wrapper.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            wrapper.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+            button.focus();
+        }
+    });
+
+    // Hide original select and insert custom dropdown
+    selectElement.style.display = 'none';
+    selectElement.parentNode.insertBefore(wrapper, selectElement);
+
+    return {
+        wrapper,
+        update: (value) => {
+            const option = Array.from(selectElement.options).find(o => o.value === value);
+            if (option) {
+                selectedText.textContent = option.text;
+                listbox.querySelectorAll('.custom-dropdown-option').forEach(o => {
+                    o.classList.toggle('selected', o.dataset.value === value);
+                });
+            }
+        },
+        // Sync hidden state with native select options
+        syncHiddenState: () => {
+            Array.from(selectElement.options).forEach((option, index) => {
+                const li = listbox.querySelectorAll('.custom-dropdown-option')[index];
+                if (li) {
+                    li.classList.toggle('hidden', option.hidden);
+                }
+            });
+        }
+    };
+}
+
 function initArtistsFilters() {
     // Only run on artists page
     const artistsPage = document.querySelector('.artists-page');
@@ -36,6 +172,9 @@ function initArtistsFilters() {
     // Include inactive toggle
     const includeInactiveToggle = document.getElementById('include-inactive');
     const artistJumpSelect = document.getElementById('artist-jump-select');
+
+    // Create custom dropdown for artist jump select
+    const customArtistDropdown = createCustomDropdown(artistJumpSelect);
 
     // Current filter state
     let filters = {
@@ -301,6 +440,11 @@ function initArtistsFilters() {
                     option.hidden = !filters.includeInactive;
                 }
             });
+
+            // Sync custom dropdown hidden state
+            if (customArtistDropdown) {
+                customArtistDropdown.syncHiddenState();
+            }
 
             applyFilters();
         });
