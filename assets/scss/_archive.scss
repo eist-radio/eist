@@ -20,6 +20,12 @@
     font-size: clamp(1.8rem, 6vw, 3.6rem); // 60% of default
 }
 
+/* Genre tags - single row, no wrapping */
+.archive-filters .genre-tags {
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
 /* Filter Controls */
 .archive-filters {
     padding: 1.5rem 0;

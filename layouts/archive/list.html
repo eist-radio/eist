@@ -176,16 +176,16 @@
             </button>
         </div>
 
-        {{/* Genre Tags - show filtered inline genres */}}
+        {{/* Genre Tags - limited to one row */}}
         {{ if $inlineGenres }}
         <div class="genre-filter-row">
             <span class="filter-label">Genres</span>
             <div class="genre-tags" id="genre-tags">
-                {{ range first 20 $inlineGenres }}
+                {{ range first 10 $inlineGenres }}
                 <button class="genre-filter-tag" data-genre="{{ . | lower }}">{{ . }}</button>
                 {{ end }}
-                {{ if gt (len $modalGenres) 20 }}
-                <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 20 }} more</button>
+                {{ if gt (len $modalGenres) 10 }}
+                <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 10 }} more</button>
                 {{ end }}
             </div>
         </div>
