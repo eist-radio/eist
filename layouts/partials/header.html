@@ -44,14 +44,37 @@
                 {{- with .Params.toc -}}
                 <button id="toc-btn" class="hdr-btn desktop-only-ib" title="{{i18n "tableOfContents"}}">{{- partial "svg.html" (dict "context" . "name" "toc") -}}</button>
                 {{- end -}}
-                <button id="menu-btn" class="hdr-btn" title="{{i18n "menu"}}">{{- partial "svg.html" (dict "context" . "name" "menuBtn") -}}</button>
+                {{/* Hamburger button */}}
+                <div class="header-burger" id="header-burger">
+                    <button class="header-burger-btn burger" id="burger-btn" aria-label="{{i18n "menu"}}" aria-expanded="false">
+                        <div class="burger-box">
+                            <div class="burger-inner">
+                                <div class="top-bun"></div>
+                                <div class="patty"></div>
+                                <div class="bottom-bun"></div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
-    <div id="mobile-menu" {{- if ne false .Site.Params.usesAnimation }} class="animated fast" {{- end -}}>
-        <ul>
-            {{- range .Site.Menus.main }}
-            <li><a href="{{ .URL | absLangURL }}">{{ .Name }}</a></li>
-            {{- end }}
-        </ul>
+    {{/* Full-viewport menu overlay */}}
+    <div class="header-menu" id="header-menu" aria-hidden="true">
+        <div class="header-menu-bg"></div>
+        <div class="header-menu-nav">
+            <nav class="header-menu-nav-list">
+                <div class="header-menu-nav-folder">
+                    <div class="header-menu-nav-wrapper">
+                        {{- range .Site.Menus.main }}
+                        <div class="header-menu-nav-item">
+                            <a href="{{ .URL | absLangURL }}">
+                                <div class="header-menu-nav-item-content">{{ .Name }}</div>
+                            </a>
+                        </div>
+                        {{- end }}
+                    </div>
+                </div>
+            </nav>
+        </div>
     </div>

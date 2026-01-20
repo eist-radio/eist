@@ -70,22 +70,40 @@ document.addEventListener("turbo:load", () => {
 
     // Mobile Menu Toggle
     //
-    let mobileMenuVisible = false;
+    let menuOpen = false;
+    const burgerBtn = document.getElementById('burger-btn');
+    const headerMenu = document.getElementById('header-menu');
 
-    const toggleMobileMenu = () => {
-        let mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenuVisible == false) {
-            mobileMenu.style.animationName = 'bounceInRight';
-            mobileMenu.style.webkitAnimationName = 'bounceInRight';
-            mobileMenu.style.display = 'block';
-            mobileMenuVisible = true;
+    const openMenuOverlay = () => {
+        if (menuOpen) return;
+        menuOpen = true;
+        document.body.classList.add('header--menu-open');
+        burgerBtn?.classList.add('burger--active');
+        burgerBtn?.setAttribute('aria-expanded', 'true');
+        headerMenu?.setAttribute('aria-hidden', 'false');
+    };
+
+    const closeMenuOverlay = () => {
+        if (!menuOpen) return;
+        menuOpen = false;
+        document.body.classList.remove('header--menu-open');
+        burgerBtn?.classList.remove('burger--active');
+        burgerBtn?.setAttribute('aria-expanded', 'false');
+        headerMenu?.setAttribute('aria-hidden', 'true');
+    };
+
+    const toggleMenuOverlay = () => {
+        if (menuOpen) {
+            closeMenuOverlay();
         } else {
-            mobileMenu.style.animationName = 'bounceOutRight';
-            mobileMenu.style.webkitAnimationName = 'bounceOutRight';
-            mobileMenu.style.display = 'none';
-            mobileMenuVisible = false;
+            openMenuOverlay();
         }
-    }
+    };
+
+    // Close menu when clicking a nav link
+    headerMenu?.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenuOverlay);
+    });
 
     // Priority Navigation (Progressive Collapse)
     // Hides nav items right-to-left as space shrinks
@@ -227,7 +245,9 @@ document.addEventListener("turbo:load", () => {
 
 
     if (header !== null) {
-        listen('#menu-btn', "click", toggleMobileMenu);
+        // Hamburger button
+        listen('#burger-btn', "click", toggleMenuOverlay);
+
         listen('#share-btn', "click", shareMobileMenu);
         listen('#toc-btn', "click", toggleToc);
         listen('#img-btn', "click", showImg);
@@ -242,8 +262,9 @@ document.addEventListener("turbo:load", () => {
         window.addEventListener('scroll', throttle(() => {
             autoHideHeader();
 
-            if (mobileMenuVisible == true) {
-                toggleMobileMenu();
+            // Close menu on scroll
+            if (menuOpen) {
+                closeMenuOverlay();
             }
             if (shareMenuVisible == true) {
                 shareMobileMenu();

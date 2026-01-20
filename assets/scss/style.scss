@@ -328,32 +328,189 @@ table {
   cursor: pointer;
 }
 
-#menu-btn {
-  display: none;
+// Hamburger button
+.header-burger {
+  display: none;  // Hidden by default on desktop
+  align-items: center;
+  justify-content: flex-end;
   margin-left: .6em;
-  cursor: pointer;
 }
 
-#mobile-menu {
+.header-burger-btn.burger {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.burger-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+}
+
+.burger-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .top-bun,
+  .patty,
+  .bottom-bun {
+    position: absolute;
+    display: block;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 3px;
+    width: 100%;
+    background-color: $eist-secondary;
+    transition: transform 250ms cubic-bezier(.2,.6,.3,1), width 250ms cubic-bezier(.2,.6,.3,1);
+    will-change: transform, width;
+  }
+
+  // Triple line hamburger positions
+  .top-bun {
+    transform: translateY(-9.5px);
+  }
+
+  .bottom-bun {
+    transform: translateY(9.5px);
+  }
+}
+
+// Burger active state (transforms to X)
+.burger--active .burger-inner {
+  .top-bun {
+    transform: translateX(3.5px) rotate(-135deg);
+    width: 28px;
+  }
+
+  .bottom-bun {
+    transform: translateX(3.5px) rotate(135deg);
+    width: 28px;
+  }
+
+  .patty {
+    transform: scale(0);
+  }
+}
+
+// Full-viewport menu overlay
+.header-menu {
   position: fixed;
-  top: 20px;
+  z-index: 9998;  // Below header but above content
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  right: 0;
   bottom: 0;
   left: 0;
-  right: 0;
-  width: 100%;
-  display: none;
-  padding: .6em 1.8em;
-  z-index: 9999;
-  box-sizing: border-box;
-  background-color: $eist;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, visibility;
+  user-select: none;
+  text-align: center;
+  pointer-events: none;
+  transition: visibility 600ms cubic-bezier(.4,0,.2,1),
+              opacity 400ms cubic-bezier(.4,0,.2,1);
+}
 
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    line-height: 2;
-    font-size: 1.2em;
-    padding-top: 30px;
+.header-menu-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: $eist;
+}
+
+.header-menu-nav {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px;  // Account for header height
+}
+
+.header-menu-nav-list {
+  position: relative;
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform: translateY(20px);
+  transition: transform 600ms cubic-bezier(.4,0,.2,1);
+}
+
+.header-menu-nav-folder {
+  width: 100%;
+}
+
+.header-menu-nav-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-menu-nav-item {
+  line-height: 1;
+
+  a {
+    display: block;
+    font-size: 8.5vmin;
+    font-weight: 500;
+    color: $eist-secondary;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+.header-menu-nav-item-content {
+  padding: 0.5em 0;
+}
+
+// Menu open state - applied to body
+body.header--menu-open {
+  overflow: hidden;
+}
+
+.header--menu-open .header-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.header--menu-open .header-menu .header-menu-nav-list {
+  transform: translateY(0);
+}
+
+// Responsive font sizes for menu items
+@media screen and (min-width: 576px) {
+  .header-menu-nav-item a {
+    font-size: 6.6vmin;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .header-menu-nav-item a {
+    font-size: 6vmin;
   }
 }
 
@@ -763,24 +920,27 @@ a.footnote-ref {
   }
 }
 
+// Mobile breakpoint: touch devices at 1024px, non-touch at 799px
+@media only screen and (pointer: coarse) and (max-width: 1024px),
+       screen and (max-width: 799px) {
+  // Show hamburger button
+  .header-burger {
+    display: flex;
+  }
+
+  // Hide desktop navigation
+  .hdr-left {
+    display: none;
+  }
+
+  // Menu transition enabled at mobile breakpoint
+  .header-menu {
+    transition: visibility 600ms cubic-bezier(.4,0,.2,1),
+                opacity 400ms cubic-bezier(.4,0,.2,1);
+  }
+}
+
 @media (max-width: 1300px) {
-
-  // Old behavior: hide nav and show menu button
-  // Now handled by priority nav JS, but keep as no-JS fallback
-  .hide-in-mobile:not(#priority-nav) {
-    display: none;
-  }
-
-  // Hide old menu button when priority nav is active (JS working)
-  .priority-nav-active #menu-btn {
-    display: none;
-  }
-
-  // No-JS fallback: show menu button if priority nav not working
-  #menu-btn {
-    display: inline-block;
-  }
-
   .posts-group {
     display: block;
 
