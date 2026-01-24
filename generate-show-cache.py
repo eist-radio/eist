@@ -1027,6 +1027,21 @@ def main():
         if manual_log:
             print(f"  Manual overrides applied: {len(manual_log)}")
 
+        # Still check for ground-truth URL matches (handles new URLs in descriptions)
+        # This is fast - just parses descriptions and checks caches, only fetches new external URLs
+        from match_mcsc_to_rc import apply_ground_truth_matches
+        ground_truth_log, newly_fetched = apply_ground_truth_matches(
+            original_shows, mixcloud_cache, soundcloud_cache, show_matches,
+            external_mixcloud=external_cache.get('mixcloud', []),
+            external_soundcloud=external_cache.get('soundcloud', [])
+        )
+        if ground_truth_log:
+            print(f"  Ground-truth URL matches: {len(ground_truth_log)}")
+            GROUND_TRUTH_FILE.write_text(json.dumps(ground_truth_log, indent=2))
+        if newly_fetched.get('mixcloud') or newly_fetched.get('soundcloud'):
+            print(f"  New external archives fetched: {len(newly_fetched.get('mixcloud', []))} MC, {len(newly_fetched.get('soundcloud', []))} SC")
+            save_external_archives(external_cache, newly_fetched)
+
         # Load existing review queue
         review_queue = []
         if REVIEW_QUEUE_FILE.exists():
@@ -1034,15 +1049,6 @@ def main():
                 review_queue = json.loads(REVIEW_QUEUE_FILE.read_text())
             except:
                 pass
-        # Load existing ground-truth log
-        ground_truth_log = {}
-        if GROUND_TRUTH_FILE.exists():
-            try:
-                ground_truth_log = json.loads(GROUND_TRUTH_FILE.read_text())
-            except:
-                pass
-        # No new external archives when skipping matching
-        newly_fetched = {'mixcloud': [], 'soundcloud': []}
     else:
         print("\nMatching archives to RadioCult shows...")
         show_matches, review_queue, ground_truth_log, newly_fetched = match_archives_to_shows(
