@@ -53,6 +53,7 @@ SHOWS_FILE = DATA_DIR / "shows.json"
 UPCOMING_SCHEDULE_FILE = DATA_DIR / "upcoming_schedule.json"
 MIXCLOUD_CACHE_FILE = DATA_DIR / "mixcloud-cache.json"
 SOUNDCLOUD_CACHE_FILE = DATA_DIR / "soundcloud-cache.json"
+EXTERNAL_ARCHIVES_FILE = DATA_DIR / "external-archives.json"
 CACHE_META_FILE = DATA_DIR / "cache-meta.json"
 REVIEW_QUEUE_FILE = DATA_DIR / "review-queue.json"
 GROUND_TRUTH_FILE = DATA_DIR / "ground-truth-matches.json"
@@ -700,6 +701,45 @@ def save_cache_meta(meta):
     CACHE_META_FILE.write_text(json.dumps(meta, indent=2))
 
 
+def load_external_archives():
+    """
+    Load external archives cache.
+
+    Returns:
+        dict: {'mixcloud': [...], 'soundcloud': [...], 'last_updated': ...}
+    """
+    if EXTERNAL_ARCHIVES_FILE.exists():
+        try:
+            return json.loads(EXTERNAL_ARCHIVES_FILE.read_text())
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {'mixcloud': [], 'soundcloud': [], 'last_updated': None}
+
+
+def save_external_archives(external_cache, newly_fetched):
+    """
+    Save external archives cache, merging in newly fetched archives.
+
+    Args:
+        external_cache: Existing cache dict
+        newly_fetched: {'mixcloud': [...], 'soundcloud': [...]} of new archives
+    """
+    # Merge newly fetched archives (avoiding duplicates by URL)
+    existing_mc_urls = {a.get('url') for a in external_cache.get('mixcloud', [])}
+    existing_sc_urls = {a.get('url') for a in external_cache.get('soundcloud', [])}
+
+    for archive in newly_fetched.get('mixcloud', []):
+        if archive.get('url') not in existing_mc_urls:
+            external_cache.setdefault('mixcloud', []).append(archive)
+
+    for archive in newly_fetched.get('soundcloud', []):
+        if archive.get('url') not in existing_sc_urls:
+            external_cache.setdefault('soundcloud', []).append(archive)
+
+    external_cache['last_updated'] = datetime.now().isoformat()
+    EXTERNAL_ARCHIVES_FILE.write_text(json.dumps(external_cache, indent=2))
+
+
 def fetch_radiocult_data(api_key, full_refresh, existing_shows):
     """
     Fetch all RadioCult data: artists, past schedule, and upcoming schedule.
@@ -888,6 +928,13 @@ def main():
         except:
             pass
 
+    # Load external archives cache
+    external_cache = load_external_archives()
+    ext_mc_count = len(external_cache.get('mixcloud', []))
+    ext_sc_count = len(external_cache.get('soundcloud', []))
+    if ext_mc_count or ext_sc_count:
+        print(f"Loaded {ext_mc_count} external Mixcloud, {ext_sc_count} external SoundCloud archives")
+
     # Fetch all data sources in parallel
     print("\nFetching data from all sources in parallel...")
     artists = {}
@@ -994,17 +1041,27 @@ def main():
                 ground_truth_log = json.loads(GROUND_TRUTH_FILE.read_text())
             except:
                 pass
+        # No new external archives when skipping matching
+        newly_fetched = {'mixcloud': [], 'soundcloud': []}
     else:
         print("\nMatching archives to RadioCult shows...")
-        show_matches, review_queue, ground_truth_log = match_archives_to_shows(
+        show_matches, review_queue, ground_truth_log, newly_fetched = match_archives_to_shows(
             original_shows, mixcloud_cache, soundcloud_cache, artists,
-            should_exclude_fn=should_exclude_show
+            should_exclude_fn=should_exclude_show,
+            external_mixcloud=external_cache.get('mixcloud', []),
+            external_soundcloud=external_cache.get('soundcloud', [])
         )
 
         # Save ground-truth matches for visibility
         if ground_truth_log:
             GROUND_TRUTH_FILE.write_text(json.dumps(ground_truth_log, indent=2))
             print(f"  Saved {len(ground_truth_log)} ground-truth matches to {GROUND_TRUTH_FILE}")
+
+        # Save newly fetched external archives
+        if newly_fetched.get('mixcloud') or newly_fetched.get('soundcloud'):
+            save_external_archives(external_cache, newly_fetched)
+            print(f"  Saved {len(newly_fetched.get('mixcloud', []))} new external Mixcloud, "
+                  f"{len(newly_fetched.get('soundcloud', []))} new external SoundCloud to {EXTERNAL_ARCHIVES_FILE}")
 
     # Build final output
     # In incremental mode (no new archives), use existing_shows to preserve all fields
@@ -1029,6 +1086,8 @@ def main():
     mixcloud_count = sum(1 for s in all_show_data if s.get('mixcloud_match'))
     soundcloud_count = sum(1 for s in all_show_data if s.get('soundcloud_match'))
     both_count = sum(1 for s in all_show_data if s.get('mixcloud_match') and s.get('soundcloud_match'))
+    external_mc_count = sum(1 for s in all_show_data if (s.get('mixcloud_match') or {}).get('external'))
+    external_sc_count = sum(1 for s in all_show_data if (s.get('soundcloud_match') or {}).get('external'))
 
     # Save metadata
     meta = {
@@ -1039,10 +1098,13 @@ def main():
         'mixcloud_matches': mixcloud_count,
         'soundcloud_matches': soundcloud_count,
         'both_platforms': both_count,
+        'external_mixcloud_matches': external_mc_count,
+        'external_soundcloud_matches': external_sc_count,
         'ground_truth_matches': len(ground_truth_log),
         'review_queue_size': len(review_queue),
         'new_mixcloud_this_run': new_mixcloud_count,
-        'total_mixcloud_cached': len(mixcloud_cache)
+        'total_mixcloud_cached': len(mixcloud_cache),
+        'external_archives_cached': len(external_cache.get('mixcloud', [])) + len(external_cache.get('soundcloud', []))
     }
     save_cache_meta(meta)
 
@@ -1055,7 +1117,12 @@ def main():
     print(f"  - Mixcloud:          {mixcloud_count}")
     print(f"  - SoundCloud:        {soundcloud_count}")
     print(f"  - Both platforms:    {both_count}")
+    if external_mc_count or external_sc_count:
+        print(f"  - External MC:       {external_mc_count}")
+        print(f"  - External SC:       {external_sc_count}")
     print(f"New Mixcloud this run: {new_mixcloud_count}")
+    if newly_fetched.get('mixcloud') or newly_fetched.get('soundcloud'):
+        print(f"New external fetched:  {len(newly_fetched.get('mixcloud', []))} MC, {len(newly_fetched.get('soundcloud', []))} SC")
     if ground_truth_log:
         print(f"Ground-truth matches:  {len(ground_truth_log)}")
     print(f"Review queue:          {len(review_queue)}")
@@ -1063,6 +1130,8 @@ def main():
     print(f"  {SHOWS_FILE}")
     print(f"  {MIXCLOUD_CACHE_FILE}")
     print(f"  {SOUNDCLOUD_CACHE_FILE}")
+    if external_cache.get('mixcloud') or external_cache.get('soundcloud'):
+        print(f"  {EXTERNAL_ARCHIVES_FILE}")
     if ground_truth_log:
         print(f"  {GROUND_TRUTH_FILE}")
     if review_queue:

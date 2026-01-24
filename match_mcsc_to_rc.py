@@ -132,8 +132,10 @@ def extract_archive_urls(text):
     mc_pattern = r'https?://(?:www\.)?mixcloud\.com/([^/\s]+)/([^/\s?]+)'
     for match in re.finditer(mc_pattern, text, re.IGNORECASE):
         user, slug = match.groups()
-        # Skip if slug looks like a profile-only URL (no actual slug)
-        if slug and not slug.startswith('?'):
+        # Strip trailing punctuation from slug (common when URL is at end of sentence)
+        slug = slug.rstrip('.,;:!?')
+        # Skip if slug is empty, just punctuation, or starts with ?
+        if slug and len(slug) > 1 and not slug.startswith('?') and re.search(r'[a-zA-Z0-9]', slug):
             url = f"https://www.mixcloud.com/{user}/{slug}/"
             results['mixcloud'].append({
                 'url': normalize_archive_url(url),
@@ -146,10 +148,13 @@ def extract_archive_urls(text):
     sc_pattern = r'https?://(?:www\.)?soundcloud\.com/([^/\s]+)/([^/\s?]+)'
     for match in re.finditer(sc_pattern, text, re.IGNORECASE):
         user, track = match.groups()
+        # Strip trailing punctuation from track (common when URL is at end of sentence)
+        track = track.rstrip('.,;:!?')
         # Skip common non-track paths (profile sub-pages)
         skip_paths = {'sets', 'likes', 'followers', 'following', 'tracks',
                       'albums', 'playlists', 'reposts', 'comments', 'popular-tracks'}
-        if track.lower() not in skip_paths:
+        # Skip if track is empty, just punctuation, or a known non-track path
+        if track and len(track) > 1 and track.lower() not in skip_paths and re.search(r'[a-zA-Z0-9]', track):
             url = f"https://soundcloud.com/{user}/{track}"
             results['soundcloud'].append({
                 'url': normalize_archive_url(url),
@@ -599,26 +604,38 @@ def calculate_match_score(show, cloudcast, artist_name=None, artist_mc_username=
     return score
 
 
-def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, show_matches):
+def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, show_matches,
+                               external_mixcloud=None, external_soundcloud=None):
     """
     Apply ground-truth matches from URLs in show descriptions.
 
     Extracts MC/SC URLs from RadioCult descriptions and directly matches
     to the corresponding archives. These matches override fuzzy matching.
 
+    Supports external archives: if a URL points to an account other than
+    'eistcork' and isn't in any cache, attempts to fetch metadata from the
+    platform API.
+
     Args:
         shows: List of RadioCult show dicts
-        mixcloud_archives: List of Mixcloud cloudcast dicts
-        soundcloud_archives: List of SoundCloud track dicts
+        mixcloud_archives: List of Mixcloud cloudcast dicts (eistcork)
+        soundcloud_archives: List of SoundCloud track dicts (eistcork)
         show_matches: Dict to populate with matches
+        external_mixcloud: List of external Mixcloud archives (optional)
+        external_soundcloud: List of external SoundCloud archives (optional)
 
     Returns:
-        dict: {show_id: {'show_title': ..., 'mixcloud_url': ..., 'soundcloud_url': ...}}
-              for logging purposes
+        Tuple of (ground_truth_log, newly_fetched) where:
+        - ground_truth_log: {show_id: {'show_title': ..., 'mixcloud_url': ..., ...}}
+        - newly_fetched: {'mixcloud': [...], 'soundcloud': [...]} for caching
     """
-    ground_truth_log = {}
+    # Import external fetcher (lazy import to avoid circular deps)
+    from external_archive_api import fetch_external_archive
 
-    # Build archive lookup by normalized URL
+    ground_truth_log = {}
+    newly_fetched = {'mixcloud': [], 'soundcloud': []}
+
+    # Build archive lookup by normalized URL for eistcork archives
     mc_by_url = {}
     mc_by_slug = {}
     for archive in mixcloud_archives:
@@ -634,6 +651,21 @@ def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, sh
         url = normalize_archive_url(archive.get('url', ''))
         if url:
             sc_by_url[url] = archive
+
+    # Build lookup for external archives
+    ext_mc_by_url = {}
+    if external_mixcloud:
+        for archive in external_mixcloud:
+            url = normalize_archive_url(archive.get('url', ''))
+            if url:
+                ext_mc_by_url[url] = archive
+
+    ext_sc_by_url = {}
+    if external_soundcloud:
+        for archive in external_soundcloud:
+            url = normalize_archive_url(archive.get('url', ''))
+            if url:
+                ext_sc_by_url[url] = archive
 
     for show in shows:
         show_id = show.get('id')
@@ -654,12 +686,22 @@ def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, sh
         # Match Mixcloud URLs
         for mc_info in urls['mixcloud']:
             mc_url = mc_info['url']
-            # Try exact URL match first
+            # Try exact URL match first (eistcork cache)
             archive = mc_by_url.get(mc_url)
             # Try matching just by slug if exact URL not found
             # (handles case where host links to their own MC account, not eistcork)
             if not archive:
                 archive = mc_by_slug.get(mc_info['slug'])
+            # Check external cache
+            if not archive:
+                archive = ext_mc_by_url.get(mc_url)
+            # If still not found and user is not eistcork, try fetching from API
+            if not archive and mc_info['user'].lower() != 'eistcork':
+                archive = fetch_external_archive('mixcloud', mc_info)
+                if archive:
+                    newly_fetched['mixcloud'].append(archive)
+                    # Add to lookup so we don't re-fetch within this run
+                    ext_mc_by_url[mc_url] = archive
 
             if archive:
                 if show_id not in show_matches:
@@ -671,10 +713,13 @@ def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, sh
                     'url': archive.get('url'),
                     'pictures': archive.get('pictures', {}),
                     'description': archive.get('description', ''),
-                    'score': GROUND_TRUTH_SCORE
+                    'score': GROUND_TRUTH_SCORE,
+                    'external': archive.get('external', False)
                 }
                 matched['mixcloud_url'] = mc_url
                 matched['mixcloud_slug'] = archive.get('slug')
+                if archive.get('external'):
+                    matched['mixcloud_external'] = True
 
         # Match SoundCloud URLs
         for sc_info in urls['soundcloud']:
@@ -684,6 +729,16 @@ def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, sh
             if not archive:
                 alt_url = sc_url.replace('https://soundcloud.com', 'https://www.soundcloud.com')
                 archive = sc_by_url.get(alt_url)
+            # Check external cache
+            if not archive:
+                archive = ext_sc_by_url.get(sc_url)
+            # If still not found and user is not eistcork, try fetching from API
+            if not archive and sc_info['user'].lower() != 'eistcork':
+                archive = fetch_external_archive('soundcloud', sc_info)
+                if archive:
+                    newly_fetched['soundcloud'].append(archive)
+                    # Add to lookup so we don't re-fetch within this run
+                    ext_sc_by_url[sc_url] = archive
 
             if archive:
                 if show_id not in show_matches:
@@ -695,10 +750,13 @@ def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, sh
                     'url': archive.get('url'),
                     'thumbnail': archive.get('thumbnail'),
                     'description': archive.get('description', ''),
-                    'score': GROUND_TRUTH_SCORE
+                    'score': GROUND_TRUTH_SCORE,
+                    'external': archive.get('external', False)
                 }
                 matched['soundcloud_url'] = sc_url
                 matched['soundcloud_id'] = archive.get('id')
+                if archive.get('external'):
+                    matched['soundcloud_external'] = True
 
         if matched:
             ground_truth_log[show_id] = {
@@ -707,7 +765,7 @@ def apply_ground_truth_matches(shows, mixcloud_archives, soundcloud_archives, sh
                 **matched
             }
 
-    return ground_truth_log
+    return ground_truth_log, newly_fetched
 
 
 def load_manual_matches():
@@ -1092,7 +1150,7 @@ def apply_sequential_matching(shows, soundcloud_archives, mixcloud_archives, sho
 
 
 def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artists,
-                            should_exclude_fn=None):
+                            should_exclude_fn=None, external_mixcloud=None, external_soundcloud=None):
     """
     Match archives (Mixcloud + SoundCloud) to RadioCult shows.
 
@@ -1106,12 +1164,15 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
         soundcloud_archives: List of SoundCloud track dicts
         artists: Dict of artist_id -> artist data
         should_exclude_fn: Optional function(show) -> bool to filter shows
+        external_mixcloud: List of external Mixcloud archives (optional)
+        external_soundcloud: List of external SoundCloud archives (optional)
 
     Returns:
-        Tuple of (show_matches, review_queue, ground_truth_log) where:
+        Tuple of (show_matches, review_queue, ground_truth_log, newly_fetched) where:
         - show_matches: dict of show_id -> {'show': ..., 'mixcloud': ..., 'soundcloud': ...}
         - review_queue: list of low-confidence matches for manual review
         - ground_truth_log: dict of ground-truth URL matches from descriptions
+        - newly_fetched: dict of newly fetched external archives for caching
     """
     # Build show lookup by date for faster matching
     shows_by_date = {}
@@ -1142,11 +1203,14 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
 
     # Apply ground-truth matches from description URLs FIRST
     # These take precedence over fuzzy matching (score=500)
-    ground_truth_log = apply_ground_truth_matches(
-        shows, mixcloud_archives, soundcloud_archives, show_matches
+    ground_truth_log, newly_fetched = apply_ground_truth_matches(
+        shows, mixcloud_archives, soundcloud_archives, show_matches,
+        external_mixcloud=external_mixcloud, external_soundcloud=external_soundcloud
     )
     if ground_truth_log:
         print(f"  Ground-truth matches from descriptions: {len(ground_truth_log)}")
+    if newly_fetched['mixcloud'] or newly_fetched['soundcloud']:
+        print(f"  External archives fetched: {len(newly_fetched['mixcloud'])} MC, {len(newly_fetched['soundcloud'])} SC")
 
     def find_best_show_for_archive(archive_title, archive_date, archive_source, archive_url=None):
         """Find the best matching RadioCult show for an archive."""
@@ -1456,4 +1520,4 @@ def match_archives_to_shows(shows, mixcloud_archives, soundcloud_archives, artis
     if manual_log:
         print(f"  Manual overrides applied: {len(manual_log)}")
 
-    return show_matches, archive_review_queue, ground_truth_log
+    return show_matches, archive_review_queue, ground_truth_log, newly_fetched
