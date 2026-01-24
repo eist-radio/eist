@@ -166,6 +166,22 @@ def generate_show_page(show, artist_shows):
     # Match score (max of both)
     match_score = show.get("match_score", 0)
 
+    # Determine preferred platform for playback
+    # Ground-truth matches (score 500) from URLs in description take priority
+    GROUND_TRUTH_SCORE = 500
+    mc_is_ground_truth = mc_score >= GROUND_TRUTH_SCORE
+    sc_is_ground_truth = sc_score >= GROUND_TRUTH_SCORE
+
+    if mc_is_ground_truth and not sc_is_ground_truth:
+        preferred_platform = "mixcloud"
+    elif sc_is_ground_truth and not mc_is_ground_truth:
+        preferred_platform = "soundcloud"
+    elif sc_id:
+        # Default: prefer SoundCloud if both exist (original behavior)
+        preferred_platform = "soundcloud"
+    else:
+        preferred_platform = "mixcloud"
+
     # Preferred image selection logic:
     # - SC thumbnail URLs can expire (return 404), so MC is generally more reliable
     # - BUT if SC score is significantly higher (50+ points), the MC match might be wrong
@@ -220,6 +236,7 @@ def generate_show_page(show, artist_shows):
         f'soundcloud_url = "{sc_url}"',
         f'soundcloud_image = "{sc_image}"',
         f'preferred_image = "{preferred_image}"',
+        f'preferred_platform = "{preferred_platform}"',
         f"has_archive = {has_archive}",
         f"match_score = {match_score}",
     ]

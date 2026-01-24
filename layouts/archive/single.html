@@ -44,9 +44,11 @@
     {{/* Hero Section with Show Artwork */}}
     <section class="show-hero section-inner">
         {{/* Precompute archive data for reuse */}}
-        {{ $platform := cond (ne $soundcloudId "") "soundcloud" "mixcloud" }}
-        {{ $trackId := cond (ne $soundcloudId "") $soundcloudId $mixcloudSlug }}
-        {{ $platformUrl := cond (ne $soundcloudId "") $soundcloudUrl $mixcloudUrl }}
+        {{/* Use preferred_platform from frontmatter (respects ground-truth URLs from descriptions) */}}
+        {{ $preferredPlatform := .Params.preferred_platform | default "soundcloud" }}
+        {{ $platform := cond (and (eq $preferredPlatform "mixcloud") (ne $mixcloudSlug "")) "mixcloud" (cond (ne $soundcloudId "") "soundcloud" "mixcloud") }}
+        {{ $trackId := cond (eq $platform "soundcloud") $soundcloudId $mixcloudSlug }}
+        {{ $platformUrl := cond (eq $platform "soundcloud") $soundcloudUrl $mixcloudUrl }}
 
         <div class="show-hero-artwork">
             <img src="{{ $showImage }}" alt="{{ $title }}" class="show-artwork-image" loading="eager" data-fallback="{{ $fallbackImage }}" onerror="this.onerror=null; this.src=this.dataset.fallback;">
