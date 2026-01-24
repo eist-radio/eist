@@ -100,7 +100,7 @@
                     <path d="M8 5v14l11-7z"/>
                 </svg>
                 <span class="play-text">Play</span>
-                <span class="platform-label">{{ if $soundcloudId }}SoundCloud{{ else }}Mixcloud{{ end }}</span>
+                <span class="platform-label">{{ if eq $platform "soundcloud" }}SoundCloud{{ else }}Mixcloud{{ end }}</span>
             </button>
             {{ else }}
             {{/* Archive status - only show when NO archive available */}}
