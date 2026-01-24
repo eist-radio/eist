@@ -1,16 +1,51 @@
 [
   {
     "source": "mixcloud",
+    "archive_title": "Noreen Murphy. - The east Cork song writing group. She hadn't the thing she thought she had",
+    "candidate_show": "C'mere to me with Noreen Murphy",
+    "candidate_date": "2026-01-18",
+    "score": 46
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Nomadology ep7 (02/11/25)",
+    "candidate_show": "\u00e9ist san o\u00edche",
+    "candidate_date": "2025-11-02",
+    "score": 58
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Sound Atlas #3",
+    "candidate_show": "Sound Atlas #3 JOUKO",
+    "candidate_date": "2025-12-19",
+    "score": 50
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Glorious Fools - The Glorious Fools Breakfast Show (26/10/28)",
+    "candidate_show": "Glorious Fools Breakfast (Jazz Special)",
+    "candidate_date": "2025-10-26",
+    "score": 52
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Glorious Fools - The Glorious Fools Breakfast Show (25/08/28)",
+    "candidate_show": "Glorious Fools Breakfast (Jazz Special)",
+    "candidate_date": "2025-10-26",
+    "score": 52
+  },
+  {
+    "source": "mixcloud",
     "archive_title": "North south EIST west",
-    "candidate_show": "b\u00e1nh \u00e9ist",
-    "candidate_date": "2025-09-14",
+    "candidate_show": "\u00e9ist on the streets!",
+    "candidate_date": "2025-09-07",
     "score": 21
   },
   {
     "source": "mixcloud",
     "archive_title": "REAL FULL LENGTH DigWhereYouStand Ep2",
     "candidate_show": "Where are we?",
-    "candidate_date": "2025-08-19",
+    "candidate_date": "2025-07-21",
     "score": 20
   },
   {
@@ -26,6 +61,20 @@
     "candidate_show": "Radio Solstice Deejays",
     "candidate_date": "2025-06-21",
     "score": 52
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Julie Landers - Hour of Agony with Julie Landers 22 February",
+    "candidate_show": "Rush Hour",
+    "candidate_date": "2025-06-19",
+    "score": 21
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "An Hour of Agony with Julie Landers 22 March",
+    "candidate_show": "Rush Hour",
+    "candidate_date": "2025-06-19",
+    "score": 21
   },
   {
     "source": "mixcloud",
@@ -65,9 +114,44 @@
   {
     "source": "mixcloud",
     "archive_title": "Noreen murphy, debbie shaw, christy moore, anne rynn, jimi cullen, martin leahy and cormac o caoimh,",
-    "candidate_show": "C'mere to Me with Noreen Murphy",
-    "candidate_date": "2025-03-02",
+    "candidate_show": "C'mere to me with Noreen Murphy",
+    "candidate_date": "2025-03-23",
     "score": 46
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Good Day Cork - Episode 02 Good Day Cork",
+    "candidate_show": "Good Day Cork - Meeting the Archives",
+    "candidate_date": "2026-01-02",
+    "score": 24
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Milk & Friends 008 w/ DJ Egg 17/01/25",
+    "candidate_show": "Milk and Friends",
+    "candidate_date": "2026-01-17",
+    "score": 45
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Noreen Murphy. - The east Cork song writing group. She hadn't the thing she thought she had",
+    "candidate_show": "C'mere to me with Noreen Murphy",
+    "candidate_date": "2026-01-18",
+    "score": 46
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Sound Atlas #3",
+    "candidate_show": "Sound Atlas #3 JOUKO",
+    "candidate_date": "2025-12-19",
+    "score": 50
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "The Gables Thursday Backroom Session - Live on \u00e9ist",
+    "candidate_show": "Special Broadcast: Live from the Gables Back Room ",
+    "candidate_date": "2025-12-18",
+    "score": 22
   },
   {
     "source": "soundcloud",
@@ -80,14 +164,14 @@
     "source": "soundcloud",
     "archive_title": "Mercy Salvation Mix November 8",
     "candidate_show": "Music for Sound Systems with Mercy & Salvation",
-    "candidate_date": "2025-11-08",
+    "candidate_date": "2025-10-11",
     "score": 48
   },
   {
     "source": "soundcloud",
     "archive_title": "esm\u00e92k - \ud83c\udfb7\ud83d\udc1b",
     "candidate_show": "bug.core",
-    "candidate_date": "2025-09-12",
+    "candidate_date": "2025-10-24",
     "score": 30
   },
   {
@@ -128,8 +212,8 @@
   {
     "source": "soundcloud",
     "archive_title": "noreen murphy, debbie shaw, christy moore, anne rynn, jimi cullen, martin leahy and cormac o caoimh, don henley,rolling tav review and dots and henrey - songs of protest and hope",
-    "candidate_show": "C'mere to Me with Noreen Murphy",
-    "candidate_date": "2025-03-02",
+    "candidate_show": "C'mere to me with Noreen Murphy",
+    "candidate_date": "2025-03-23",
     "score": 46
   }
 ]
