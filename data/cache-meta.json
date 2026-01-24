@@ -1,16 +1,13 @@
 {
-  "last_updated": "2026-01-24T20:28:09.175020",
-  "full_refresh": true,
-  "total_shows": 1614,
-  "shows_with_archives": 700,
-  "mixcloud_matches": 363,
-  "soundcloud_matches": 580,
-  "both_platforms": 243,
-  "external_mixcloud_matches": 0,
-  "external_soundcloud_matches": 0,
+  "last_updated": "2025-12-14T18:03:33.376126",
+  "full_refresh": false,
+  "total_shows": 1365,
+  "shows_with_archives": 630,
+  "mixcloud_matches": 331,
+  "soundcloud_matches": 525,
+  "both_platforms": 226,
   "ground_truth_matches": 1,
-  "review_queue_size": 31,
-  "new_mixcloud_this_run": 429,
-  "total_mixcloud_cached": 429,
-  "external_archives_cached": 1
+  "review_queue_size": 19,
+  "new_mixcloud_this_run": 0,
+  "total_mixcloud_cached": 384
 }
