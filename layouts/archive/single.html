@@ -158,10 +158,13 @@
             </div>
             {{ else if $mixcloudSlug }}
             <div class="mixcloud-embed-wrapper" style="margin-top: 1.5rem;">
+                {{/* Extract path from mixcloud_url for external archives, fallback to eistcork */}}
+                {{ $mcFeedPath := printf "/eistcork/%s/" $mixcloudSlug }}
+                {{ with $mixcloudUrl }}{{ $mcFeedPath = (urls.Parse .).Path }}{{ end }}
                 <iframe
                     width="100%"
                     height="120"
-                    src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&feed=/eistcork/{{ $mixcloudSlug }}/"
+                    src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&feed={{ $mcFeedPath }}"
                     frameborder="0"
                     loading="lazy"
                 ></iframe>

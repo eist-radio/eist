@@ -103,7 +103,7 @@
             if (elements.mixcloudIframe) {
                 elements.mixcloudIframe.classList.remove('hidden');
             }
-            loadMixcloudWidget(track.id);
+            loadMixcloudWidget(track.id, track.url);
         } else if (track.platform === 'soundcloud') {
             // Switching to SoundCloud - stop Mixcloud
             if (elements.mixcloudIframe) {
@@ -125,11 +125,25 @@
 
     /**
      * Load native Mixcloud widget and trigger playback via Widget API
+     * @param {string} slug - Mixcloud slug (for eistcork) or full path (for external)
+     * @param {string} url - Optional full Mixcloud URL (used for external archives)
      */
-    function loadMixcloudWidget(slug) {
+    function loadMixcloudWidget(slug, url) {
+        // Extract feed path from URL if provided (supports external archives)
+        // Otherwise fall back to eistcork account
+        let feedPath = `/eistcork/${slug}/`;
+        if (url) {
+            try {
+                const urlObj = new URL(url);
+                feedPath = urlObj.pathname;
+            } catch (e) {
+                console.warn('Could not parse Mixcloud URL, using default path');
+            }
+        }
+
         // Use Mixcloud's standard embed URL with default styling
         const params = new URLSearchParams({
-            feed: `/eistcork/${slug}/`,
+            feed: feedPath,
             hide_cover: '1',
             mini: '1',
             autoplay: '1'
