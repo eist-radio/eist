@@ -12,6 +12,8 @@
     justify-content: flex-end;  /* Content at bottom */
     align-items: stretch;
     position: relative;
+    border-radius: 8px;
+    overflow: hidden;  /* Clip image to rounded corners */
 }
 
 .front-hero-image-wrapper {
