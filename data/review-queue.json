@@ -1,9 +1,72 @@
 [
   {
     "source": "mixcloud",
+    "archive_title": "26012026 drithl\u00edn\u00ed",
+    "candidate_show": "Under a Plastic Cloud",
+    "candidate_date": "2026-01-26",
+    "score": 59
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Noreen Murphy. - The east Cork song writing group. She hadn't the thing she thought she had",
+    "candidate_show": "C'mere to me with Noreen Murphy",
+    "candidate_date": "2025-12-07",
+    "score": 46
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "DELFORD DRIVE 004 - PAUL KAV - EIST - 17TH DEC",
+    "candidate_show": "\u00e9ist san o\u00edche",
+    "candidate_date": "2025-12-27",
+    "score": 15
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Fort Evil Fruit - Vortex of Ironic Calamities ep 7",
+    "candidate_show": "Caribbean Voyage - E\u0301ist Radio - Show #12",
+    "candidate_date": "2026-01-01",
+    "score": 16
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Sound Atlas #3",
+    "candidate_show": "Sound Atlas #3 JOUKO",
+    "candidate_date": "2025-12-19",
+    "score": 50
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Glorious Fools - The Glorious Fools Breakfast Show (26/10/28)",
+    "candidate_show": "Glorious Fools Breakfast (Jazz Special)",
+    "candidate_date": "2025-10-26",
+    "score": 52
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "Glorious Fools - The Glorious Fools Breakfast Show (25/08/28)",
+    "candidate_show": "Glorious Fools Breakfast (Jazz Special)",
+    "candidate_date": "2025-10-26",
+    "score": 52
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "The Weather - Episode #6 August 25",
+    "candidate_show": "The Weather with Barry Mullins",
+    "candidate_date": "2025-10-03",
+    "score": 19
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "The Weather - Episode #7 September 25",
+    "candidate_show": "The Weather with Barry Mullins",
+    "candidate_date": "2025-10-03",
+    "score": 18
+  },
+  {
+    "source": "mixcloud",
     "archive_title": "North south EIST west",
-    "candidate_show": "b\u00e1nh \u00e9ist",
-    "candidate_date": "2025-09-14",
+    "candidate_show": "\u00e9ist on the streets!",
+    "candidate_date": "2025-09-07",
     "score": 21
   },
   {
@@ -29,6 +92,20 @@
   },
   {
     "source": "mixcloud",
+    "archive_title": "Julie Landers - Hour of Agony with Julie Landers 22 February",
+    "candidate_show": "Rush Hour",
+    "candidate_date": "2025-05-29",
+    "score": 21
+  },
+  {
+    "source": "mixcloud",
+    "archive_title": "An Hour of Agony with Julie Landers 22 March",
+    "candidate_show": "Rush Hour",
+    "candidate_date": "2025-05-29",
+    "score": 21
+  },
+  {
+    "source": "mixcloud",
     "archive_title": "Ep5 Pyrenees from dusk to dawn - Love Can Tame The Wild - Ep 5 Pyrenees - from Dawn to Dusk - a keep",
     "candidate_show": "Love Can Tame The Wild Ep5 Pyrenees from dawn to dusk - a CAMP with Chris Watson keepsake",
     "candidate_date": "2025-06-20",
@@ -38,7 +115,7 @@
     "source": "mixcloud",
     "archive_title": "ENHANCING LIFE WITH OUR DOGS",
     "candidate_show": "Soft Starts with Aisling",
-    "candidate_date": "2025-04-10",
+    "candidate_date": "2025-05-22",
     "score": 17
   },
   {
@@ -58,8 +135,8 @@
   {
     "source": "mixcloud",
     "archive_title": "Cormac O Caoimh",
-    "candidate_show": "seomra folamh",
-    "candidate_date": "2025-03-01",
+    "candidate_show": "Not another disco!",
+    "candidate_date": "2025-02-22",
     "score": 17
   },
   {
@@ -68,6 +145,55 @@
     "candidate_show": "C'mere to Me with Noreen Murphy",
     "candidate_date": "2025-03-02",
     "score": 46
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Good Day Cork - Episode 02 Good Day Cork",
+    "candidate_show": "Good Day Cork - Meeting the Archives ",
+    "candidate_date": "2026-01-09",
+    "score": 24
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Milk & Friends 008 w/ DJ Egg 17/01/25",
+    "candidate_show": "Milk and Friends",
+    "candidate_date": "2026-01-17",
+    "score": 45
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Noreen Murphy. - The east Cork song writing group. She hadn't the thing she thought she had",
+    "candidate_show": "C'mere to me with Noreen Murphy",
+    "candidate_date": "2025-12-07",
+    "score": 46
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "DELFORD DRIVE 004 - PAUL KAV - EIST - 17TH DEC",
+    "candidate_show": "\u00e9ist san o\u00edche",
+    "candidate_date": "2025-12-27",
+    "score": 15
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Fort Evil Fruit - Vortex of Ironic Calamities ep 7",
+    "candidate_show": "Caribbean Voyage - E\u0301ist Radio - Show #12",
+    "candidate_date": "2026-01-01",
+    "score": 16
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "Sound Atlas #3",
+    "candidate_show": "Sound Atlas #3 JOUKO",
+    "candidate_date": "2025-12-19",
+    "score": 50
+  },
+  {
+    "source": "soundcloud",
+    "archive_title": "The Gables Thursday Backroom Session - Live on \u00e9ist",
+    "candidate_show": "Cinema in Absentia - The New Christmas Canon",
+    "candidate_date": "2025-12-11",
+    "score": 16
   },
   {
     "source": "soundcloud",
@@ -101,7 +227,7 @@
     "source": "soundcloud",
     "archive_title": "ENHANCING LIFE WITH OUR DOGS",
     "candidate_show": "Soft Starts with Aisling",
-    "candidate_date": "2025-04-10",
+    "candidate_date": "2025-05-22",
     "score": 17
   },
   {
