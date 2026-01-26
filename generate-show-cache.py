@@ -291,6 +291,7 @@ def apply_additional_show_matches(shows, mixcloud_cache, soundcloud_cache, show_
                         'title': sc.get('title'),
                         'url': sc.get('url'),
                         'duration': sc.get('duration'),
+                        'thumbnail': sc.get('thumbnail'),  # Include artwork
                         'score': 600,  # High confidence for direct URL match
                         'match_type': 'additional_show_url'
                     }
@@ -308,6 +309,7 @@ def apply_additional_show_matches(shows, mixcloud_cache, soundcloud_cache, show_
                         'slug': mc.get('slug'),
                         'url': mc.get('url'),
                         'audio_length': mc.get('audio_length'),
+                        'pictures': mc.get('pictures', {}),  # Include artwork
                         'score': 600,  # High confidence for direct URL match
                         'match_type': 'additional_show_url'
                     }
