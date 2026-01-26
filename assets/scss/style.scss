@@ -249,6 +249,8 @@ table {
   box-sizing: border-box;
   background-color: $eist;
   animation-duration: .8s;
+  /* iOS PWA safe area - prevents status bar overlap */
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .hdr-wrapper {
