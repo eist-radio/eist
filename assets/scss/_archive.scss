@@ -85,7 +85,7 @@
 
 /* Style select dropdown options (limited browser support but helps) */
 .filter-select option {
-    background: darken($eist, 10%);
+    background: #3526BF;
     color: $eist-secondary;
     padding: 0.75rem 1rem;
     font-weight: 500;
@@ -106,7 +106,7 @@
 
 @supports (-moz-appearance: none) {
     .filter-select option {
-        background: darken($eist, 10%);
+        background: #3526BF;
         color: $eist-secondary;
     }
 
@@ -175,7 +175,7 @@
     right: 0;
     max-height: 300px;
     overflow-y: auto;
-    background: darken($eist, 8%);
+    background: #3526BF;
     border: 1px solid rgba(175, 252, 65, 0.3);
     border-top: none;
     border-radius: 0 0 8px 8px;
@@ -202,7 +202,7 @@
 }
 
 .custom-dropdown-list::-webkit-scrollbar-track {
-    background: darken($eist, 12%);
+    background: #3526BF;
     border-radius: 3px;
 }
 
