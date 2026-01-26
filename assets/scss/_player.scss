@@ -3,16 +3,59 @@
 // Homepage player, docked player, archive player
 // ============================================
 
-/* Parent container styling */
+/* Parent container styling - Front Page Hero (matches artist page style) */
 #player {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 400px;
-    justify-content: center;
-    align-items: stretch; /* align-items affects the children */
+    min-height: 55vh;  /* Match artist hero proportions */
+    justify-content: flex-end;  /* Content at bottom */
+    align-items: stretch;
     position: relative;
-    margin-top: 255px;
+}
+
+.front-hero-image-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.front-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 33%;  /* Adjustable focus point */
+}
+
+.front-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+        to top,
+        $eist 0%,
+        rgba(71, 51, 255, 0.97) 12%,
+        rgba(71, 51, 255, 0.8) 35%,
+        rgba(71, 51, 255, 0.4) 60%,
+        rgba(71, 51, 255, 0.15) 80%,
+        transparent 100%
+    );
+}
+
+.front-hero-content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    padding: 2rem;
+}
+
+.front-hero-title {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: $eist-secondary;
+    margin: 0;
+    line-height: 1.1;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .broadcast-status {
@@ -122,59 +165,6 @@
     }
 }
 
-.player-background {
-    flex: 2;
-    overflow: hidden;
-    display: flex;
-    height: 100px;
-    align-items: center;
-    justify-content: flex-end;
-    position: relative;
-    z-index: 1;
-    border-radius: 8px;
-}
-
-.player-background img {
-    width: 100%;
-    overflow: hidden;
-    opacity: 20%;
-}
-
-.player-background::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: linear-gradient(
-    to top,
-    rgba(175, 252, 65, 1) 0%,
-    rgba(175, 252, 65, 0.3) 50%,
-    rgba(175, 252, 65, 0.15) 65%,
-    rgba(175, 252, 65, 0.075) 75.5%,
-    rgba(175, 252, 65, 0.037) 82.85%,
-    rgba(175, 252, 65, 0.019) 88%,
-    #00000000 120%
-  );
-  pointer-events: none;
-}
-
-.player-now-playing {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
-    height: 3em;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding-left: 30px;
-    z-index: 2;
-    padding-bottom: 20px;
-}
 
 /* Metadata and play button section */
 .player-metadata-play {
@@ -228,13 +218,7 @@
     color: $eist;
 }
 
-#player-metadata-show-title-front-page {
-    font-size: x-large;
-    font-weight: bold;
-    line-height: 1em;
-    text-align: left;
-    color: $eist;
-}
+/* Front page title now uses .front-hero-title class */
 
 #player-metadata-show-desc {
     font-size: small;
@@ -434,7 +418,15 @@ opacity: 0.7;
 
     #player {
         flex-direction: column;
-        height: 300px;
+        min-height: 50vh;  /* Match artist hero mobile proportions */
+    }
+
+    .front-hero-image {
+        object-position: center 30%;  /* Adjust for mobile crop */
+    }
+
+    .front-hero-title {
+        font-size: 1.5rem;
     }
 
     .header-logo {
@@ -448,10 +440,6 @@ opacity: 0.7;
 
     .player-metadata-play {
       flex-direction: column;
-    }
-
-    .player-background img {
-        width: -webkit-fill-available;
     }
 
     #dj-name {
