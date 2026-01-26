@@ -1,0 +1,45 @@
+{{/* Genre Drawer - Full genre browser
+     Usage: {{ partial "genre-drawer.html" $allGenres }}
+*/}}
+{{ $genres := . }}
+{{ if gt (len $genres) 20 }}
+<div class="genre-drawer" id="genre-drawer">
+    <div class="genre-drawer-header">
+        <div class="genre-drawer-title">
+            <span class="drawer-title-text">Browse All Genres</span>
+            <span class="drawer-genre-count">{{ len $genres }} genres</span>
+        </div>
+        <div class="genre-drawer-search">
+            <input type="text" id="genre-search" placeholder="Search genres..." autocomplete="off">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+        </div>
+        <button class="genre-drawer-close" id="close-genre-drawer" aria-label="Close genre browser">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <div class="genre-drawer-body">
+        <div class="genre-drawer-grid" id="genre-drawer-grid">
+            {{ range $genres }}
+            <button class="genre-drawer-tag" data-genre="{{ . | lower }}">{{ . }}</button>
+            {{ end }}
+        </div>
+        <div class="genre-no-results" id="genre-no-results" style="display: none;">
+            No genres match your search
+        </div>
+    </div>
+    <div class="genre-drawer-footer">
+        <div class="genre-selected-count">
+            <span id="selected-genre-count">0</span> selected
+        </div>
+        <div class="genre-drawer-actions">
+            <button class="genre-clear-btn" id="clear-genre-selection">Clear</button>
+            <button class="genre-done-btn" id="apply-genre-selection">Done</button>
+        </div>
+    </div>
+</div>
+<div class="genre-drawer-overlay" id="genre-drawer-overlay"></div>
+{{ end }}

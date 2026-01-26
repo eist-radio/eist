@@ -1,6 +1,12 @@
 // Updates the schedule
 // Running locally, you need to source .env && export API_KEY
 document.addEventListener("turbo:load", initializeSchedule);
+// Fallback for direct page loads (Turbo may not fire turbo:load on initial visit)
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeSchedule);
+} else {
+    initializeSchedule();
+}
 
 function initializeSchedule() {
     console.log("Initializing schedule...");

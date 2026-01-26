@@ -135,8 +135,17 @@ function initializePage() {
             const data = await response.json();
             const artist = data.artist || {};
 
+            // Generate slug from name for artist page URL
+            const artistName = artist.name || defaultText;
+            const slug = artistName.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
+                .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
+                .replace(/\s+/g, '-') // Spaces to hyphens
+                .replace(/-+/g, '-'); // Collapse multiple hyphens
+
             return {
-                name: artist.name || defaultText,
+                name: artistName,
+                slug: slug,
                 bio: artist.description?.content?.[0]?.content?.[0]?.text || 'No bio available',
                 image: artist.logo?.['256x256'] || defaultImage
             };
@@ -189,14 +198,40 @@ function initializePage() {
         const showTitleElement = document.getElementById('player-metadata-show-title');
         const broadcastStatusElement = document.getElementById('live-text');
         const artistImageElement = document.getElementById('dj-image');
+        const liveIndicator = document.getElementById('live-indicator');
+        const broadcastStatusContainer = document.querySelector('.broadcast-status');
 
         if (artistNameElement) artistNameElement.textContent = artistDetails.name;
         if (showTitleElement) showTitleElement.textContent = showTitle;
 
+        // Show the status area now that we have data
+        if (broadcastStatusContainer) {
+            broadcastStatusContainer.classList.add('loaded');
+        }
+
+        const isLive = broadcastStatus === "schedule";
+
+        // Update live indicator state
+        if (liveIndicator) {
+            if (isLive) {
+                liveIndicator.classList.remove('off-air');
+            } else {
+                liveIndicator.classList.add('off-air');
+            }
+        }
+
+        // Update broadcast status text with styled spans
         if (broadcastStatusElement) {
-            broadcastStatusElement.textContent = broadcastStatus === "schedule" ?
-                `live w/ ${artistDetails.name}` :
-                "off air";
+            if (isLive && artistDetails.slug) {
+                broadcastStatusElement.innerHTML =
+                    `<span class="dj-prefix">w/</span> <a href="/artists/${artistDetails.slug}/" class="dj-name">${artistDetails.name}</a>`;
+            } else if (isLive) {
+                broadcastStatusElement.innerHTML =
+                    `<span class="dj-prefix">w/</span> <span class="dj-name">${artistDetails.name}</span>`;
+            } else {
+                broadcastStatusElement.innerHTML =
+                    `<span class="dj-prefix">off air</span>`;
+            }
         }
 
         if (artistImageElement) {
@@ -270,15 +305,64 @@ function initializePage() {
     // Start fetching now playing information
     console.log("Starting initial nowPlaying fetch");
 
-    // Ensure we have defaults before the API call
-    updatePlayer({
-        broadcastStatus: 'initializing',
-        showTitle: defaultText,
-        artistDetails: { name: defaultText, image: defaultImage }
-    });
-
+    // Don't show anything until we have real data from the API
     nowPlaying();
     updateMediaSession(isPlaying);
 
+    // Initialize scroll-driven player morph
+    initPlayerMorph();
+
     console.log("Player initialization complete");
+}
+
+// ===========================================
+// UNIFIED HEADER SCROLL
+// Simple class toggle - CSS handles all transitions
+// ===========================================
+function initPlayerMorph() {
+    const header = document.getElementById('site-header');
+
+    if (!header) {
+        console.log("Header scroll: missing header element");
+        return;
+    }
+
+    // Prevent duplicate initialization
+    if (header.dataset.scrollInitialized) return;
+    header.dataset.scrollInitialized = "true";
+
+    const SCROLL_THRESHOLD = 50; // Scroll distance to trigger compact mode
+    let isScrolled = false;
+    let ticking = false;
+
+    function updateScrollState() {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const shouldBeScrolled = scrollY > SCROLL_THRESHOLD;
+
+        if (shouldBeScrolled !== isScrolled) {
+            isScrolled = shouldBeScrolled;
+            header.classList.toggle('header-scrolled', isScrolled);
+            document.body.classList.toggle('header-scrolled', isScrolled);
+        }
+
+        ticking = false;
+    }
+
+    function onScroll() {
+        if (!ticking) {
+            requestAnimationFrame(updateScrollState);
+            ticking = true;
+        }
+    }
+
+    // Listen for scroll
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Also re-check on resize (content reflow can change scroll position)
+    window.addEventListener('resize', onScroll, { passive: true });
+
+    // Initial state check
+    updateScrollState();
+
+    console.log("Header scroll initialized");
 }

@@ -1,10 +1,41 @@
     <header id="site-header" {{- if .Site.Params.usesAnimation }} class="animated slideInUp" {{- end -}}>
         <div class="hdr-wrapper section-inner">
-                <div class="site-branding">
-                    <a href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" class="header-logo"/></a>
+            {{/* Unified header content - single flex container */}}
+            <div class="site-branding">
+                <a href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" class="header-logo"/></a>
+            </div>
+            {{/* Player controls - inline in header */}}
+            <div class="player-inline" id="player-small">
+                <div class="audio-player" id="global-player" data-turbo-permanent>
+                    <img id="playPauseBtn" src="/play.svg" alt="Play" class="player-play-btn">
+                    <audio id="audio" src="https://eist-radio.radiocult.fm/stream"></audio>
+                    <div class="broadcast-status">
+                        <div class="live-indicator" id="live-indicator">
+                            <span class="live-dot"></span>
+                            <span class="live-label">LIVE</span>
+                        </div>
+                        <div class="broadcasting-live-text-status">
+                            <p id="live-text"></p>
+                        </div>
+                    </div>
                 </div>
+            </div>
             <div class="hdr-left">
-                <nav class="site-nav hide-in-mobile">{{- partialCached "menu.html" . -}}</nav>
+                <nav class="site-nav" id="priority-nav">
+                    <div class="nav-visible">
+                        {{- range .Site.Menus.main -}}
+                        <a href="{{ .URL | absLangURL }}" class="nav-item">{{ .Name }}</a>
+                        {{- end -}}
+                    </div>
+                    <button class="nav-overflow-btn" id="nav-overflow-btn" aria-label="More" aria-expanded="false">
+                        <span class="overflow-icon"></span>
+                    </button>
+                    <div class="nav-overflow-dropdown" id="nav-overflow-dropdown">
+                        {{- range .Site.Menus.main -}}
+                        <a href="{{ .URL | absLangURL }}">{{ .Name }}</a>
+                        {{- end -}}
+                    </div>
+                </nav>
             </div>
             <div class="hdr-right hdr-icons">
                 {{ if (or .Params.images .Params.featuredImg) -}}
@@ -13,15 +44,37 @@
                 {{- with .Params.toc -}}
                 <button id="toc-btn" class="hdr-btn desktop-only-ib" title="{{i18n "tableOfContents"}}">{{- partial "svg.html" (dict "context" . "name" "toc") -}}</button>
                 {{- end -}}
-                <button id="menu-btn" class="hdr-btn" title="{{i18n "menu"}}">{{- partial "svg.html" (dict "context" . "name" "menuBtn") -}}</button>
+                {{/* Hamburger button */}}
+                <div class="header-burger" id="header-burger">
+                    <button class="header-burger-btn burger" id="burger-btn" aria-label="{{i18n "menu"}}" aria-expanded="false">
+                        <div class="burger-box">
+                            <div class="burger-inner">
+                                <div class="top-bun"></div>
+                                <div class="patty"></div>
+                                <div class="bottom-bun"></div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
             </div>
         </div>
-        {{ partial "player.html" . }} 
     </header>
-    <div id="mobile-menu" {{- if ne false .Site.Params.usesAnimation }} class="animated fast" {{- end -}}>
-        <ul>
-            {{- range .Site.Menus.main }}
-            <li><a href="{{ .URL | absLangURL }}">{{ .Name }}</a></li>
-            {{- end }}
-        </ul>
+    {{/* Full-viewport menu overlay */}}
+    <div class="header-menu" id="header-menu" aria-hidden="true">
+        <div class="header-menu-bg"></div>
+        <div class="header-menu-nav">
+            <nav class="header-menu-nav-list">
+                <div class="header-menu-nav-folder">
+                    <div class="header-menu-nav-wrapper">
+                        {{- range .Site.Menus.main }}
+                        <div class="header-menu-nav-item">
+                            <a href="{{ .URL | absLangURL }}">
+                                <div class="header-menu-nav-item-content">{{ .Name }}</div>
+                            </a>
+                        </div>
+                        {{- end }}
+                    </div>
+                </div>
+            </nav>
+        </div>
     </div>

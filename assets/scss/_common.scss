@@ -1,0 +1,373 @@
+// ============================================
+// Common/Global Styles
+// Body margin, typography overrides, header states
+// ============================================
+
+body {
+    margin-top: 200px;
+}
+
+h1, h2, h3, h4, h5, h6, .site-nav {
+    font-family: $heading-fonts;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding-top: 0.2em;
+}
+
+h1 {
+    font-size: 1.4em;
+}
+
+.site-nav {
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+.slideOutDown {
+  max-height: 100% !important;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+}
+
+table th, table td {
+    padding: 1px !important;
+    border: unset !important;
+    text-align: left !important;
+    font-size: small;
+}
+
+table th {
+    font-weight: bold;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+table td {
+    vertical-align: top;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+table caption {
+    text-align: left;
+    font-style: italic;
+    font-size: small;
+}
+
+.content a {
+    box-shadow: unset !important;
+    text-decoration: underline !important;
+}
+
+// ============================================
+// Unified Header Scroll Transition
+// Single flex container with smooth transitions
+// ============================================
+
+.header-logo {
+    width: 180px;
+    height: auto;
+    transition: width 0.3s ease-out;
+}
+
+.header-scrolled .header-logo {
+    width: 70px;
+    transform: translateY(4px); // optical alignment with player controls
+}
+
+.site-nav {
+    transition: font-size 0.3s ease-out;
+}
+
+#site-header.header-scrolled .site-nav {
+    font-size: 0.95em;
+}
+
+// ============================================
+// Priority Navigation (Progressive Collapse)
+// Items hide right-to-left as space shrinks
+// ============================================
+
+#priority-nav {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;  // Fill parent width
+}
+
+.nav-visible {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    flex: 1 0 auto;  // Grow but don't shrink
+}
+
+.nav-item {
+    margin-left: 0.8em;
+    transition: opacity 0.2s ease-out;
+
+    &.nav-hidden {
+        display: none;
+    }
+}
+
+// Overflow button (hamburger/ellipsis)
+.nav-overflow-btn {
+    display: none; // Hidden until JS activates it
+    background: none;
+    border: none;
+    padding: 0 0.5em;
+    margin-left: 0.5em;
+    cursor: pointer;
+    color: inherit;
+    font-size: 1.4em;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &.has-overflow {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .overflow-icon {
+        display: block;
+        width: 20px;
+        height: 14px;
+        position: relative;
+
+        // Three horizontal lines (hamburger style)
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: currentColor;
+            border-radius: 1px;
+        }
+
+        &::before {
+            top: 0;
+            box-shadow: 0 6px 0 currentColor; // Middle line via shadow
+        }
+
+        &::after {
+            bottom: 0;
+        }
+    }
+}
+
+// Dropdown menu
+.nav-overflow-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5em;
+    background: $eist;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 0.5em 0;
+    min-width: 160px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+    &.show {
+        display: block;
+        animation: dropdownFadeIn 0.15s ease-out;
+    }
+
+    a {
+        display: block;
+        padding: 0.5em 1.2em;
+        margin: 0;
+        white-space: nowrap;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    }
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Mobile: hide all nav items, just show hamburger
+@media (max-width: 520px) {
+    .nav-visible .nav-item {
+        display: none !important;
+    }
+
+    // Always show hamburger on mobile (not just when has-overflow)
+    .nav-overflow-btn {
+        display: inline-flex !important;
+        margin-left: 0;
+    }
+
+    // Ensure dropdown is accessible on mobile
+    .nav-overflow-dropdown {
+        right: -10px;
+        min-width: 140px;
+    }
+}
+
+// Miscellaneous shared styles
+
+.artist {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    background-color: $eist;
+}
+
+.artist-image-container {
+    display: flex;
+    justify-content: left;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.artist-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 0.9;
+}
+
+/* Gradient overlay */
+.artist-image-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(transparent, $eist);
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+.artist-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.artist-content h3 {
+    color: $eist-secondary;
+    margin-block-end: unset !important;
+}
+
+.artist-desc {
+    color: $eist-secondary;
+}
+
+.artist-desc a {
+    color: $eist-secondary;
+}
+
+.index-footer {
+    display: flex;
+    text-align: end;
+    font-size: large;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    padding-top: 1em;
+}
+
+.banner-404 {
+    margin: unset !important;
+    padding-top: 125px;
+    font-size: xxx-large;
+    text-align: center;
+
+}
+
+body {
+    -webkit-user-select: unset !important;
+    -moz-user-select: unset !important;
+    -ms-user-select: unset !important;
+    user-select: unset !important;
+}
+
+.pp {
+    width: 60%;
+    position: relative;
+    z-index: 0;
+}
+
+#pagination {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-family: inherit;
+}
+
+#pagination button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#pagination button:hover:not(:disabled) {
+    opacity: .4;
+}
+
+#pagination button:disabled {
+    font-weight: bold;
+}
+
+#pagination button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#copy-link {
+    font-size: smaller;
+}
+
+a #host-link {
+    text-decoration: none !important;
+}
+
+/* App download image styling */
+.content img[alt*="App Store"],
+.content img[alt*="Google Play"] {
+  width: 40%;
+  height: auto;
+  margin: 10px 5px;
+  display: inline-block;
+  object-fit: contain;
+  vertical-align: top;
+}

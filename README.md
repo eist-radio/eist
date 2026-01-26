@@ -38,10 +38,8 @@ Then:
 
 ```cmd
 source .env && export API_KEY
-chmod +x generate-artist-pages.sh
-chmod +x hugo-start.sh
-./generate-artist-pages.sh
-./hugo-start.sh
+python3 generate-artist-pages.py
+hugo server --disableFastRender
 ```
 
 On Windows:

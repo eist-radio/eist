@@ -1,0 +1,18 @@
+<!-- Persistent Archive Player (Phase 6) - Native Widget Embeds -->
+<!-- This must be outside all Turbo-replaced blocks for persistence -->
+<div id="archive-player" class="archive-player" data-turbo-permanent>
+    <div class="archive-player-inner">
+        <!-- Native widget iframes - shown directly with their default styling -->
+        <iframe id="mixcloud-widget" class="archive-widget-iframe" allow="autoplay" title="Mixcloud Player" data-turbo-permanent></iframe>
+        <iframe id="soundcloud-widget" class="archive-widget-iframe" allow="autoplay" title="SoundCloud Player" data-turbo-permanent></iframe>
+
+        <!-- Close button - return to live -->
+        <button id="archive-close" class="archive-close-btn" aria-label="Close and return to live" title="Return to live">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+</div>
+<!-- Mixcloud Widget API for programmatic play control -->
+<script src="https://widget.mixcloud.com/media/js/widgetApi.js"></script>

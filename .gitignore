@@ -1,8 +1,11 @@
 content/artists
 content/artists.md
+content/archive
 public/
 resources/
 node_modules/
 .hugo_build.lock
 .env
+RADIOCULT_API_KEY
 *.sublime-project
+.aider*

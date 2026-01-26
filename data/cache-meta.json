@@ -1,0 +1,13 @@
+{
+  "last_updated": "2025-12-14T18:03:33.376126",
+  "full_refresh": false,
+  "total_shows": 1365,
+  "shows_with_archives": 630,
+  "mixcloud_matches": 331,
+  "soundcloud_matches": 525,
+  "both_platforms": 226,
+  "ground_truth_matches": 1,
+  "review_queue_size": 19,
+  "new_mixcloud_this_run": 0,
+  "total_mixcloud_cached": 384
+}

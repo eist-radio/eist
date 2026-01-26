@@ -7,12 +7,12 @@
     <div id="spotlight">
         <!-- Use the API to populate some HTML elements here, pull artist image, etc -->
         <div id="player" data-turbo-frame="false">
-            <div class="player-background">
-                <img src="/eist_offline.png" class="headshot" id="dj-image-front-page"/>
+            <div class="front-hero-image-wrapper">
+                <img src="/eist_offline.png" class="front-hero-image" id="dj-image-front-page" loading="eager" onerror="this.onerror=null; this.src='/eist_online.png';">
+                <div class="front-hero-overlay"></div>
             </div>
-            <div class="player-now-playing">
-                    <p id="player-metadata-show-title-front-page"></p>
-                </div>
+            <div class="front-hero-content">
+                <p id="player-metadata-show-title-front-page" class="front-hero-title"></p>
             </div>
         </div>
         <div class="player-front-page">

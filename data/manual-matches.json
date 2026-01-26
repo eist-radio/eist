@@ -1,0 +1,44 @@
+{
+  "_comment": "Manual match overrides. Key is RadioCult show slug. Fields: mixcloud, soundcloud (URLs or null), episode_info (string or null to clear), title (override display title).",
+  "transcontinental-2025-02-02": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/transcontinental-mix-cadence-02022025/",
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-250202",
+    "episode_info": ""
+  },
+  "transcontinental-2025-02-22": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-aby-ngana-diop-podcast/",
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-in-focus-aby",
+    "episode_info": "Ep. 1"
+  },
+  "caroline-mudingo-dipanda-2025-03-22": {
+    "title": "Transcontinental",
+    "mixcloud": null,
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-episode-2",
+    "episode_info": "Ep. 2"
+  },
+  "transcontinental-2025-04-26": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/transcontinental-episode-3/",
+    "soundcloud": "https://soundcloud.com/eistcork/caroline-mudingo-dipanda",
+    "episode_info": "Ep. 3"
+  },
+  "transcontinental-2025-05-24": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-transcontinental-episode-4-labdi-ommes-2/",
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-episode-4-mp3",
+    "episode_info": "Ep. 4"
+  },
+  "transcontinental-2025-07-26": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-250726-transcontinental/",
+    "soundcloud": "https://soundcloud.com/eistcork/transcontinental-episode-5",
+    "episode_info": "Ep. 5"
+  },
+  "transcontinental-2025-08-23": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-250823-transcontinental/",
+    "soundcloud": "https://soundcloud.com/eistcork/caroline-mudingo-dipanda-1",
+    "episode_info": "Ep. 6"
+  },
+  "transcontinental-2025-10-18": {
+    "mixcloud": "https://www.mixcloud.com/eistcork/caroline-mudingo-dipanda-251018-transcontinental/",
+    "soundcloud": "https://soundcloud.com/eistcork/caroline-mudingo-dipanda-2",
+    "episode_info": "Ep. 7"
+  }
+}

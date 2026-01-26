@@ -2,6 +2,80 @@
   opacity: $dimmed-opacity;
 }
 
+// Noise texture overlay for depth effect
+// Usage: @include noise-texture(0.85);
+@mixin noise-texture($frequency: 0.85) {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='#{$frequency}' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+// ============================================
+// Utility Keyframe Animations
+// Consolidated from component-specific animations
+// ============================================
+
+// Fade in with blur effect (for hero titles)
+@keyframes fadeInBlur {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+// Fade in moving up (general purpose)
+// Use animation-delay and custom transform for variations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(var(--fade-distance, 20px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Reveal animation for dynamically shown cards
+@keyframes showCardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Fade in moving up with scale (for pills, cards)
+@keyframes fadeInUpScale {
+  from {
+    opacity: 0;
+    transform: translateY(var(--fade-distance, 15px)) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Fade in moving horizontally
+@keyframes fadeInX {
+  from {
+    opacity: 0;
+    transform: translateX(var(--fade-distance, -10px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @mixin aTag {
   a {
     word-wrap: break-word;
