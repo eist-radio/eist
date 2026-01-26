@@ -254,8 +254,9 @@ table {
 }
 
 .hdr-wrapper {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
   align-items: center;
   font-size: 1.2rem;
   padding: 12px 0;
@@ -265,21 +266,27 @@ table {
     display: flex;
     align-items: center;
     margin-right: .8em;
-    order: 0;
-    flex-shrink: 0;  /* Don't shrink logo */
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .hdr-left {
-    order: 2;
     text-align: left;
-    flex-shrink: 1;
     min-width: 0;
+    overflow: visible;
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .hdr-icons {
-    order: 3;
-    margin-left: 4em;  /* Push to right edge */
-    flex-shrink: 0;
+    margin-left: auto;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  // Ensure hamburger is hidden on desktop
+  .header-burger {
+    display: none;
   }
 
   .site-nav {
@@ -301,10 +308,30 @@ table {
   }
 }
 
-/* Scrolled state: tighter padding, prevent nav wrapping */
+/* Scrolled state: switch to single-row flexbox layout */
 .header-scrolled .hdr-wrapper {
+  display: flex;
+  flex-wrap: wrap;
   padding: 6px 0;
-  flex-wrap: nowrap;  /* In scrolled state, priority nav handles overflow - don't wrap */
+
+  .site-branding,
+  .hdr-left,
+  .hdr-icons {
+    grid-column: unset;
+    grid-row: unset;
+  }
+
+  .site-branding {
+    flex: 0 0 auto;
+  }
+
+  .hdr-left {
+    flex: 1 1 0;
+  }
+
+  .hdr-icons {
+    flex: 0 0 auto;
+  }
 }
 
 .hdr-icons {
@@ -928,6 +955,37 @@ a.footnote-ref {
 // Mobile breakpoint: touch devices at 1024px, non-touch at 799px
 @media only screen and (pointer: coarse) and (max-width: 1024px),
        screen and (max-width: 799px) {
+  // Header: switch to flexbox on mobile
+  .hdr-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+
+    .site-branding,
+    .hdr-left,
+    .hdr-icons {
+      grid-column: unset;
+      grid-row: unset;
+    }
+
+    .site-branding {
+      flex: 0 0 auto;
+      order: 0;
+    }
+
+    .hdr-icons {
+      flex: 0 0 auto;
+      order: 1;
+      margin-left: auto;
+    }
+
+    .player-inline {
+      flex: 0 0 100%;
+      order: 10;
+      grid-column: unset;
+      grid-row: unset;
+    }
+  }
+
   // Header full width with padding on mobile
   #site-header .hdr-wrapper.section-inner {
     width: 100%;
@@ -936,13 +994,18 @@ a.footnote-ref {
     box-sizing: border-box;
   }
 
-  // Show hamburger button
-  .header-burger {
+  // Keep header padding consistent on mobile when scrolled
+  .header-scrolled .hdr-wrapper {
+    padding: 12px 0;
+  }
+
+  // Show hamburger button (override desktop hiding)
+  .hdr-wrapper .header-burger {
     display: flex;
   }
 
   // Hide desktop navigation
-  .hdr-left {
+  .hdr-wrapper .hdr-left {
     display: none;
   }
 
