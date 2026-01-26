@@ -1,0 +1,91 @@
+{
+  "_comment": "Shows to add that don't exist in RadioCult. Archives can be specified directly or via manual-matches.json using the slug.",
+  "shows": [
+    {
+      "title": "Under A Plastic Cloud",
+      "start": "2025-12-15T10:00:00.000Z",
+      "end": "2025-12-15T12:00:00.000Z",
+      "artistSlug": "phil-hope",
+      "mixcloud": "https://www.mixcloud.com/eistcork/phil-hope-under-a-plastic-cloud-15122025/"
+    },
+    {
+      "title": "Leafy Garments",
+      "start": "2025-12-15T16:00:00.000Z",
+      "end": "2025-12-15T18:00:00.000Z",
+      "artistSlug": "tino",
+      "mixcloud": "https://www.mixcloud.com/eistcork/tino-leafy-garments-episode-11-dec-25/",
+      "episode_info": "Ep. 11"
+    },
+    {
+      "title": "In the Interim w/ Paul Dylan",
+      "start": "2025-12-15T09:00:00.000Z",
+      "end": "2025-12-15T10:00:00.000Z",
+      "artistSlug": "paul-dylan",
+      "soundcloud": "https://soundcloud.com/eistcork/interim-xmas-paul-dylan",
+      "description": "Interim Xmas special"
+    },
+    {
+      "title": "seomra folamh - Danny McCarthy Special",
+      "start": "2025-12-17T12:00:00.000Z",
+      "end": "2025-12-17T14:00:00.000Z",
+      "artistSlug": "phil-maguire",
+      "mixcloud": "https://www.mixcloud.com/eistcork/phil-maguire-seomra-folamh-danny-mccarthy-special-251217/"
+    },
+    {
+      "title": "Radio Dé-coll/Age",
+      "start": "2025-12-17T19:00:00.000Z",
+      "end": "2025-12-17T20:00:00.000Z",
+      "artistSlug": "dave-murphy",
+      "mixcloud": "https://www.mixcloud.com/eistcork/dave-murphy-radio-d%C3%A9-collage-11-171225/",
+      "episode_info": "#11"
+    },
+    {
+      "title": "ATBND 11",
+      "start": "2025-12-19T17:00:00.000Z",
+      "end": "2025-12-19T19:00:00.000Z",
+      "artistSlug": "cack-jollins",
+      "soundcloud": "https://soundcloud.com/eistcork/cack-jollins-atbnd-11-19122025"
+    },
+    {
+      "title": "Nollaig Mar Dhea",
+      "start": "2025-12-20T19:00:00.000Z",
+      "end": "2025-12-20T20:00:00.000Z",
+      "artistSlug": "mike-mcgrath-bryan",
+      "mixcloud": "https://www.mixcloud.com/eistcork/mike-mcgrath-bryan-nollaig-mar-dhea/",
+      "soundcloud": "https://soundcloud.com/eistcork/mike-mcgrath-bryan-nollaig-mar"
+    },
+    {
+      "title": "HIFI hide and seek",
+      "start": "2025-12-20T16:00:00.000Z",
+      "end": "2025-12-20T18:00:00.000Z",
+      "artistSlug": "james-fitzgerald",
+      "mixcloud": "https://www.mixcloud.com/eistcork/hi-fi-hide-and-seek-december-2025/",
+      "soundcloud": "https://soundcloud.com/eistcork/hi-fi-hide-and-seek-december"
+    },
+    {
+      "title": "Land of Some Other",
+      "start": "2025-12-24T16:00:00.000Z",
+      "end": "2025-12-24T17:00:00.000Z",
+      "artistSlug": "christopher-steenson",
+      "mixcloud": "https://www.mixcloud.com/eistcork/christopher-steenson-land-of-some-other-episode-8-christmas-special/",
+      "episode_info": "Ep. 8",
+      "description": "Christmas Special"
+    },
+    {
+      "title": "Wild Freqs",
+      "start": "2025-12-24T11:00:00.000Z",
+      "end": "2025-12-24T12:00:00.000Z",
+      "artistSlug": "michael-lightborne",
+      "mixcloud": "https://www.mixcloud.com/eistcork/michael-lightborne-wild-freqs-winter-solstice-edition/",
+      "description": "Winter Solstice edition"
+    },
+    {
+      "title": "sonic core of new statues",
+      "start": "2025-12-27T18:00:00.000Z",
+      "end": "2025-12-27T20:00:00.000Z",
+      "artistSlug": "japhet-santana",
+      "mixcloud": "https://www.mixcloud.com/eistcork/japhet-santana-sonic-core-of-new-statues-12-27122025/",
+      "episode_info": "#12"
+    }
+  ]
+}

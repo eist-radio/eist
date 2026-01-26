@@ -57,6 +57,7 @@ EXTERNAL_ARCHIVES_FILE = DATA_DIR / "external-archives.json"
 CACHE_META_FILE = DATA_DIR / "cache-meta.json"
 REVIEW_QUEUE_FILE = DATA_DIR / "review-queue.json"
 GROUND_TRUTH_FILE = DATA_DIR / "ground-truth-matches.json"
+ADDITIONAL_SHOWS_FILE = DATA_DIR / "additional-shows.json"
 
 # Rate limiting
 REQUEST_DELAY = 0.5  # Seconds between API requests
@@ -200,6 +201,125 @@ def should_exclude_show(show):
             return True
 
     return False
+
+
+def load_additional_shows(artists_by_slug):
+    """Load additional shows from data/additional-shows.json."""
+    if not ADDITIONAL_SHOWS_FILE.exists():
+        return []
+
+    try:
+        data = json.loads(ADDITIONAL_SHOWS_FILE.read_text())
+        additional = []
+
+        for show in data.get('shows', []):
+            # Generate unique ID and slug
+            title = show.get('title', '')
+            start = show.get('start', '')
+
+            if not title or not start:
+                print(f"  Warning: Skipping additional show without title/start")
+                continue
+
+            slug = generate_slug(title, start)
+            show_id = f"additional-{slug}"
+
+            # Look up artist info
+            artist_slug = show.get('artistSlug', '')
+            artist = artists_by_slug.get(artist_slug, {})
+            artist_id = artist.get('id')
+            artist_name = artist.get('name', show.get('artistName', ''))
+
+            additional.append({
+                'id': show_id,
+                'title': title,
+                'slug': slug,
+                'start': start,
+                'end': show.get('end', start),
+                'artistIds': [artist_id] if artist_id else [],
+                'artistName': artist_name,
+                'artistSlug': artist_slug,
+                'description': show.get('description'),
+                # Pre-populate archive URLs if provided
+                '_additional_soundcloud': show.get('soundcloud'),
+                '_additional_mixcloud': show.get('mixcloud'),
+                'episode_info': show.get('episode_info'),
+            })
+
+        if additional:
+            print(f"  Loaded {len(additional)} additional shows")
+
+        return additional
+    except Exception as e:
+        print(f"  Warning: Failed to load additional shows: {e}")
+        return []
+
+
+def apply_additional_show_matches(shows, mixcloud_cache, soundcloud_cache, show_matches):
+    """
+    Apply pre-specified archive URLs from additional shows.
+
+    Additional shows can have _additional_soundcloud and _additional_mixcloud
+    fields with direct URLs to archives. This function matches those URLs
+    against the archive caches and adds them to show_matches.
+    """
+    matched = 0
+
+    for show in shows:
+        show_id = show.get('id', '')
+        if not show_id.startswith('additional-'):
+            continue
+
+        sc_url = show.get('_additional_soundcloud')
+        mc_url = show.get('_additional_mixcloud')
+
+        if not sc_url and not mc_url:
+            continue
+
+        # Ensure show has an entry in show_matches
+        if show_id not in show_matches:
+            show_matches[show_id] = {}
+
+        # Match SoundCloud URL
+        if sc_url:
+            sc_url_clean = sc_url.split('?')[0].rstrip('/')
+            for sc in soundcloud_cache:
+                archive_url = sc.get('url', '').split('?')[0].rstrip('/')
+                if archive_url == sc_url_clean:
+                    show_matches[show_id]['soundcloud'] = {
+                        'id': sc.get('id'),
+                        'title': sc.get('title'),
+                        'url': sc.get('url'),
+                        'duration': sc.get('duration'),
+                        'thumbnail': sc.get('thumbnail'),  # Include artwork
+                        'score': 600,  # High confidence for direct URL match
+                        'match_type': 'additional_show_url'
+                    }
+                    matched += 1
+                    break
+
+        # Match Mixcloud URL
+        if mc_url:
+            mc_url_clean = mc_url.split('?')[0].rstrip('/')
+            for mc in mixcloud_cache:
+                archive_url = mc.get('url', '').split('?')[0].rstrip('/')
+                if mc_url_clean in archive_url or archive_url in mc_url_clean:
+                    show_matches[show_id]['mixcloud'] = {
+                        'name': mc.get('name'),
+                        'slug': mc.get('slug'),
+                        'url': mc.get('url'),
+                        'audio_length': mc.get('audio_length'),
+                        'pictures': mc.get('pictures', {}),  # Include artwork
+                        'score': 600,  # High confidence for direct URL match
+                        'match_type': 'additional_show_url'
+                    }
+                    matched += 1
+                    break
+
+    if matched:
+        print(f"  Applied {matched} additional show archive matches")
+
+    return matched
 
 
 def fetch_radiocult_schedule(api_key, start_date, end_date):
@@ -970,6 +1090,11 @@ def main():
     original_shows = [s for s in all_shows if not should_exclude_show(s)]
     print(f"\nAfter filtering: {len(original_shows)} original broadcasts")
 
+    # Load and merge additional shows (shows not in RadioCult)
+    artists_by_slug = {normalize_to_slug(a.get('name', '')): a for a in artists.values()}
+    additional_shows = load_additional_shows(artists_by_slug)
+    original_shows.extend(additional_shows)
+
     # Process upcoming schedule (needs artists data)
     now = datetime.now()
     if upcoming_schedule and 'schedules' in upcoming_schedule:
@@ -1042,6 +1167,9 @@ def main():
             print(f"  New external archives fetched: {len(newly_fetched.get('mixcloud', []))} MC, {len(newly_fetched.get('soundcloud', []))} SC")
             save_external_archives(external_cache, newly_fetched)
 
+        # Apply matches for additional shows with pre-specified URLs
+        apply_additional_show_matches(original_shows, mixcloud_cache, soundcloud_cache, show_matches)
+
         # Load existing review queue
         review_queue = []
         if REVIEW_QUEUE_FILE.exists():
@@ -1069,11 +1197,19 @@ def main():
             print(f"  Saved {len(newly_fetched.get('mixcloud', []))} new external Mixcloud, "
                   f"{len(newly_fetched.get('soundcloud', []))} new external SoundCloud to {EXTERNAL_ARCHIVES_FILE}")
 
+        # Apply matches for additional shows with pre-specified URLs
+        apply_additional_show_matches(original_shows, mixcloud_cache, soundcloud_cache, show_matches)
+
     # Build final output
     # In incremental mode (no new archives), use existing_shows to preserve all fields
     # Otherwise use original_shows (which combines cached + fresh data)
     if new_mixcloud_count == 0 and new_soundcloud_count == 0 and existing_shows and not full_refresh:
         shows_for_output = list(existing_shows.values())
+        # Also include any new additional shows not already in cache
+        existing_ids = set(existing_shows.keys())
+        for show in additional_shows:
+            if show.get('id') not in existing_ids:
+                shows_for_output.append(show)
     else:
         shows_for_output = original_shows
     all_show_data, matched_count = build_show_output(shows_for_output, show_matches, artists)
