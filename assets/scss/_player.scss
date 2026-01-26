@@ -46,7 +46,6 @@
     position: relative;
     z-index: 3;
     width: 100%;
-    padding: 2rem;
 }
 
 .front-hero-title {
@@ -330,12 +329,10 @@
     flex: 0 0 100%;
     order: 10;
     padding: 8px 0;
-    /* Center the player content to align with main content below */
     justify-content: center;
     transition: flex 0.3s ease-out,
                 order 0s 0.15s,
-                padding 0.3s ease-out,
-                justify-content 0s 0.15s;
+                padding 0.3s ease-out;
 }
 
 /* Scrolled: player shrinks to content, stays inline */
@@ -357,14 +354,15 @@
     margin: 0;
 }
 
-/* Player internal layout - matches .thin content width (720px) for alignment */
+/* Player internal layout - 720px centered, content left-aligned */
 .player-inline .audio-player {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     max-width: 720px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0;
+    justify-content: flex-start;
     transition: gap 0.3s ease-out;
 }
 

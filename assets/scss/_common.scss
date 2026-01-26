@@ -112,6 +112,10 @@ table caption {
     margin-left: 0.8em;
     transition: opacity 0.2s ease-out;
 
+    &:first-child {
+        margin-left: 0;  /* Align with player content left edge */
+    }
+
     &.nav-hidden {
         display: none;
     }

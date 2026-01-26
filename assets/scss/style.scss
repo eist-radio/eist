@@ -269,17 +269,15 @@ table {
 
   .hdr-left {
     order: 2;
-    margin-left: auto;  /* Push nav to the right */
-    text-align: right;
-    flex-shrink: 1;  /* Allow shrink, priority nav handles overflow via hiding items */
-    min-width: 0;  /* Allow shrinking below content size */
-    max-width: calc(100% - 200px);  /* Leave room for logo, don't force wrap */
+    text-align: left;
+    flex-shrink: 1;
+    min-width: 0;
   }
 
   .hdr-icons {
     order: 3;
-    margin-left: 1rem;
-    flex-shrink: 0;  /* Don't shrink icons */
+    margin-left: 4em;  /* Push to right edge */
+    flex-shrink: 0;
   }
 
   .site-nav {
@@ -894,6 +892,11 @@ a.footnote-ref {
     max-width: 960px;
   }
 
+  /* Wider content area (960px) for player */
+  .player-inline .audio-player {
+    max-width: 960px;
+  }
+
   figure.left {
     max-width: 75%;
     margin-left: -320px;
@@ -923,6 +926,14 @@ a.footnote-ref {
 // Mobile breakpoint: touch devices at 1024px, non-touch at 799px
 @media only screen and (pointer: coarse) and (max-width: 1024px),
        screen and (max-width: 799px) {
+  // Header full width with padding on mobile
+  #site-header .hdr-wrapper.section-inner {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+  }
+
   // Show hamburger button
   .header-burger {
     display: flex;
