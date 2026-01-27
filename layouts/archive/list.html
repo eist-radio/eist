@@ -251,11 +251,7 @@
                                 <div class="archive-card-image">
                                     <img src="{{ $showImage }}" alt="{{ .Title }}" loading="lazy" data-fallback="{{ $fallbackImage }}" onerror="this.onerror=null; this.src=this.dataset.fallback;">
                                     {{ if $hasArchive }}
-                                    <div class="archive-play-indicator">
-                                        <svg viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
-                                    </div>
+                                    <img src="/play.svg" alt="" class="archive-play-indicator">
                                     {{ end }}
                                     <div class="archive-card-overlay"></div>
                                 </div>

@@ -62,28 +62,15 @@
     opacity: 1;
 }
 
-.show-play-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.show-play-icon {
     width: 72px;
     height: 72px;
-    background: $eist-secondary;
-    border-radius: 50%;
-    color: $eist;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-decoration: none;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.show-play-overlay:hover .show-play-button {
+.show-play-overlay:hover .show-play-icon {
     transform: scale(1.08);
-    box-shadow: 0 0 30px rgba(175, 252, 65, 0.5);
-}
-
-.show-play-button .play-icon {
-    width: 28px;
-    height: 28px;
-    margin-left: 2px;
+    filter: drop-shadow(0 0 15px rgba(175, 252, 65, 0.5));
 }
 
 /* Hero Play Button - prominent CTA in the details section */
@@ -438,16 +425,9 @@
     position: absolute;
     bottom: 6px;
     right: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 24px;
     height: 24px;
-    background: $eist-secondary;
-    color: $eist;
-    border-radius: 50%;
-    font-size: 0.6rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
 }
 
 .more-show-info {

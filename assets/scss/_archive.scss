@@ -1018,23 +1018,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
-    width: 48px;
-    height: 48px;
-    background: $eist-secondary;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: $eist;
+    width: 80px;
+    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
     opacity: 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 2;
-}
-
-.archive-play-indicator svg {
-    width: 20px;
-    height: 20px;
-    margin-left: 2px;
 }
 
 .archive-card.has-archive:hover .archive-play-indicator {
@@ -1312,13 +1302,10 @@
     }
 
     .archive-play-indicator {
-        width: 40px;
-        height: 40px;
-    }
-
-    .archive-play-indicator svg {
-        width: 16px;
-        height: 16px;
+        width: 60px;
+        height: 60px;
+        max-width: 60px;
+        max-height: 60px;
     }
 }
 

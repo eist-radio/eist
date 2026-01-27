@@ -151,7 +151,7 @@
                 <div class="artist-show-image-wrapper">
                     <img src="{{ $showImage }}" alt="{{ $show.Title }}" class="artist-show-image" loading="lazy" data-fallback="{{ $fallbackImage }}" onerror="this.onerror=null; this.src=this.dataset.fallback;">
                     {{ if or $show.Params.mixcloud_slug $show.Params.soundcloud_id }}
-                    <span class="artist-show-has-archive">▶</span>
+                    <img src="/play.svg" alt="" class="artist-show-has-archive">
                     {{ end }}
                 </div>
                 <div class="artist-show-info">
