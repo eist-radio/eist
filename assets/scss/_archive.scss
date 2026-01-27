@@ -813,9 +813,10 @@
     justify-content: center;
     background: $eist;
     opacity: 0;
+    visibility: hidden;
     transform: translateY(-10px);
     pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
 
     /* Bottom border line */
     &::before {
@@ -848,6 +849,7 @@
 
 .floating-month-indicator.visible {
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
 }
