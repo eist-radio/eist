@@ -76,8 +76,7 @@ table caption {
 }
 
 .header-scrolled .header-logo {
-    width: 70px;
-    transform: translateY(4px); // optical alignment with player controls
+    width: 150px;
 }
 
 .site-nav {
@@ -85,7 +84,7 @@ table caption {
 }
 
 #site-header.header-scrolled .site-nav {
-    font-size: 0.95em;
+    font-size: 0.8em;
 }
 
 // ============================================
@@ -103,23 +102,27 @@ table caption {
 .nav-visible {
     display: flex;
     align-items: center;
-    overflow: hidden;
+    overflow: visible;
     white-space: nowrap;
-    flex: 1 0 auto;  // Grow but don't shrink
 }
 
 .nav-item {
     margin-left: 0.8em;
     transition: opacity 0.2s ease-out;
 
+    &:first-child {
+        margin-left: 0;  /* Align with player content left edge */
+    }
+
+    // Show all nav items on desktop (override JS priority nav hiding)
     &.nav-hidden {
-        display: none;
+        display: inline !important;
     }
 }
 
 // Overflow button (hamburger/ellipsis)
 .nav-overflow-btn {
-    display: none; // Hidden until JS activates it
+    display: none !important; // Hidden on desktop
     background: none;
     border: none;
     padding: 0 0.5em;
@@ -133,11 +136,6 @@ table caption {
 
     &:hover {
         opacity: 1;
-    }
-
-    &.has-overflow {
-        display: inline-flex;
-        align-items: center;
     }
 
     .overflow-icon {

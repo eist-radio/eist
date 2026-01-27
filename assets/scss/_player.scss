@@ -12,6 +12,8 @@
     justify-content: flex-end;  /* Content at bottom */
     align-items: stretch;
     position: relative;
+    border-radius: 8px;
+    overflow: hidden;  /* Clip image to rounded corners */
 }
 
 .front-hero-image-wrapper {
@@ -46,7 +48,6 @@
     position: relative;
     z-index: 3;
     width: 100%;
-    padding: 2rem;
 }
 
 .front-hero-title {
@@ -73,12 +74,12 @@
 .broadcasting-live-text-status {
     font-size: large;
     z-index: 2;
-    text-align: end;
+    text-align: start;
     flex: 1;
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
     white-space: nowrap;
+    transition: font-size 0.3s ease-out;
 }
 
 /* ===========================================
@@ -90,7 +91,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 0.75rem 0.35rem 0.6rem;
+    padding: 0.3rem 0.5rem;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     backdrop-filter: blur(4px);
@@ -132,18 +133,19 @@
 }
 
 .live-label {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.15em;
     color: $eist-secondary;
     text-transform: uppercase;
     transform: translateY(1px); // optical alignment with dot
+    transition: font-size 0.3s ease-out, transform 0.3s ease-out;
 }
 
 /* DJ name styling within live-text */
 #live-text {
     margin: 0;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     white-space: nowrap;
 
@@ -217,7 +219,7 @@
     font-size: 0.95rem;
     line-height: 1.65;
     text-align: left;
-    color: rgba(255, 255, 255, 0.85);
+    color: $eist-secondary;
     max-width: 680px;
     margin: 0;
 }
@@ -292,7 +294,7 @@
 
         // Time column
         td:first-child {
-            color: rgba(255, 255, 255, 0.55);
+            color: $eist-secondary;
             font-size: 0.8rem;
             white-space: nowrap;
             width: auto;
@@ -301,7 +303,7 @@
 
         // Show title column
         td:last-child {
-            color: rgba(255, 255, 255, 0.9);
+            color: $eist-secondary;
         }
 
         a {
@@ -326,20 +328,18 @@
 .player-inline {
     display: flex;
     align-items: center;
-    /* Unscrolled: full width row, centered content */
-    flex: 0 0 100%;
-    order: 10;
+    /* Unscrolled: full width row on second line */
+    grid-column: 1 / -1;
+    grid-row: 2;
     padding: 8px 0;
-    /* Center the player content to align with main content below */
     justify-content: center;
-    transition: flex 0.3s ease-out,
-                order 0s 0.15s,
-                padding 0.3s ease-out,
-                justify-content 0s 0.15s;
+    transition: padding 0.3s ease-out;
 }
 
 /* Scrolled: player shrinks to content, stays inline */
 .header-scrolled .player-inline {
+    grid-column: unset;
+    grid-row: unset;
     flex: 0 1 auto;
     order: 1;
     padding: 0;
@@ -357,14 +357,15 @@
     margin: 0;
 }
 
-/* Player internal layout - matches .thin content width (720px) for alignment */
+/* Player internal layout - 720px centered, content left-aligned */
 .player-inline .audio-player {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     max-width: 720px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0;
+    justify-content: flex-start;
     transition: gap 0.3s ease-out;
 }
 
@@ -375,16 +376,16 @@
 
 /* Play button sizing */
 .player-inline #playPauseBtn {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     cursor: pointer;
     transition: width 0.3s ease-out, height 0.3s ease-out;
 }
 
 .header-scrolled .player-inline #playPauseBtn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
 }
 
 /* Broadcast status in player */
@@ -392,6 +393,9 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex: 1;
+    width: auto;
+    min-width: 0;
     transition: gap 0.3s ease-out;
 }
 
@@ -399,16 +403,21 @@
     gap: 0.5rem;
 }
 
-/* Reset live-label optical adjustment when scrolled */
+/* Reset live-label optical adjustment and reduce size when scrolled */
 .header-scrolled .player-inline .live-label {
     transform: none;
+    font-size: 0.75rem;
 }
 
-/* Live text truncation when scrolled */
+/* Live text when scrolled */
 .header-scrolled .player-inline .broadcasting-live-text-status {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.9em;
+}
+
+/* Reduce player DJ text size when scrolled */
+.header-scrolled .player-inline .dj-prefix,
+.header-scrolled .player-inline .dj-name {
+    font-size: 0.9em;
 }
 
 /* Keep ID for JS compatibility */
@@ -437,9 +446,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: auto;
     flex-direction: row;
-    overflow: hidden;
+    overflow: visible;
     white-space: nowrap;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -455,20 +463,50 @@
         margin-top: 180px;
     }
 
-    /* Smaller play button on mobile */
+    /* Play button on mobile - same size when scrolled */
     .player-inline #playPauseBtn {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
 
     .header-scrolled .player-inline #playPauseBtn {
-        width: 28px;
-        height: 28px;
+        width: 50px;
+        height: 50px;
     }
 
-    /* Hide DJ text on mobile when scrolled - just show LIVE indicator */
+    /* Keep player in same position when scrolled on mobile */
+    .header-scrolled .player-inline {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        flex: 0 0 100%;
+        order: 10;
+        padding: 8px 0;
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    /* Keep broadcast status same size when scrolled on mobile */
+    .header-scrolled .player-inline .broadcast-status {
+        gap: 0.75rem;
+    }
+
+    /* Keep live label transform when scrolled on mobile */
+    .header-scrolled .player-inline .live-label {
+        transform: translateY(1px);
+    }
+
+    /* Keep text status same when scrolled on mobile */
     .header-scrolled .player-inline .broadcasting-live-text-status {
-        display: none;
+        display: block;
+        max-width: none;
+        overflow: visible;
+        text-overflow: unset;
+    }
+
+    .header-scrolled .player-inline .audio-player {
+        max-width: 720px;
+        width: 100%;
+        gap: 0.75rem;
     }
 
     #player {
@@ -487,9 +525,10 @@
     .header-logo {
         width: 125px;
         margin-top: 10px;
-        // Mobile scrolled state uses same transform approach
+        // Keep logo same size when scrolling on mobile
         .header-scrolled & {
-            transform: scale(0.56);  // 70px / 125px = 0.56
+            width: 125px;
+            transform: none;
         }
     }
 

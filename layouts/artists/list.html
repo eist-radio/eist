@@ -180,12 +180,6 @@
             </div>
             */}}
         </div>
-        {{/* Decorative waveform element */}}
-        <div class="page-hero-wave" aria-hidden="true">
-            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M0,60 Q150,20 300,60 T600,60 T900,60 T1200,60 L1200,120 L0,120 Z" fill="currentColor"/>
-            </svg>
-        </div>
     </section>
 
     {{/* Filter Controls */}}
@@ -196,7 +190,7 @@
                 <div class="filter-group artist-jump">
                     <label class="filter-label">Jump to</label>
                     <select id="artist-jump-select" class="filter-select">
-                        <option value="">Select artist...</option>
+                        <option value="">All artists</option>
                         {{ range $allArtists }}
                             {{ $artistName := .Description | default .Title }}
                             {{ $hasShows := index $activeArtists .File.BaseFileName }}
@@ -204,6 +198,19 @@
                         {{ end }}
                     </select>
                 </div>
+
+                {{/* Genre Filter Dropdown */}}
+                {{ if $modalGenres }}
+                <div class="filter-group genre-filter">
+                    <label class="filter-label">Genre</label>
+                    <select id="genre-select" class="filter-select">
+                        <option value="">All genres</option>
+                        {{ range $modalGenres }}
+                        <option value="{{ . | lower }}">{{ . }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+                {{ end }}
 
                 {{/* Search Input - temporarily hidden
                 <div class="filter-group search-filter">
@@ -236,24 +243,6 @@
                     </svg>
                 </button>
             </div>
-
-            {{/* Genre Tags - limited to one row */}}
-            {{ if $inlineGenres }}
-            <div class="genre-filter-row">
-                <span class="filter-label">Genres</span>
-                <div class="genre-tags" id="genre-tags">
-                    {{ range first 10 $inlineGenres }}
-                    <button class="genre-filter-tag" data-genre="{{ . | lower }}">{{ . }}</button>
-                    {{ end }}
-                    {{ if gt (len $modalGenres) 10 }}
-                    <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 10 }} more</button>
-                    {{ end }}
-                </div>
-            </div>
-
-            {{/* Genre Drawer - Full genre browser with all archived genres */}}
-            {{ partial "genre-drawer.html" $modalGenres }}
-            {{ end }}
 
             {{/* Active Filters Display */}}
             <div class="active-filters" id="active-filters" style="display: none;">

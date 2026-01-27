@@ -9,3 +9,7 @@ node_modules/
 RADIOCULT_API_KEY
 *.sublime-project
 .aider*
+__pycache__
+data
+!data/manual-matches.json
+.claude

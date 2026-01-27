@@ -107,7 +107,7 @@
         <div class="page-hero-inner section-inner">
             <div class="page-hero-content">
                 <h1 class="page-title">Archive</h1>
-                <p class="page-subtitle">Explore the éist collection.</p>
+                <p class="page-subtitle">Explore past shows on éist.</p>
             </div>
             {{/* Temporarily hidden
             <div class="page-stats">
@@ -122,12 +122,6 @@
                 </div>
             </div>
             */}}
-        </div>
-        {{/* Decorative waveform element */}}
-        <div class="page-hero-wave" aria-hidden="true">
-            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M0,60 Q150,20 300,60 T600,60 T900,60 T1200,60 L1200,120 L0,120 Z" fill="currentColor"/>
-            </svg>
         </div>
     </section>
 
@@ -157,6 +151,19 @@
                 </select>
             </div>
 
+            {{/* Genre Filter Dropdown */}}
+            {{ if $modalGenres }}
+            <div class="filter-group genre-filter">
+                <label class="filter-label">Genre</label>
+                <select id="genre-select" class="filter-select">
+                    <option value="">All genres</option>
+                    {{ range $modalGenres }}
+                    <option value="{{ . | lower }}">{{ . }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            {{ end }}
+
             {{/* Temporarily hidden
             <div class="filter-group archive-toggle">
                 <label class="toggle-label">
@@ -175,24 +182,6 @@
                 </svg>
             </button>
         </div>
-
-        {{/* Genre Tags - limited to one row */}}
-        {{ if $inlineGenres }}
-        <div class="genre-filter-row">
-            <span class="filter-label">Genres</span>
-            <div class="genre-tags" id="genre-tags">
-                {{ range first 10 $inlineGenres }}
-                <button class="genre-filter-tag" data-genre="{{ . | lower }}">{{ . }}</button>
-                {{ end }}
-                {{ if gt (len $modalGenres) 10 }}
-                <button class="genre-more-btn" id="show-more-genres">+{{ sub (len $modalGenres) 10 }} more</button>
-                {{ end }}
-            </div>
-        </div>
-
-        {{/* Genre Drawer - Full genre browser with all archived genres */}}
-        {{ partial "genre-drawer.html" $modalGenres }}
-        {{ end }}
 
         {{/* Active Filters Display */}}
         <div class="active-filters" id="active-filters" style="display: none;">
@@ -262,11 +251,7 @@
                                 <div class="archive-card-image">
                                     <img src="{{ $showImage }}" alt="{{ .Title }}" loading="lazy" data-fallback="{{ $fallbackImage }}" onerror="this.onerror=null; this.src=this.dataset.fallback;">
                                     {{ if $hasArchive }}
-                                    <div class="archive-play-indicator">
-                                        <svg viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
-                                    </div>
+                                    <img src="/play.svg" alt="" class="archive-play-indicator">
                                     {{ end }}
                                     <div class="archive-card-overlay"></div>
                                 </div>
