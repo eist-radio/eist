@@ -221,16 +221,12 @@
     <section class="show-nav-section section-inner">
         {{ if $artistSlug }}
         <a href="/artists/{{ $artistSlug }}/" class="back-to-artist">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="back-arrow">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
+            <span class="back-arrow">{{ partial "svg.html" (dict "name" "arrow-left") }}</span>
             Back to {{ $artistName }}
         </a>
         {{ else }}
         <a href="/archive/" class="back-to-artist">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="back-arrow">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
+            <span class="back-arrow">{{ partial "svg.html" (dict "name" "arrow-left") }}</span>
             Back to Archive
         </a>
         {{ end }}

@@ -525,10 +525,14 @@
 }
 
 .next-show-icon {
-    width: 14px;
-    height: 14px;
-    color: $eist-highlight;
+    display: inline-flex;
     flex-shrink: 0;
+    color: $eist-highlight;
+
+    svg {
+        width: 14px;
+        height: 14px;
+    }
 }
 
 .next-show-label {
@@ -611,14 +615,18 @@
     transform: translateX(-4px);
 }
 
-.back-to-artists:hover .back-arrow {
-    transform: translateX(-3px);
+.back-arrow {
+    display: inline-flex;
+    transition: transform 0.3s ease;
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
 }
 
-.back-arrow {
-    width: 16px;
-    height: 16px;
-    transition: transform 0.3s ease;
+.back-to-artists:hover .back-arrow {
+    transform: translateX(-3px);
 }
 
 /* Archive Section */
@@ -971,9 +979,13 @@
 }
 
 .shows-toggle-btn .toggle-icon {
-    width: 16px;
-    height: 16px;
+    display: inline-flex;
     transition: transform 0.3s ease;
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
 }
 
 .shows-toggle-btn.expanded .toggle-icon {

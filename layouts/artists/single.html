@@ -84,12 +84,7 @@
                 {{ $dateStr = printf "%s, %s" ($showTime.Format "Mon 2 Jan") $timeStr }}
             {{ end }}
             <div class="artist-next-show visible">
-                <svg class="next-show-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
+                <span class="next-show-icon">{{ partial "svg.html" (dict "name" "calendar") }}</span>
                 <span class="next-show-label">Next show:</span>
                 <span class="next-show-time">{{ $dateStr }}</span>
             </div>
@@ -166,9 +161,7 @@
         <div class="shows-more">
             <button class="shows-toggle-btn" id="shows-toggle" data-extra="{{ $extraShows }}">
                 <span class="toggle-text">+ {{ $extraShows }} more shows</span>
-                <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 9l-7 7-7-7"/>
-                </svg>
+                <span class="toggle-icon">{{ partial "svg.html" (dict "name" "chevron-down") }}</span>
             </button>
         </div>
         {{ end }}
@@ -178,9 +171,7 @@
     {{/* Back to Artists link */}}
     <section class="artist-back-section section-inner">
         <a href="/artists/" class="back-to-artists">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="back-arrow">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
+            <span class="back-arrow">{{ partial "svg.html" (dict "name" "arrow-left") }}</span>
             All Artists
         </a>
     </section>
