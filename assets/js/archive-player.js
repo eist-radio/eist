@@ -54,6 +54,18 @@
             console.log('Archive player initialized (native widgets)');
         }
 
+        // Check session storage first - if player was explicitly closed, ensure it stays closed
+        const savedState = sessionStorage.getItem('archivePlayerState');
+        if (!savedState) {
+            // No saved state means player was closed - ensure UI reflects this
+            hideArchivePlayer();
+            if (elements.mixcloudIframe) elements.mixcloudIframe.src = 'about:blank';
+            if (elements.soundcloudIframe) elements.soundcloudIframe.src = 'about:blank';
+            archiveState.isActive = false;
+            console.log('Archive player: no saved state, ensuring closed');
+            return;
+        }
+
         // Check if iframes still have content (preserved by Turbo)
         if (elements.mixcloudIframe?.src || elements.soundcloudIframe?.src) {
             const hasMixcloud = elements.mixcloudIframe?.src && elements.mixcloudIframe.src !== 'about:blank' && elements.mixcloudIframe.src !== '';
@@ -85,6 +97,10 @@
             return;
         }
 
+        // Query DOM directly to ensure we have current elements
+        const mixcloudIframe = document.getElementById('mixcloud-widget');
+        const soundcloudIframe = document.getElementById('soundcloud-widget');
+
         // Pause live stream if playing
         pauseLiveStream();
 
@@ -96,22 +112,22 @@
         // Stop and hide the other platform's iframe
         if (track.platform === 'mixcloud') {
             // Switching to Mixcloud - stop SoundCloud
-            if (elements.soundcloudIframe) {
-                elements.soundcloudIframe.src = '';  // Clear src to stop playback
-                elements.soundcloudIframe.classList.add('hidden');
+            if (soundcloudIframe) {
+                soundcloudIframe.src = 'about:blank';  // Clear src to stop playback
+                soundcloudIframe.classList.add('hidden');
             }
-            if (elements.mixcloudIframe) {
-                elements.mixcloudIframe.classList.remove('hidden');
+            if (mixcloudIframe) {
+                mixcloudIframe.classList.remove('hidden');
             }
             loadMixcloudWidget(track.id, track.url);
         } else if (track.platform === 'soundcloud') {
             // Switching to SoundCloud - stop Mixcloud
-            if (elements.mixcloudIframe) {
-                elements.mixcloudIframe.src = '';  // Clear src to stop playback
-                elements.mixcloudIframe.classList.add('hidden');
+            if (mixcloudIframe) {
+                mixcloudIframe.src = 'about:blank';  // Clear src to stop playback
+                mixcloudIframe.classList.add('hidden');
             }
-            if (elements.soundcloudIframe) {
-                elements.soundcloudIframe.classList.remove('hidden');
+            if (soundcloudIframe) {
+                soundcloudIframe.classList.remove('hidden');
             }
             loadSoundCloudWidget(track.id);
         }
@@ -124,11 +140,17 @@
     }
 
     /**
-     * Load native Mixcloud widget and trigger playback via Widget API
+     * Load native Mixcloud widget
      * @param {string} slug - Mixcloud slug (for eistcork) or full path (for external)
      * @param {string} url - Optional full Mixcloud URL (used for external archives)
      */
     function loadMixcloudWidget(slug, url) {
+        const mixcloudIframe = document.getElementById('mixcloud-widget');
+        if (!mixcloudIframe) {
+            console.error('Mixcloud iframe not found');
+            return;
+        }
+
         // Extract feed path from URL if provided (supports external archives)
         // Otherwise fall back to eistcork account
         let feedPath = `/eistcork/${slug}/`;
@@ -141,7 +163,7 @@
             }
         }
 
-        // Use Mixcloud's standard embed URL with default styling
+        // Use Mixcloud's standard embed URL
         const params = new URLSearchParams({
             feed: feedPath,
             hide_cover: '1',
@@ -149,34 +171,20 @@
             autoplay: '1'
         });
 
-        elements.mixcloudIframe.src = `https://www.mixcloud.com/widget/iframe/?${params}`;
-
-        // Use Mixcloud Widget API to ensure playback starts
-        // The autoplay=1 param often fails due to browser restrictions,
-        // but calling play() via the API works because user clicked the button
-        if (typeof Mixcloud !== 'undefined' && Mixcloud.PlayerWidget) {
-            // Wait for iframe to load, then use Widget API
-            elements.mixcloudIframe.addEventListener('load', function onLoad() {
-                elements.mixcloudIframe.removeEventListener('load', onLoad);
-                try {
-                    const widget = Mixcloud.PlayerWidget(elements.mixcloudIframe);
-                    widget.ready.then(function() {
-                        widget.play();
-                        console.log('Mixcloud: play() called via Widget API');
-                    }).catch(function(err) {
-                        console.warn('Mixcloud widget ready failed:', err);
-                    });
-                } catch (err) {
-                    console.warn('Mixcloud Widget API error:', err);
-                }
-            }, { once: true });
-        }
+        mixcloudIframe.src = `https://www.mixcloud.com/widget/iframe/?${params}`;
     }
 
     /**
      * Load native SoundCloud widget
      */
     function loadSoundCloudWidget(trackId) {
+        // Query DOM directly to ensure we have current element
+        const soundcloudIframe = document.getElementById('soundcloud-widget');
+        if (!soundcloudIframe) {
+            console.error('SoundCloud iframe not found');
+            return;
+        }
+
         // Use SoundCloud's standard embed URL with éist brand color
         const params = new URLSearchParams({
             url: `https://api.soundcloud.com/tracks/${trackId}`,
@@ -189,7 +197,8 @@
             visual: 'false'
         });
 
-        elements.soundcloudIframe.src = `https://w.soundcloud.com/player/?${params}`;
+        soundcloudIframe.src = `https://w.soundcloud.com/player/?${params}`;
+        console.log('SoundCloud: loading widget for track:', trackId);
     }
 
     /**
@@ -203,20 +212,41 @@
             trackId: null
         };
 
-        // Hide player
-        hideArchivePlayer();
+        // Query DOM directly to ensure we have current elements (not stale after Turbo navigation)
+        const container = document.getElementById('archive-player');
+        const mixcloudIframe = document.getElementById('mixcloud-widget');
+        const soundcloudIframe = document.getElementById('soundcloud-widget');
 
-        // Clear iframes
-        if (elements.mixcloudIframe) elements.mixcloudIframe.src = '';
-        if (elements.soundcloudIframe) elements.soundcloudIframe.src = '';
+        // Hide player container
+        if (container) {
+            container.classList.remove('active');
+        }
+
+        // Remove body classes
+        document.body.classList.remove('archive-playing');
+        document.body.classList.remove('soundcloud-active');
+
+        // Clear iframes to stop playback - use about:blank to force full unload
+        if (mixcloudIframe) mixcloudIframe.src = 'about:blank';
+        if (soundcloudIframe) soundcloudIframe.src = 'about:blank';
+
+        // Also update cached elements if they exist
+        if (elements.mixcloudIframe) elements.mixcloudIframe.src = 'about:blank';
+        if (elements.soundcloudIframe) elements.soundcloudIframe.src = 'about:blank';
 
         // Clear saved state
         sessionStorage.removeItem('archivePlayerState');
+
+        console.log('Archive player closed and cleaned up');
     }
 
     // UI updates
     function showArchivePlayer() {
-        elements.container?.classList.add('active');
+        // Query DOM directly to ensure we have current element
+        const container = document.getElementById('archive-player');
+        if (container) {
+            container.classList.add('active');
+        }
         document.body.classList.add('archive-playing');
         // Add soundcloud-active class for larger padding if SoundCloud
         if (archiveState.platform === 'soundcloud') {
@@ -227,7 +257,11 @@
     }
 
     function hideArchivePlayer() {
-        elements.container?.classList.remove('active');
+        // Query DOM directly to ensure we have current element
+        const container = document.getElementById('archive-player');
+        if (container) {
+            container.classList.remove('active');
+        }
         document.body.classList.remove('archive-playing');
         document.body.classList.remove('soundcloud-active');
     }

@@ -102,21 +102,18 @@ table caption {
 .nav-visible {
     display: flex;
     align-items: center;
-    overflow: visible;
-    white-space: nowrap;
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 
 .nav-item {
-    margin-left: 0.8em;
+    margin-left: clamp(0.4em, 1vw, 0.8em);
     transition: opacity 0.2s ease-out;
+    flex-shrink: 0;
+    white-space: nowrap;
 
     &:first-child {
         margin-left: 0;  /* Align with player content left edge */
-    }
-
-    // Show all nav items on desktop (override JS priority nav hiding)
-    &.nav-hidden {
-        display: inline !important;
     }
 }
 

@@ -90,6 +90,12 @@ function initializePage() {
                 updateMediaSession(false);
             }
         } else {
+            // Stop archive player if it's playing
+            if (window.archivePlayer && typeof window.archivePlayer.close === 'function') {
+                window.archivePlayer.close();
+                console.log("Archive player stopped for live stream playback");
+            }
+
             // Reload the stream before playing
             audio.load();
 
@@ -248,6 +254,10 @@ function initializePage() {
 
             navigator.mediaSession.setActionHandler('play', async () => {
                 if (audio.paused) {
+                    // Stop archive player if it's playing
+                    if (window.archivePlayer && typeof window.archivePlayer.close === 'function') {
+                        window.archivePlayer.close();
+                    }
                     try {
                         await audio.play();
                         isPlaying = true;

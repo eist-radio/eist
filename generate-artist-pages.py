@@ -10,7 +10,6 @@ Requires:
     - requests library (usually pre-installed)
 """
 
-import json
 import os
 import re
 import sys
@@ -30,7 +29,6 @@ ARTIST_SLUG_OVERRIDES = {
 }
 OUTPUT_DIR = Path("content/artists")
 OUTPUT_FILE = Path("content/artists.md")
-HERO_FOCUS_FILE = Path("data/hero-focus.json")
 DEFAULT_IMAGE = "/eist_online.png"
 
 
@@ -166,7 +164,7 @@ def build_social_url(key, value):
     return value
 
 
-def generate_artist_page(artist, hero_focus_data):
+def generate_artist_page(artist):
     """Generate markdown content for a single artist."""
     name = artist.get('name', '')
     if not name:
@@ -191,9 +189,6 @@ def generate_artist_page(artist, hero_focus_data):
     # Extract genres
     genres = ', '.join(artist.get('genres', []) or [])
 
-    # Get hero focus
-    hero_focus = hero_focus_data.get(slug, '')
-
     # Build social URLs
     soundcloud_url = build_social_url('soundcloud', socials.get('soundcloud', ''))
     mixcloud_url = build_social_url('mixcloud', socials.get('mixcloud', ''))
@@ -213,7 +208,6 @@ date = {date_str}
 draft = false
 noindex = false
 image = "{image_url}"
-hero_focus = "{hero_focus}"
 genres = "{genres}"
 soundcloud = "{soundcloud_url}"
 mixcloud = "{mixcloud_url}"
@@ -270,19 +264,11 @@ noindex = false
         print("Error: No artists found.")
         sys.exit(1)
 
-    # Load hero focus data
-    hero_focus_data = {}
-    if HERO_FOCUS_FILE.exists():
-        try:
-            hero_focus_data = json.loads(HERO_FOCUS_FILE.read_text())
-        except:
-            pass
-
     # Generate artist pages
     artist_links = []
 
     for artist in artists:
-        slug, content = generate_artist_page(artist, hero_focus_data)
+        slug, content = generate_artist_page(artist)
         if not slug:
             continue
 
