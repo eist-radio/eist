@@ -3,18 +3,19 @@
  * Handles month/artist/genre filtering, toggle switches, and smooth scrolling
  */
 
-// Track escape key listener to prevent accumulation
-let archiveEscapeKeyHandler = null;
 
 /**
  * Custom Dropdown Component
  * Replaces native select elements with styled, accessible dropdowns
+ * Supports optional search/filter functionality
  */
-function createCustomDropdown(selectElement) {
+function createCustomDropdown(selectElement, options = {}) {
     if (!selectElement) return null;
 
+    const { searchable = false } = options;
+
     const wrapper = document.createElement('div');
-    wrapper.className = 'custom-dropdown';
+    wrapper.className = 'custom-dropdown' + (searchable ? ' searchable' : '');
 
     const button = document.createElement('button');
     button.type = 'button';
@@ -33,6 +34,20 @@ function createCustomDropdown(selectElement) {
     button.appendChild(selectedText);
     button.appendChild(arrow);
 
+    // Search input (optional)
+    let searchInput = null;
+    let searchWrapper = null;
+    if (searchable) {
+        searchWrapper = document.createElement('div');
+        searchWrapper.className = 'custom-dropdown-search';
+        searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'custom-dropdown-search-input';
+        searchInput.placeholder = 'Type to filter...';
+        searchInput.autocomplete = 'off';
+        searchWrapper.appendChild(searchInput);
+    }
+
     const listbox = document.createElement('ul');
     listbox.className = 'custom-dropdown-list';
     listbox.setAttribute('role', 'listbox');
@@ -44,6 +59,7 @@ function createCustomDropdown(selectElement) {
         li.className = 'custom-dropdown-option';
         li.setAttribute('role', 'option');
         li.setAttribute('data-value', option.value);
+        li.setAttribute('data-text', option.text.toLowerCase());
         li.textContent = option.text;
 
         if (option.selected) {
@@ -65,16 +81,50 @@ function createCustomDropdown(selectElement) {
             li.classList.add('selected');
             li.setAttribute('aria-selected', 'true');
 
-            // Close dropdown
+            // Close dropdown and clear search
             wrapper.classList.remove('open');
             button.setAttribute('aria-expanded', 'false');
+            if (searchInput) {
+                searchInput.value = '';
+                filterOptions('');
+            }
         });
 
         listbox.appendChild(li);
     });
 
     wrapper.appendChild(button);
+    if (searchWrapper) {
+        wrapper.appendChild(searchWrapper);
+    }
     wrapper.appendChild(listbox);
+
+    // Filter options based on search term
+    function filterOptions(term) {
+        const normalizedTerm = term.toLowerCase().trim();
+        listbox.querySelectorAll('.custom-dropdown-option').forEach(li => {
+            const text = li.getAttribute('data-text') || '';
+            const matches = !normalizedTerm || text.includes(normalizedTerm);
+            li.classList.toggle('search-hidden', !matches);
+        });
+    }
+
+    // Search input events
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            filterOptions(e.target.value);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                filterOptions('');
+                wrapper.classList.remove('open');
+                button.setAttribute('aria-expanded', 'false');
+                button.focus();
+            }
+        });
+    }
 
     // Toggle dropdown
     button.addEventListener('click', (e) => {
@@ -85,11 +135,19 @@ function createCustomDropdown(selectElement) {
         document.querySelectorAll('.custom-dropdown.open').forEach(d => {
             d.classList.remove('open');
             d.querySelector('.custom-dropdown-btn')?.setAttribute('aria-expanded', 'false');
+            const si = d.querySelector('.custom-dropdown-search-input');
+            if (si) {
+                si.value = '';
+                d.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('search-hidden'));
+            }
         });
 
         if (!isOpen) {
             wrapper.classList.add('open');
             button.setAttribute('aria-expanded', 'true');
+            if (searchInput) {
+                setTimeout(() => searchInput.focus(), 50);
+            }
         }
     });
 
@@ -98,6 +156,10 @@ function createCustomDropdown(selectElement) {
         if (!wrapper.contains(e.target)) {
             wrapper.classList.remove('open');
             button.setAttribute('aria-expanded', 'false');
+            if (searchInput) {
+                searchInput.value = '';
+                filterOptions('');
+            }
         }
     });
 
@@ -106,6 +168,10 @@ function createCustomDropdown(selectElement) {
         if (e.key === 'Escape') {
             wrapper.classList.remove('open');
             button.setAttribute('aria-expanded', 'false');
+            if (searchInput) {
+                searchInput.value = '';
+                filterOptions('');
+            }
             button.focus();
         }
     });
@@ -140,12 +206,13 @@ function initArchiveFilters() {
     // DOM Elements
     const monthSelect = document.getElementById('month-select');
     const artistSelect = document.getElementById('artist-select');
+    const genreSelect = document.getElementById('genre-select');
 
-    // Create custom dropdowns
+    // Create custom dropdowns (artist and genre are searchable)
     const customMonthDropdown = createCustomDropdown(monthSelect);
-    const customArtistDropdown = createCustomDropdown(artistSelect);
+    const customArtistDropdown = createCustomDropdown(artistSelect, { searchable: true });
+    const customGenreDropdown = createCustomDropdown(genreSelect, { searchable: true });
     const includeUnarchivedToggle = document.getElementById('include-unarchived');
-    const genreTags = document.querySelectorAll('.genre-filter-tag');
     const activeFiltersContainer = document.getElementById('active-filters');
     const activeTagsContainer = document.getElementById('active-tags');
     const clearFiltersBtn = document.getElementById('clear-filters');
@@ -163,7 +230,7 @@ function initArchiveFilters() {
         month: '',
         artist: '',
         includeUnarchived: false,  // false = archived only (default)
-        genres: []
+        genre: ''  // Single genre filter (changed from genres array)
     };
 
     /**
@@ -172,7 +239,7 @@ function initArchiveFilters() {
     function applyFilters() {
         let visibleCount = 0;
         // Active filters shown when any non-default filter is set
-        let hasActiveFilters = filters.month || filters.artist || filters.includeUnarchived || filters.genres.length > 0;
+        let hasActiveFilters = filters.month || filters.artist || filters.includeUnarchived || filters.genre;
 
         // Filter cards
         allCards.forEach(card => {
@@ -188,11 +255,10 @@ function initArchiveFilters() {
                 visible = false;
             }
 
-            // Genre filter (card must have at least one of the selected genres)
-            if (visible && filters.genres.length > 0) {
+            // Genre filter (card must contain the selected genre)
+            if (visible && filters.genre) {
                 const cardGenres = (card.dataset.genres || '').split(',').map(g => g.trim()).filter(g => g);
-                const hasMatchingGenre = filters.genres.some(g => cardGenres.includes(g));
-                if (!hasMatchingGenre) {
+                if (!cardGenres.includes(filters.genre)) {
                     visible = false;
                 }
             }
@@ -266,19 +332,16 @@ function initArchiveFilters() {
             });
         }
 
-        // Genre tags
-        filters.genres.forEach(genre => {
-            addActiveTag(genre.toUpperCase(), () => {
-                filters.genres = filters.genres.filter(g => g !== genre);
-                // Update genre tag button state
-                genreTags.forEach(tag => {
-                    if (tag.dataset.genre === genre) {
-                        tag.classList.remove('active');
-                    }
-                });
+        // Genre tag
+        if (filters.genre) {
+            const genreLabel = genreSelect?.options[genreSelect.selectedIndex]?.text || filters.genre.toUpperCase();
+            addActiveTag(genreLabel, () => {
+                genreSelect.value = '';
+                filters.genre = '';
+                if (customGenreDropdown) customGenreDropdown.update('');
                 applyFilters();
             });
-        });
+        }
     }
 
     /**
@@ -296,16 +359,25 @@ function initArchiveFilters() {
      * Reset all filters to default state (archived only)
      */
     function resetFilters() {
-        monthSelect.value = '';
-        artistSelect.value = '';
+        if (monthSelect) {
+            monthSelect.value = '';
+            if (customMonthDropdown) customMonthDropdown.update('');
+        }
+        if (artistSelect) {
+            artistSelect.value = '';
+            if (customArtistDropdown) customArtistDropdown.update('');
+        }
+        if (genreSelect) {
+            genreSelect.value = '';
+            if (customGenreDropdown) customGenreDropdown.update('');
+        }
         if (includeUnarchivedToggle) includeUnarchivedToggle.checked = false;
-        genreTags.forEach(tag => tag.classList.remove('active'));
 
         filters = {
             month: '',
             artist: '',
             includeUnarchived: false,
-            genres: []
+            genre: ''
         };
 
         applyFilters();
@@ -345,166 +417,13 @@ function initArchiveFilters() {
         });
     }
 
-    // Genre tag buttons (main row)
-    genreTags.forEach(tag => {
-        tag.addEventListener('click', function() {
-            const genre = this.dataset.genre;
-
-            if (this.classList.contains('active')) {
-                this.classList.remove('active');
-                filters.genres = filters.genres.filter(g => g !== genre);
-            } else {
-                this.classList.add('active');
-                filters.genres.push(genre);
-            }
-
-            // Sync drawer tags if open
-            syncDrawerTagsWithFilters();
+    // Genre select dropdown
+    if (genreSelect) {
+        genreSelect.addEventListener('change', function() {
+            filters.genre = this.value;
             applyFilters();
         });
-    });
-
-    // Genre Drawer functionality
-    const genreDrawer = document.getElementById('genre-drawer');
-    const genreDrawerOverlay = document.getElementById('genre-drawer-overlay');
-    const showMoreGenresBtn = document.getElementById('show-more-genres');
-    const closeDrawerBtn = document.getElementById('close-genre-drawer');
-    const genreSearch = document.getElementById('genre-search');
-    const genreDrawerGrid = document.getElementById('genre-drawer-grid');
-    const genreNoResults = document.getElementById('genre-no-results');
-    const selectedGenreCount = document.getElementById('selected-genre-count');
-    const clearGenreSelectionBtn = document.getElementById('clear-genre-selection');
-    const applyGenreSelectionBtn = document.getElementById('apply-genre-selection');
-    const drawerTags = document.querySelectorAll('.genre-drawer-tag');
-
-    function openGenreDrawer() {
-        if (!genreDrawer) return;
-        // Move drawer and overlay to body to escape stacking context
-        if (genreDrawer.parentElement !== document.body) {
-            document.body.appendChild(genreDrawer);
-        }
-        if (genreDrawerOverlay && genreDrawerOverlay.parentElement !== document.body) {
-            document.body.appendChild(genreDrawerOverlay);
-        }
-        genreDrawer.classList.add('active');
-        genreDrawerOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        syncDrawerTagsWithFilters();
-        updateSelectedCount();
-        // Focus search input
-        setTimeout(() => genreSearch?.focus(), 100);
     }
-
-    function closeGenreDrawer() {
-        if (!genreDrawer) return;
-        genreDrawer.classList.remove('active');
-        genreDrawerOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-        // Clear search
-        if (genreSearch) genreSearch.value = '';
-        filterDrawerGenres('');
-    }
-
-    function syncDrawerTagsWithFilters() {
-        drawerTags.forEach(tag => {
-            const genre = tag.dataset.genre;
-            tag.classList.toggle('active', filters.genres.includes(genre));
-        });
-    }
-
-    function syncMainTagsWithFilters() {
-        genreTags.forEach(tag => {
-            const genre = tag.dataset.genre;
-            tag.classList.toggle('active', filters.genres.includes(genre));
-        });
-    }
-
-    function updateSelectedCount() {
-        if (selectedGenreCount) {
-            selectedGenreCount.textContent = filters.genres.length;
-        }
-    }
-
-    function filterDrawerGenres(searchTerm) {
-        const term = searchTerm.toLowerCase().trim();
-        let visibleCount = 0;
-
-        drawerTags.forEach(tag => {
-            const genreName = tag.textContent.toLowerCase();
-            const matches = !term || genreName.includes(term);
-            tag.classList.toggle('hidden', !matches);
-            if (matches) visibleCount++;
-        });
-
-        if (genreNoResults) {
-            genreNoResults.style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-    }
-
-    // Event listeners for drawer
-    if (showMoreGenresBtn) {
-        showMoreGenresBtn.addEventListener('click', openGenreDrawer);
-    }
-
-    if (closeDrawerBtn) {
-        closeDrawerBtn.addEventListener('click', closeGenreDrawer);
-    }
-
-    if (genreDrawerOverlay) {
-        genreDrawerOverlay.addEventListener('click', closeGenreDrawer);
-    }
-
-    if (genreSearch) {
-        genreSearch.addEventListener('input', function() {
-            filterDrawerGenres(this.value);
-        });
-    }
-
-    // Drawer tag clicks
-    drawerTags.forEach(tag => {
-        tag.addEventListener('click', function() {
-            const genre = this.dataset.genre;
-
-            if (this.classList.contains('active')) {
-                this.classList.remove('active');
-                filters.genres = filters.genres.filter(g => g !== genre);
-            } else {
-                this.classList.add('active');
-                filters.genres.push(genre);
-            }
-
-            updateSelectedCount();
-        });
-    });
-
-    // Clear all genre selections in drawer
-    if (clearGenreSelectionBtn) {
-        clearGenreSelectionBtn.addEventListener('click', function() {
-            filters.genres = [];
-            drawerTags.forEach(tag => tag.classList.remove('active'));
-            updateSelectedCount();
-        });
-    }
-
-    // Apply genre selections and close drawer
-    if (applyGenreSelectionBtn) {
-        applyGenreSelectionBtn.addEventListener('click', function() {
-            syncMainTagsWithFilters();
-            applyFilters();
-            closeGenreDrawer();
-        });
-    }
-
-    // Escape key closes drawer - remove previous listener to prevent accumulation
-    if (archiveEscapeKeyHandler) {
-        document.removeEventListener('keydown', archiveEscapeKeyHandler);
-    }
-    archiveEscapeKeyHandler = function(e) {
-        if (e.key === 'Escape' && genreDrawer?.classList.contains('active')) {
-            closeGenreDrawer();
-        }
-    };
-    document.addEventListener('keydown', archiveEscapeKeyHandler);
 
     // Clear filters button
     if (clearFiltersBtn) {

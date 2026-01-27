@@ -79,6 +79,7 @@
     min-width: 0;
     overflow: visible;
     white-space: nowrap;
+    transition: font-size 0.3s ease-out;
 }
 
 /* ===========================================
@@ -90,7 +91,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 0.75rem 0.35rem 0.6rem;
+    padding: 0.3rem;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     backdrop-filter: blur(4px);
@@ -132,12 +133,13 @@
 }
 
 .live-label {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.15em;
     color: $eist-secondary;
     text-transform: uppercase;
     transform: translateY(1px); // optical alignment with dot
+    transition: font-size 0.3s ease-out, transform 0.3s ease-out;
 }
 
 /* DJ name styling within live-text */
@@ -374,16 +376,16 @@
 
 /* Play button sizing */
 .player-inline #playPauseBtn {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     cursor: pointer;
     transition: width 0.3s ease-out, height 0.3s ease-out;
 }
 
 .header-scrolled .player-inline #playPauseBtn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
 }
 
 /* Broadcast status in player */
@@ -401,16 +403,21 @@
     gap: 0.5rem;
 }
 
-/* Reset live-label optical adjustment when scrolled */
+/* Reset live-label optical adjustment and reduce size when scrolled */
 .header-scrolled .player-inline .live-label {
     transform: none;
+    font-size: 0.75rem;
 }
 
-/* Live text truncation when scrolled */
+/* Live text when scrolled */
 .header-scrolled .player-inline .broadcasting-live-text-status {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.9em;
+}
+
+/* Reduce player DJ text size when scrolled */
+.header-scrolled .player-inline .dj-prefix,
+.header-scrolled .player-inline .dj-name {
+    font-size: 0.9em;
 }
 
 /* Keep ID for JS compatibility */
@@ -458,13 +465,13 @@
 
     /* Play button on mobile - same size when scrolled */
     .player-inline #playPauseBtn {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
 
     .header-scrolled .player-inline #playPauseBtn {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
 
     /* Keep player in same position when scrolled on mobile */

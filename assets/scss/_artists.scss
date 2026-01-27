@@ -29,10 +29,9 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Genre tags - single row, no wrapping */
-.artists-filters .genre-tags {
-    flex-wrap: nowrap;
-    overflow: hidden;
+/* Genre filter dropdown sizing */
+.artists-filters .genre-filter .custom-dropdown {
+    min-width: 180px;
 }
 
 /* Search Input */
@@ -993,7 +992,7 @@
 @media (min-width: 1200px) {
     .artist-shows-section {
         max-width: 1100px;
-        padding: 2.5rem 3rem 3rem;
+        padding: 1rem;
     }
 
     .artist-shows-grid {
