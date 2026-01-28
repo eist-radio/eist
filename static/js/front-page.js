@@ -124,8 +124,10 @@ function initializeFrontPage() {
         if (showTitleElementFrontPage) showTitleElementFrontPage.textContent = showTitle;
 
         if (artistImageElement) {
-            artistImageElement.src = frontPageArtistDetails.image || defaultOfflineImage;
-            artistImageElement.classList.add('loaded');
+            const newSrc = frontPageArtistDetails.image || defaultOfflineImage;
+            // Only fade in after image has fully loaded
+            artistImageElement.onload = () => artistImageElement.classList.add('loaded');
+            artistImageElement.src = newSrc;
         }
     }
 

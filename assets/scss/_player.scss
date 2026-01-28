@@ -20,6 +20,7 @@
     position: absolute;
     inset: 0;
     z-index: 1;
+    background: $eist;  /* Show brand color while image loads */
 }
 
 .front-hero-image {
