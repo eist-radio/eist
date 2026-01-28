@@ -12,13 +12,18 @@ function initializeSchedule() {
     console.log("Initializing schedule...");
     const container = document.getElementById('schedule-output');
     // Prevent multiple executions
-    if (!container || container.dataset.loaded) return; 
+    if (!container || container.dataset.loaded) return;
     // Marks schedule as already loaded
-    container.dataset.loaded = "true"; 
+    container.dataset.loaded = "true";
 
     var apiKey = radiocultApiKey;
     var stationId = 'eist-radio';
     var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    // Navigation state
+    var currentOffset = 0; // Days offset from today (negative = past, positive = future)
+    const canNavigate = typeof allowNavigation !== 'undefined' && allowNavigation;
+    const pastDaysLimit = typeof maxPastDays !== 'undefined' ? maxPastDays : 0;
 
     function formatDate(date, time = '06:00:59Z') {
         return date.toISOString().split('T')[0] + `T${time}`;
@@ -76,34 +81,37 @@ function initializeSchedule() {
         }
     }
 
-    async function renderSchedule(schedules) {
+    async function renderSchedule(schedules, minDate) {
         container.innerHTML = '';
 
         const today = new Date().toISOString().split('T')[0];
+        const filterDate = minDate || today;
 
-        // Check if there's anything scheduled for today
-        const hasTodaySchedule = schedules.some(item => {
-            const localStartDate = new Date(item.startDateUtc);
-            let broadcastDate = localStartDate.toISOString().split('T')[0];
+        // Check if there's anything scheduled for today (only show message on home page)
+        if (!canNavigate) {
+            const hasTodaySchedule = schedules.some(item => {
+                const localStartDate = new Date(item.startDateUtc);
+                let broadcastDate = localStartDate.toISOString().split('T')[0];
 
-            if (localStartDate.getUTCHours() === 0 && localStartDate.getUTCMinutes() === 0) {
-                const prevDate = new Date(localStartDate);
-                prevDate.setUTCDate(prevDate.getUTCDate() - 1);
-                broadcastDate = prevDate.toISOString().split('T')[0];
+                if (localStartDate.getUTCHours() === 0 && localStartDate.getUTCMinutes() === 0) {
+                    const prevDate = new Date(localStartDate);
+                    prevDate.setUTCDate(prevDate.getUTCDate() - 1);
+                    broadcastDate = prevDate.toISOString().split('T')[0];
+                }
+
+                return broadcastDate === today;
+            });
+
+            if (!hasTodaySchedule) {
+                container.innerHTML = `
+                <tr>
+                    <td colspan="3" style="text-align: center;">
+                        <a href="/schedule">No shows scheduled today - check the weekly schedule.</a>
+                    </td>
+                </tr>
+                </br>
+            `;
             }
-
-            return broadcastDate === today;
-        });
-
-        if (!hasTodaySchedule) {
-            container.innerHTML = `
-            <tr>
-                <td colspan="3" style="text-align: center;">
-                    <a href="/schedule">No shows scheduled today - check the weekly schedule.</a>
-                </td>
-            </tr>
-            </br>
-        `;
         }
 
         // Group schedules by day, handling 12:00 AM correctly
@@ -117,7 +125,7 @@ function initializeSchedule() {
                 broadcastDate = prevDate.toISOString().split('T')[0];
             }
 
-            if (broadcastDate >= today) {
+            if (broadcastDate >= filterDate) {
                 acc[broadcastDate] = acc[broadcastDate] || [];
                 acc[broadcastDate].push(item);
             }
@@ -196,15 +204,84 @@ function initializeSchedule() {
         }
 
         const today = new Date();
-        const endDate = new Date(today);
-        endDate.setDate(today.getDate() + numDays);
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() + currentOffset);
 
-        const localStartDateFormatted = formatDate(today, '00:00:59Z');
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + numDays);
+
+        const localStartDateFormatted = formatDate(startDate, '00:00:59Z');
         const endDateFormatted = formatDate(endDate, '23:59:59Z');
+        const minDate = startDate.toISOString().split('T')[0];
 
         const scheduleData = await fetchSchedule(localStartDateFormatted, endDateFormatted);
-        await renderSchedule(scheduleData.schedules);
+        await renderSchedule(scheduleData.schedules, minDate);
+
+        // Update navigation UI
+        updateNavigationUI(startDate, endDate);
     }
 
-    updateSchedule(); // Only runs once per page load
+    function updateNavigationUI(startDate, endDate) {
+        if (!canNavigate) return;
+
+        const navContainer = document.getElementById('schedule-nav');
+        const prevBtn = document.getElementById('schedule-prev');
+        const nextBtn = document.getElementById('schedule-next');
+        const rangeSpan = document.getElementById('schedule-range');
+
+        if (!navContainer) return;
+
+        navContainer.style.display = 'flex';
+
+        // Format date range display
+        const formatShortDate = (date) => date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
+        });
+        rangeSpan.textContent = `${formatShortDate(startDate)} - ${formatShortDate(endDate)}`;
+
+        // Disable prev button if at max past limit
+        prevBtn.disabled = currentOffset <= -pastDaysLimit;
+        prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+        prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
+    }
+
+    function setupNavigation() {
+        if (!canNavigate) return;
+
+        const navContainer = document.getElementById('schedule-nav');
+        const prevBtn = document.getElementById('schedule-prev');
+        const nextBtn = document.getElementById('schedule-next');
+
+        // Show navigation immediately with "Loading..." text
+        if (navContainer) {
+            navContainer.style.display = 'flex';
+        }
+
+        const rangeSpan = document.getElementById('schedule-range');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentOffset > -pastDaysLimit) {
+                    currentOffset -= numDays;
+                    if (currentOffset < -pastDaysLimit) {
+                        currentOffset = -pastDaysLimit;
+                    }
+                    if (rangeSpan) rangeSpan.textContent = 'Loading...';
+                    updateSchedule();
+                }
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                currentOffset += numDays;
+                if (rangeSpan) rangeSpan.textContent = 'Loading...';
+                updateSchedule();
+            });
+        }
+    }
+
+    setupNavigation();
+    updateSchedule();
 };
