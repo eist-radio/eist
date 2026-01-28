@@ -27,6 +27,12 @@
     height: 100%;
     object-fit: cover;
     object-position: center 33%;  /* Adjustable focus point */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &.loaded {
+        opacity: 1;
+    }
 }
 
 .front-hero-overlay {

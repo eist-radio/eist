@@ -123,7 +123,10 @@ function initializeFrontPage() {
         if (showDescElement) showDescElement.innerHTML = showDesc;
         if (showTitleElementFrontPage) showTitleElementFrontPage.textContent = showTitle;
 
-        if (artistImageElement) artistImageElement.src = frontPageArtistDetails.image || defaultOfflineImage;
+        if (artistImageElement) {
+            artistImageElement.src = frontPageArtistDetails.image || defaultOfflineImage;
+            artistImageElement.classList.add('loaded');
+        }
     }
 
     updateFrontPageDetails();
