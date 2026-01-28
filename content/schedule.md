@@ -6,9 +6,9 @@ noindex = true
 +++
 
 <div id="schedule-nav" class="schedule-navigation" style="display: none; margin-bottom: 1rem;">
-  <button id="schedule-prev" class="schedule-nav-btn">&larr; Previous week</button>
+  <button id="schedule-prev" class="schedule-nav-btn">&larr; Previous</button>
   <span id="schedule-range" style="margin: 0 1rem;">Loading...</span>
-  <button id="schedule-next" class="schedule-nav-btn">Next week &rarr;</button>
+  <button id="schedule-next" class="schedule-nav-btn">Next &rarr;</button>
 </div>
 
 <!---
