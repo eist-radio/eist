@@ -1,6 +1,8 @@
 <!--Include schedule.js and set the number of days to fetch  -->
 <script>
   var numDays = 7;
+  var allowNavigation = true;
+  var maxPastDays = 7;
 </script>
 {{- $schedule := resources.Get "js/schedule.js" -}}
 {{- $script := $schedule | minify | fingerprint -}}

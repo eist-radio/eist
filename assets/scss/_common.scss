@@ -366,3 +366,38 @@ a #host-link {
   object-fit: contain;
   vertical-align: top;
 }
+
+/* Schedule navigation */
+.schedule-navigation {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    font-family: inherit;
+}
+
+.schedule-nav-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: small;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: opacity 0.3s ease;
+}
+
+#schedule-range {
+    font-size: small;
+    font-weight: bold;
+}
+
+.schedule-nav-btn:hover:not(:disabled) {
+    opacity: 0.6;
+}
+
+.schedule-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
