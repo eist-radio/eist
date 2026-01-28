@@ -37,7 +37,7 @@ API_KEY=<REDACTED>
 Then:
 
 ```cmd
-source .env && export API_KEY
+source .env && export API_KEY SOUNDCLOUD_CLIENT_ID SOUNDCLOUD_CLIENT_SECRET
 python3 generate-artist-pages.py
 hugo server --disableFastRender
 ```

@@ -152,8 +152,8 @@ function initializeSchedule() {
             const headerRow = document.createElement('tr');
             headerRow.innerHTML = `
             <th>Start</th>
-            <th>Host</th>
             <th>Show</th>
+            <th>Host</th>
             `;
             table.appendChild(headerRow);
 
@@ -185,8 +185,8 @@ function initializeSchedule() {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                     <td>${friendlyTime}</td>
-                    <td>${artistLink}</td>
                     <td>${item.title}</td>
+                    <td>${artistLink}</td>
                     `;
                     return row;
                 })
