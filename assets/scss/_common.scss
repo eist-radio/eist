@@ -401,3 +401,16 @@ a #host-link {
     opacity: 0.4;
     cursor: not-allowed;
 }
+
+/* Schedule page table styles */
+#schedule-output {
+    // Time column
+    td:first-child {
+        color: $eist-tertiary;
+    }
+
+    // Show title column
+    td:nth-child(2) {
+        color: $eist-tertiary;
+    }
+}
