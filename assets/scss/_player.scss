@@ -72,13 +72,13 @@
 }
 
 .broadcasting-live-text-status {
-    font-size: large;
+    font-size: small;
     z-index: 2;
     text-align: start;
     flex: 1;
     min-width: 0;
     overflow: visible;
-    white-space: nowrap;
+    white-space: normal;
     transition: font-size 0.3s ease-out;
 }
 
@@ -146,8 +146,7 @@
 #live-text {
     margin: 0;
     overflow: visible;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
 
     .dj-prefix {
         font-size: 0.8em;
@@ -448,7 +447,7 @@
     justify-content: flex-start;
     flex-direction: row;
     overflow: visible;
-    white-space: nowrap;
+    white-space: normal;
     opacity: 0;
     transition: opacity 0.3s ease;
 
