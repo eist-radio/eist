@@ -367,10 +367,23 @@ def convert_track_to_show(track, artist, platform='mixcloud'):
         track_id = str(track.get('id', ''))
         title = track.get('title', '')
         url = track.get('url', '')
-        created_time = track.get('created_at', '')
         thumbnail = track.get('thumbnail', '')
         duration = track.get('duration', 0)
         description = track.get('description', '')
+
+        # Convert upload_date (YYYYMMDD) and timestamp to ISO format
+        upload_date = track.get('upload_date', '')
+        timestamp = track.get('timestamp', 0)
+        if timestamp:
+            created_time = datetime.fromtimestamp(timestamp).isoformat()
+        elif upload_date and len(upload_date) == 8:
+            # Parse YYYYMMDD format
+            try:
+                created_time = datetime.strptime(upload_date, '%Y%m%d').isoformat()
+            except ValueError:
+                created_time = ''
+        else:
+            created_time = ''
 
         # Generate show slug from title and date
         show_slug = generate_slug(title, created_time)
