@@ -423,9 +423,12 @@ def _fetch_mixcloud_graphql_page(username, first=50, after=None):
     Returns:
         Tuple of (cloudcasts_list, has_next_page, end_cursor)
     """
+    # Note: Must use 'userLookup' (not 'user') to query by username.
+    # The 'user' field only accepts a Relay global ID, not a lookup object.
+    # Also, picture requires width/height arguments or url will be null.
     query = """
     query UserUploads($lookup: UserLookup!, $first: Int!, $after: String) {
-      user(lookup: $lookup) {
+      userLookup(lookup: $lookup) {
         uploads(first: $first, after: $after) {
           edges {
             node {
@@ -434,7 +437,7 @@ def _fetch_mixcloud_graphql_page(username, first=50, after=None):
               description
               audioLength
               publishDate
-              picture {
+              picture(width: 600, height: 600) {
                 url
               }
             }
@@ -469,13 +472,16 @@ def _fetch_mixcloud_graphql_page(username, first=50, after=None):
     response.raise_for_status()
     data = response.json()
 
-    # Check for GraphQL errors
+    # Check for GraphQL errors (ignore picture url warnings which are non-fatal)
     if 'errors' in data:
-        error_msg = data['errors'][0].get('message', 'Unknown GraphQL error')
-        raise requests.RequestException(f"GraphQL error: {error_msg}")
+        # Filter out non-fatal picture URL warnings
+        fatal_errors = [e for e in data['errors'] if 'picture url' not in e.get('message', '').lower()]
+        if fatal_errors:
+            error_msg = fatal_errors[0].get('message', 'Unknown GraphQL error')
+            raise requests.RequestException(f"GraphQL error: {error_msg}")
 
-    # Parse response
-    user_data = data.get('data', {}).get('user')
+    # Parse response - note: uses 'userLookup' not 'user'
+    user_data = data.get('data', {}).get('userLookup')
     if not user_data:
         return [], False, None
 
