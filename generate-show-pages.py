@@ -241,6 +241,11 @@ def generate_show_page(show, artist_shows):
         f"match_score = {match_score}",
     ]
 
+    # Add platform field if present (API-calls-only mode)
+    platform = show.get("platform", "")
+    if platform:
+        lines.append(f'platform = "{platform}"')
+
     # Add related_shows if present
     if related:
         related_str = ", ".join(f'"{s}"' for s in related)

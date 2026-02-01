@@ -2,8 +2,15 @@
 """
 Generate show cache for éist radio website.
 
-Fetches schedule data from RadioCult API and matches archives (Mixcloud + SoundCloud)
-to RadioCult shows. Each archive matches to exactly one show (1:1 mapping).
+DEMO BRANCH: API-CALLS-ONLY
+This version sources shows directly from Mixcloud/SoundCloud APIs instead of
+RadioCult schedule entries. Artists are associated via MC-USERNAME_, SC-USERNAME_,
+and HOST-MC-PLAYLIST_ tags from RadioCult artist profiles.
+
+RadioCult is still used for:
+- Artist metadata (name, image, bio, tags including username mappings)
+- Schedule/upcoming shows
+- NOT used for archive/episode generation
 
 Usage:
     python3 generate-show-cache.py [--full]
@@ -59,6 +66,7 @@ CACHE_META_FILE = DATA_DIR / "cache-meta.json"
 REVIEW_QUEUE_FILE = DATA_DIR / "review-queue.json"
 GROUND_TRUTH_FILE = DATA_DIR / "ground-truth-matches.json"
 ADDITIONAL_SHOWS_FILE = DATA_DIR / "additional-shows.json"
+API_SHOWS_CACHE_FILE = DATA_DIR / "api-shows-cache.json"
 
 # Rate limiting
 REQUEST_DELAY = 0.5  # Seconds between API requests
@@ -143,6 +151,257 @@ def generate_slug(title, date_str):
         except:
             pass
     return slug
+
+
+def build_artist_lookup(artists):
+    """
+    Build lookup dictionaries for matching tracks to artists.
+
+    Creates:
+    - mc_username_to_artist: MC username -> artist dict
+    - sc_username_to_artist: SC username -> artist dict
+    - artist_slug_to_artist: artist slug -> artist dict
+    - artist_name_normalized: normalized name -> artist dict
+
+    Args:
+        artists: Dict of artist_id -> artist data from RadioCult
+
+    Returns:
+        Tuple of (mc_lookup, sc_lookup, slug_lookup, name_lookup)
+    """
+    mc_username_to_artist = {}
+    sc_username_to_artist = {}
+    artist_slug_to_artist = {}
+    artist_name_normalized = {}
+
+    for artist_id, artist in artists.items():
+        name = artist.get('name', '')
+        if not name:
+            continue
+
+        slug = normalize_to_slug(name)
+        tags = artist.get('tags', []) or []
+
+        # Add to slug lookup
+        artist_data = {
+            'id': artist_id,
+            'name': name,
+            'slug': slug,
+            'tags': tags,
+        }
+        artist_slug_to_artist[slug] = artist_data
+
+        # Add to normalized name lookup
+        name_norm = normalize_text(name).lower()
+        artist_name_normalized[name_norm] = artist_data
+
+        # Extract MC-USERNAME_ tag
+        for tag in tags:
+            if tag.startswith('MC-USERNAME_'):
+                mc_username = tag[len('MC-USERNAME_'):].lower()
+                if mc_username:
+                    mc_username_to_artist[mc_username] = artist_data
+
+            elif tag.startswith('SC-USERNAME_'):
+                sc_username = tag[len('SC-USERNAME_'):].lower()
+                if sc_username:
+                    sc_username_to_artist[sc_username] = artist_data
+
+    return mc_username_to_artist, sc_username_to_artist, artist_slug_to_artist, artist_name_normalized
+
+
+def extract_artist_from_title(title):
+    """
+    Extract artist name/identifier from track title.
+
+    Common patterns:
+    - "Artist Name - Track Title"
+    - "Artist Name: Track Title"
+    - "Track Title by Artist Name"
+    - "Track Title w/ Artist Name"
+    - "Track Title with Artist Name"
+
+    Returns:
+        Tuple of (artist_part, title_part) or (None, title) if no pattern matched
+    """
+    if not title:
+        return None, title
+
+    # Pattern 1: "Artist - Title" (most common)
+    if ' - ' in title:
+        parts = title.split(' - ', 1)
+        return parts[0].strip(), parts[1].strip()
+
+    # Pattern 2: "Artist: Title"
+    if ': ' in title:
+        parts = title.split(': ', 1)
+        # Only treat as artist if first part is short (likely a name, not a description)
+        if len(parts[0]) < 50:
+            return parts[0].strip(), parts[1].strip()
+
+    # Pattern 3: "Title by Artist"
+    if ' by ' in title.lower():
+        idx = title.lower().rfind(' by ')
+        return title[idx + 4:].strip(), title[:idx].strip()
+
+    # Pattern 4: "Title w/ Artist" or "Title with Artist"
+    for sep in [' w/ ', ' with ']:
+        if sep in title.lower():
+            idx = title.lower().find(sep)
+            return title[idx + len(sep):].strip(), title[:idx].strip()
+
+    return None, title
+
+
+def match_track_to_artist(track, mc_lookup, sc_lookup, slug_lookup, name_lookup, platform='mixcloud'):
+    """
+    Match a single track to an artist using various strategies.
+
+    Strategies (in priority order):
+    1. Extract artist from title and match to MC/SC username
+    2. Extract artist from title and match to artist name
+    3. Extract artist from title and match to artist slug
+
+    Args:
+        track: Track data dict (from MC or SC cache)
+        mc_lookup: MC username -> artist dict
+        sc_lookup: SC username -> artist dict
+        slug_lookup: Artist slug -> artist dict
+        name_lookup: Normalized artist name -> artist dict
+        platform: 'mixcloud' or 'soundcloud'
+
+    Returns:
+        Artist dict if matched, None otherwise
+    """
+    # Get track title
+    if platform == 'mixcloud':
+        title = track.get('name', '')
+    else:
+        title = track.get('title', '')
+
+    # Extract artist part from title
+    artist_part, _ = extract_artist_from_title(title)
+
+    if not artist_part:
+        return None
+
+    # Normalize the extracted artist part
+    artist_norm = normalize_text(artist_part).lower()
+    artist_slug = normalize_to_slug(artist_part)
+
+    # Strategy 1: Check if artist_part matches an MC/SC username
+    lookup = mc_lookup if platform == 'mixcloud' else sc_lookup
+    if artist_norm in lookup:
+        return lookup[artist_norm]
+
+    # Strategy 2: Match against normalized artist names
+    if artist_norm in name_lookup:
+        return name_lookup[artist_norm]
+
+    # Strategy 3: Match against artist slugs
+    if artist_slug in slug_lookup:
+        return slug_lookup[artist_slug]
+
+    # Strategy 4: Fuzzy match - try partial matches on names
+    # (only if artist_part is reasonably long to avoid false positives)
+    if len(artist_part) >= 4:
+        for name, artist_data in name_lookup.items():
+            if artist_norm in name or name in artist_norm:
+                return artist_data
+
+    return None
+
+
+def convert_track_to_show(track, artist, platform='mixcloud'):
+    """
+    Convert an API track to our show format.
+
+    Args:
+        track: Track data from MC or SC cache
+        artist: Matched artist dict or None
+        platform: 'mixcloud' or 'soundcloud'
+
+    Returns:
+        Show dict in our standard format
+    """
+    if platform == 'mixcloud':
+        slug = track.get('slug', '')
+        name = track.get('name', '')
+        url = track.get('url', '')
+        created_time = track.get('created_time', '')
+        pictures = track.get('pictures', {})
+        duration = track.get('audio_length', 0)
+        description = track.get('description', '')
+        image = pictures.get('large') or pictures.get('medium') or ''
+
+        # Generate show slug from title and date
+        show_slug = generate_slug(name, created_time)
+
+        show = {
+            'id': f"mc-{slug}",
+            'title': name,
+            'slug': show_slug,
+            'start': created_time,
+            'end': created_time,  # Duration not available as end time
+            'artistIds': [artist['id']] if artist else [],
+            'artistName': artist['name'] if artist else 'Unknown Artist',
+            'artistSlug': artist['slug'] if artist else '',
+            'description': {'type': 'doc', 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': description}]}]} if description else None,
+            'mixcloud_match': {
+                'slug': slug,
+                'name': name,
+                'url': url,
+                'audio_length': duration,
+                'pictures': pictures,
+                'description': description,
+                'score': 600,  # High confidence for direct API source
+                'match_type': 'api_source'
+            },
+            'soundcloud_match': None,
+            'match_score': 600,
+            'episode_info': None,
+            'platform': 'mixcloud',
+        }
+    else:
+        # SoundCloud
+        track_id = str(track.get('id', ''))
+        title = track.get('title', '')
+        url = track.get('url', '')
+        created_time = track.get('created_at', '')
+        thumbnail = track.get('thumbnail', '')
+        duration = track.get('duration', 0)
+        description = track.get('description', '')
+
+        # Generate show slug from title and date
+        show_slug = generate_slug(title, created_time)
+
+        show = {
+            'id': f"sc-{track_id}",
+            'title': title,
+            'slug': show_slug,
+            'start': created_time,
+            'end': created_time,
+            'artistIds': [artist['id']] if artist else [],
+            'artistName': artist['name'] if artist else 'Unknown Artist',
+            'artistSlug': artist['slug'] if artist else '',
+            'description': {'type': 'doc', 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': description}]}]} if description else None,
+            'mixcloud_match': None,
+            'soundcloud_match': {
+                'id': track_id,
+                'title': title,
+                'url': url,
+                'duration': duration,
+                'thumbnail': thumbnail,
+                'description': description,
+                'score': 600,
+                'match_type': 'api_source'
+            },
+            'match_score': 600,
+            'episode_info': None,
+            'platform': 'soundcloud',
+        }
+
+    return show
 
 
 def is_repeat_broadcast(title):
@@ -1311,12 +1570,52 @@ def fetch_soundcloud_data(full_refresh):
     return soundcloud_cache, new_count
 
 
+def fetch_radiocult_artists_only(api_key):
+    """
+    Fetch only artists from RadioCult (not schedule).
+
+    For the API-calls-only approach, we only need artist metadata
+    for matching tracks to artists.
+
+    Returns:
+        Dict of artist_id -> artist data
+    """
+    print("[RadioCult] Fetching artists...")
+    artists = fetch_radiocult_artists(api_key)
+    print(f"[RadioCult] Fetched {len(artists)} artists")
+    return artists
+
+
+def fetch_radiocult_upcoming_only(api_key):
+    """
+    Fetch only upcoming schedule from RadioCult.
+
+    Returns:
+        Upcoming schedule response
+    """
+    print("[RadioCult] Fetching upcoming schedule...")
+    now = datetime.now()
+    upcoming_start = now
+    upcoming_end = now + timedelta(days=30)
+    time.sleep(REQUEST_DELAY)
+    upcoming_schedule = fetch_radiocult_schedule(api_key, upcoming_start, upcoming_end)
+    return upcoming_schedule
+
+
 def main():
+    """
+    Main function - API-CALLS-ONLY approach.
+
+    Shows are sourced directly from Mixcloud/SoundCloud APIs instead of
+    RadioCult schedule entries. Artists are associated via MC-USERNAME_,
+    SC-USERNAME_, and HOST-MC-PLAYLIST_ tags from RadioCult artist profiles.
+    """
     # Parse arguments
     full_refresh = '--full' in sys.argv
 
     print("=" * 60)
     print("éist Radio Show Cache Generator")
+    print("DEMO: API-CALLS-ONLY (Shows sourced from MC/SC APIs)")
     print("=" * 60)
 
     # Ensure data directory exists
@@ -1325,36 +1624,21 @@ def main():
     # Get API key
     api_key = get_api_key()
 
-    # Load existing cache
-    existing_shows = {}
-    if SHOWS_FILE.exists() and not full_refresh:
-        try:
-            existing_shows = {s['id']: s for s in json.loads(SHOWS_FILE.read_text())}
-            print(f"Loaded {len(existing_shows)} existing cached shows")
-        except:
-            pass
-
-    # Load external archives cache
-    external_cache = load_external_archives()
-    ext_mc_count = len(external_cache.get('mixcloud', []))
-    ext_sc_count = len(external_cache.get('soundcloud', []))
-    if ext_mc_count or ext_sc_count:
-        print(f"Loaded {ext_mc_count} external Mixcloud, {ext_sc_count} external SoundCloud archives")
-
     # Fetch all data sources in parallel
     print("\nFetching data from all sources in parallel...")
     artists = {}
-    all_shows = []
     upcoming_schedule = None
     mixcloud_cache = []
     new_mixcloud_count = 0
     soundcloud_cache = []
     new_soundcloud_count = 0
 
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    with ThreadPoolExecutor(max_workers=4) as executor:
         # Submit all fetch tasks
+        # Note: Only fetching artists and upcoming from RadioCult (not past schedule)
         futures = {
-            executor.submit(fetch_radiocult_data, api_key, full_refresh, existing_shows): 'radiocult',
+            executor.submit(fetch_radiocult_artists_only, api_key): 'artists',
+            executor.submit(fetch_radiocult_upcoming_only, api_key): 'upcoming',
             executor.submit(fetch_mixcloud_data, full_refresh): 'mixcloud',
             executor.submit(fetch_soundcloud_data, full_refresh): 'soundcloud',
         }
@@ -1363,8 +1647,10 @@ def main():
         for future in as_completed(futures):
             source = futures[future]
             try:
-                if source == 'radiocult':
-                    artists, all_shows, upcoming_schedule = future.result()
+                if source == 'artists':
+                    artists = future.result()
+                elif source == 'upcoming':
+                    upcoming_schedule = future.result()
                 elif source == 'mixcloud':
                     mixcloud_cache, new_mixcloud_count = future.result()
                 elif source == 'soundcloud':
@@ -1372,16 +1658,14 @@ def main():
             except Exception as e:
                 print(f"Error fetching {source}: {e}")
 
-    # Filter out excluded shows (repeats, tests, pre-archive-start-date)
-    original_shows = [s for s in all_shows if not should_exclude_show(s)]
-    print(f"\nAfter filtering: {len(original_shows)} original broadcasts")
+    # Build artist lookup tables for matching
+    print("\n[Matching] Building artist lookup tables...")
+    mc_lookup, sc_lookup, slug_lookup, name_lookup = build_artist_lookup(artists)
+    print(f"  MC usernames: {len(mc_lookup)}")
+    print(f"  SC usernames: {len(sc_lookup)}")
+    print(f"  Artist names: {len(name_lookup)}")
 
-    # Load and merge additional shows (shows not in RadioCult)
-    artists_by_slug = {normalize_to_slug(a.get('name', '')): a for a in artists.values()}
-    additional_shows = load_additional_shows(artists_by_slug)
-    original_shows.extend(additional_shows)
-
-    # Process upcoming schedule (needs artists data)
+    # Process upcoming schedule (still from RadioCult)
     now = datetime.now()
     if upcoming_schedule and 'schedules' in upcoming_schedule:
         future_shows = [s for s in upcoming_schedule['schedules'] if s.get('start', '') > now.isoformat()]
@@ -1415,124 +1699,85 @@ def main():
     else:
         UPCOMING_SCHEDULE_FILE.write_text('[]')
 
-    # Match archives to shows (FLIPPED DIRECTION)
-    # Optimization: skip matching if no new archives were added (unless --full refresh)
-    if new_mixcloud_count == 0 and new_soundcloud_count == 0 and existing_shows and not full_refresh:
-        print("\nNo new archives - reusing existing matches...")
-        # Build show_matches from existing cached data
-        show_matches = {}
-        for show_id, show_data in existing_shows.items():
-            mc_match = show_data.get('mixcloud_match')
-            sc_match = show_data.get('soundcloud_match')
-            if mc_match or sc_match:
-                show_matches[show_id] = {
-                    'show': show_data,
-                    'mixcloud': mc_match,
-                    'soundcloud': sc_match
-                }
-        print(f"  Restored {len(show_matches)} existing matches")
+    # Convert API tracks to shows
+    print("\n[Shows] Creating shows from API tracks...")
 
-        # Apply manual overrides even when reusing cached matches
-        # Use existing_shows (full cache) instead of original_shows (only current month)
-        manual_log = apply_manual_matches(list(existing_shows.values()), mixcloud_cache, soundcloud_cache, show_matches)
-        if manual_log:
-            print(f"  Manual overrides applied: {len(manual_log)}")
+    all_shows = []
+    matched_count = 0
+    unmatched_count = 0
+    seen_slugs = set()  # Track slugs to avoid duplicates
 
-        # Still check for ground-truth URL matches (handles new URLs in descriptions)
-        # This is fast - just parses descriptions and checks caches, only fetches new external URLs
-        from match_mcsc_to_rc import apply_ground_truth_matches
-        ground_truth_log, newly_fetched = apply_ground_truth_matches(
-            original_shows, mixcloud_cache, soundcloud_cache, show_matches,
-            external_mixcloud=external_cache.get('mixcloud', []),
-            external_soundcloud=external_cache.get('soundcloud', [])
-        )
-        if ground_truth_log:
-            print(f"  Ground-truth URL matches: {len(ground_truth_log)}")
-            GROUND_TRUTH_FILE.write_text(json.dumps(ground_truth_log, indent=2))
-        if newly_fetched.get('mixcloud') or newly_fetched.get('soundcloud'):
-            print(f"  New external archives fetched: {len(newly_fetched.get('mixcloud', []))} MC, {len(newly_fetched.get('soundcloud', []))} SC")
-            save_external_archives(external_cache, newly_fetched)
+    # Process Mixcloud tracks
+    print(f"  Processing {len(mixcloud_cache)} Mixcloud tracks...")
+    for track in mixcloud_cache:
+        artist = match_track_to_artist(track, mc_lookup, sc_lookup, slug_lookup, name_lookup, 'mixcloud')
+        show = convert_track_to_show(track, artist, 'mixcloud')
 
-        # Apply matches for additional shows with pre-specified URLs
-        apply_additional_show_matches(original_shows, mixcloud_cache, soundcloud_cache, show_matches)
+        # Skip duplicates (same slug)
+        if show['slug'] in seen_slugs:
+            continue
+        seen_slugs.add(show['slug'])
 
-        # Load existing review queue
-        review_queue = []
-        if REVIEW_QUEUE_FILE.exists():
-            try:
-                review_queue = json.loads(REVIEW_QUEUE_FILE.read_text())
-            except:
-                pass
-    else:
-        print("\nMatching archives to RadioCult shows...")
-        show_matches, review_queue, ground_truth_log, newly_fetched = match_archives_to_shows(
-            original_shows, mixcloud_cache, soundcloud_cache, artists,
-            should_exclude_fn=should_exclude_show,
-            external_mixcloud=external_cache.get('mixcloud', []),
-            external_soundcloud=external_cache.get('soundcloud', [])
-        )
+        all_shows.append(show)
+        if artist:
+            matched_count += 1
+        else:
+            unmatched_count += 1
 
-        # Save ground-truth matches for visibility
-        if ground_truth_log:
-            GROUND_TRUTH_FILE.write_text(json.dumps(ground_truth_log, indent=2))
-            print(f"  Saved {len(ground_truth_log)} ground-truth matches to {GROUND_TRUTH_FILE}")
+    # Process SoundCloud tracks
+    print(f"  Processing {len(soundcloud_cache)} SoundCloud tracks...")
+    for track in soundcloud_cache:
+        artist = match_track_to_artist(track, mc_lookup, sc_lookup, slug_lookup, name_lookup, 'soundcloud')
+        show = convert_track_to_show(track, artist, 'soundcloud')
 
-        # Save newly fetched external archives
-        if newly_fetched.get('mixcloud') or newly_fetched.get('soundcloud'):
-            save_external_archives(external_cache, newly_fetched)
-            print(f"  Saved {len(newly_fetched.get('mixcloud', []))} new external Mixcloud, "
-                  f"{len(newly_fetched.get('soundcloud', []))} new external SoundCloud to {EXTERNAL_ARCHIVES_FILE}")
+        # Skip duplicates (same slug)
+        if show['slug'] in seen_slugs:
+            continue
+        seen_slugs.add(show['slug'])
 
-        # Apply matches for additional shows with pre-specified URLs
-        apply_additional_show_matches(original_shows, mixcloud_cache, soundcloud_cache, show_matches)
+        all_shows.append(show)
+        if artist:
+            matched_count += 1
+        else:
+            unmatched_count += 1
 
-    # Build final output
-    # In incremental mode (no new archives), use existing_shows to preserve all fields
-    # Otherwise use original_shows (which combines cached + fresh data)
-    if new_mixcloud_count == 0 and new_soundcloud_count == 0 and existing_shows and not full_refresh:
-        shows_for_output = list(existing_shows.values())
-        # Also include any new additional shows not already in cache
-        existing_ids = set(existing_shows.keys())
-        for show in additional_shows:
-            if show.get('id') not in existing_ids:
-                shows_for_output.append(show)
-    else:
-        shows_for_output = original_shows
-    all_show_data, matched_count = build_show_output(shows_for_output, show_matches, artists)
+    print(f"  Created {len(all_shows)} shows")
+    print(f"  Matched to artists: {matched_count}")
+    print(f"  Unknown artist: {unmatched_count}")
 
     # Sort by date (most recent first)
-    all_show_data.sort(key=lambda x: x.get('start', ''), reverse=True)
+    all_shows.sort(key=lambda x: x.get('start', ''), reverse=True)
 
-    # Save shows cache
-    SHOWS_FILE.write_text(json.dumps(all_show_data, indent=2))
+    # Save shows cache (main output)
+    SHOWS_FILE.write_text(json.dumps(all_shows, indent=2))
 
-    # Save review queue
-    if review_queue:
-        REVIEW_QUEUE_FILE.write_text(json.dumps(review_queue, indent=2))
+    # Also save to API-specific cache file
+    api_shows_data = {
+        'shows': all_shows,
+        'generated_at': datetime.now().isoformat(),
+        'source': 'api-calls-only',
+        'mixcloud_tracks': len(mixcloud_cache),
+        'soundcloud_tracks': len(soundcloud_cache),
+    }
+    API_SHOWS_CACHE_FILE.write_text(json.dumps(api_shows_data, indent=2))
 
     # Count stats
-    mixcloud_count = sum(1 for s in all_show_data if s.get('mixcloud_match'))
-    soundcloud_count = sum(1 for s in all_show_data if s.get('soundcloud_match'))
-    both_count = sum(1 for s in all_show_data if s.get('mixcloud_match') and s.get('soundcloud_match'))
-    external_mc_count = sum(1 for s in all_show_data if (s.get('mixcloud_match') or {}).get('external'))
-    external_sc_count = sum(1 for s in all_show_data if (s.get('soundcloud_match') or {}).get('external'))
+    mixcloud_count = sum(1 for s in all_shows if s.get('mixcloud_match'))
+    soundcloud_count = sum(1 for s in all_shows if s.get('soundcloud_match'))
 
     # Save metadata
     meta = {
         'last_updated': datetime.now().isoformat(),
         'full_refresh': full_refresh,
-        'total_shows': len(all_show_data),
-        'shows_with_archives': matched_count,
-        'mixcloud_matches': mixcloud_count,
-        'soundcloud_matches': soundcloud_count,
-        'both_platforms': both_count,
-        'external_mixcloud_matches': external_mc_count,
-        'external_soundcloud_matches': external_sc_count,
-        'ground_truth_matches': len(ground_truth_log),
-        'review_queue_size': len(review_queue),
+        'source_mode': 'api-calls-only',
+        'total_shows': len(all_shows),
+        'shows_with_artists': matched_count,
+        'shows_unknown_artist': unmatched_count,
+        'mixcloud_shows': mixcloud_count,
+        'soundcloud_shows': soundcloud_count,
         'new_mixcloud_this_run': new_mixcloud_count,
         'total_mixcloud_cached': len(mixcloud_cache),
-        'external_archives_cached': len(external_cache.get('mixcloud', [])) + len(external_cache.get('soundcloud', []))
+        'total_soundcloud_cached': len(soundcloud_cache),
     }
     save_cache_meta(meta)
 
@@ -1540,30 +1785,18 @@ def main():
     print("\n" + "=" * 60)
     print("Summary")
     print("=" * 60)
-    print(f"Total shows processed: {len(all_show_data)}")
-    print(f"Shows with archives:   {matched_count} ({matched_count*100//max(len(all_show_data),1)}%)")
-    print(f"  - Mixcloud:          {mixcloud_count}")
-    print(f"  - SoundCloud:        {soundcloud_count}")
-    print(f"  - Both platforms:    {both_count}")
-    if external_mc_count or external_sc_count:
-        print(f"  - External MC:       {external_mc_count}")
-        print(f"  - External SC:       {external_sc_count}")
+    print(f"Total shows created:   {len(all_shows)}")
+    print(f"  - From Mixcloud:     {mixcloud_count}")
+    print(f"  - From SoundCloud:   {soundcloud_count}")
+    print(f"Artist matching:")
+    print(f"  - Matched:           {matched_count}")
+    print(f"  - Unknown artist:    {unmatched_count}")
     print(f"New Mixcloud this run: {new_mixcloud_count}")
-    if newly_fetched.get('mixcloud') or newly_fetched.get('soundcloud'):
-        print(f"New external fetched:  {len(newly_fetched.get('mixcloud', []))} MC, {len(newly_fetched.get('soundcloud', []))} SC")
-    if ground_truth_log:
-        print(f"Ground-truth matches:  {len(ground_truth_log)}")
-    print(f"Review queue:          {len(review_queue)}")
     print(f"\nOutput files:")
     print(f"  {SHOWS_FILE}")
+    print(f"  {API_SHOWS_CACHE_FILE}")
     print(f"  {MIXCLOUD_CACHE_FILE}")
     print(f"  {SOUNDCLOUD_CACHE_FILE}")
-    if external_cache.get('mixcloud') or external_cache.get('soundcloud'):
-        print(f"  {EXTERNAL_ARCHIVES_FILE}")
-    if ground_truth_log:
-        print(f"  {GROUND_TRUTH_FILE}")
-    if review_queue:
-        print(f"  {REVIEW_QUEUE_FILE}")
     print(f"  {CACHE_META_FILE}")
     print("=" * 60)
 
