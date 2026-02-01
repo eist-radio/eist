@@ -411,7 +411,7 @@ def _parse_graphql_cloudcast(node):
     }
 
 
-def _fetch_mixcloud_graphql_page(username, first=50, after=None):
+def _fetch_mixcloud_graphql_page(username, first=100, after=None):
     """
     Fetch a single page of cloudcasts using Mixcloud GraphQL API.
 
@@ -514,14 +514,13 @@ def fetch_mixcloud_cloudcasts_graphql_full():
         try:
             time.sleep(REQUEST_DELAY)
             cloudcasts, has_next_page, cursor = _fetch_mixcloud_graphql_page(
-                MIXCLOUD_USER, first=50, after=cursor
+                MIXCLOUD_USER, first=100, after=cursor
             )
             pages_fetched += 1
 
             all_cloudcasts.extend(cloudcasts)
 
-            if pages_fetched % 5 == 0:
-                print(f"  Page {pages_fetched}: {len(all_cloudcasts)} items so far...")
+            print(f"[Mixcloud]   Page {pages_fetched}: {len(all_cloudcasts)} items so far...")
 
             if not has_next_page:
                 break
@@ -530,10 +529,10 @@ def fetch_mixcloud_cloudcasts_graphql_full():
             print(f"Error fetching Mixcloud cloudcasts via GraphQL: {e}")
             break
 
-    print(f"  Fetched {len(all_cloudcasts)} Mixcloud cloudcasts via GraphQL ({pages_fetched} API calls)")
+    print(f"[Mixcloud]   Fetched {len(all_cloudcasts)} Mixcloud cloudcasts via GraphQL ({pages_fetched} API calls)")
 
     with_desc = sum(1 for cc in all_cloudcasts if cc.get('description'))
-    print(f"  Cloudcasts with descriptions: {with_desc}/{len(all_cloudcasts)}")
+    print(f"[Mixcloud]   Cloudcasts with descriptions: {with_desc}/{len(all_cloudcasts)}")
 
     return all_cloudcasts
 
@@ -559,7 +558,7 @@ def fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache=None):
     known_slugs = set()
     if existing_cache:
         known_slugs = {cc.get('slug') for cc in existing_cache if cc.get('slug')}
-        print(f"  Loaded {len(known_slugs)} known Mixcloud slugs from cache")
+        print(f"[Mixcloud]   Loaded {len(known_slugs)} known Mixcloud slugs from cache")
 
     new_cloudcasts = []
     cursor = None
@@ -570,7 +569,7 @@ def fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache=None):
         try:
             time.sleep(REQUEST_DELAY)
             cloudcasts, has_next_page, cursor = _fetch_mixcloud_graphql_page(
-                MIXCLOUD_USER, first=50, after=cursor
+                MIXCLOUD_USER, first=100, after=cursor
             )
             pages_fetched += 1
 
@@ -583,7 +582,7 @@ def fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache=None):
                 if slug in known_slugs:
                     # Found known content - stop fetching
                     found_known = True
-                    print(f"  Reached known content at slug: {slug[:50]}...")
+                    print(f"[Mixcloud]   Reached known content at slug: {slug[:50]}...")
                     break
 
                 # New item - add to list
@@ -593,7 +592,7 @@ def fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache=None):
             if found_known:
                 break
 
-            print(f"  Page {pages_fetched}: {new_this_page} new items")
+            print(f"[Mixcloud]   Page {pages_fetched}: {new_this_page} new items")
 
             if not has_next_page:
                 break
@@ -601,19 +600,19 @@ def fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache=None):
             # Safety limit - if we've fetched 50 pages without finding known content,
             # something is wrong (or this is effectively a full refresh)
             if pages_fetched >= 50:
-                print("  Warning: Fetched 50 pages without finding known content")
-                print("  Consider running with --full for a complete refresh")
+                print("[Mixcloud]   Warning: Fetched 50 pages without finding known content")
+                print("[Mixcloud]   Consider running with --full for a complete refresh")
                 break
 
         except requests.RequestException as e:
             print(f"Error fetching Mixcloud cloudcasts via GraphQL: {e}")
             break
 
-    print(f"  Fetched {len(new_cloudcasts)} new Mixcloud cloudcasts via GraphQL ({pages_fetched} API calls)")
+    print(f"[Mixcloud]   Fetched {len(new_cloudcasts)} new Mixcloud cloudcasts via GraphQL ({pages_fetched} API calls)")
 
     if new_cloudcasts:
         with_desc = sum(1 for cc in new_cloudcasts if cc.get('description'))
-        print(f"  New cloudcasts with descriptions: {with_desc}/{len(new_cloudcasts)}")
+        print(f"[Mixcloud]   New cloudcasts with descriptions: {with_desc}/{len(new_cloudcasts)}")
 
     # Merge: new items first (they're newest), then existing cache
     if existing_cache:
@@ -644,18 +643,18 @@ def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_description
     """
     # Try GraphQL first (more efficient - gets descriptions in one query)
     try:
-        print("  Attempting GraphQL API...")
+        print("[Mixcloud]   Attempting GraphQL API...")
         return fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache)
     except Exception as e:
-        print(f"  GraphQL API failed: {e}")
-        print("  Falling back to REST API...")
+        print(f"[Mixcloud]   GraphQL API failed: {e}")
+        print("[Mixcloud]   Falling back to REST API...")
 
     # Fallback to REST API
     # Build set of known slugs for O(1) lookup
     known_slugs = set()
     if existing_cache:
         known_slugs = {cc.get('slug') for cc in existing_cache if cc.get('slug')}
-        print(f"  Loaded {len(known_slugs)} known Mixcloud slugs from cache")
+        print(f"[Mixcloud]   Loaded {len(known_slugs)} known Mixcloud slugs from cache")
 
     new_cloudcasts = []
     url = f"{MIXCLOUD_BASE_URL}/{MIXCLOUD_USER}/cloudcasts/"
@@ -680,7 +679,7 @@ def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_description
                 if slug in known_slugs:
                     # Found known content - stop fetching
                     found_known = True
-                    print(f"  Reached known content at slug: {slug[:50]}...")
+                    print(f"[Mixcloud]   Reached known content at slug: {slug[:50]}...")
                     break
 
                 # New item - add to list
@@ -698,7 +697,7 @@ def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_description
             if found_known:
                 break
 
-            print(f"  Page {pages_fetched}: {new_this_page} new items")
+            print(f"[Mixcloud]   Page {pages_fetched}: {new_this_page} new items")
 
             # Get next page
             paging = data.get('paging', {})
@@ -707,22 +706,22 @@ def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_description
             # Safety limit - if we've fetched 50 pages without finding known content,
             # something is wrong (or this is effectively a full refresh)
             if pages_fetched >= 50:
-                print("  Warning: Fetched 50 pages without finding known content")
-                print("  Consider running with --full for a complete refresh")
+                print("[Mixcloud]   Warning: Fetched 50 pages without finding known content")
+                print("[Mixcloud]   Consider running with --full for a complete refresh")
                 break
 
         except requests.RequestException as e:
             print(f"Error fetching Mixcloud cloudcasts: {e}")
             break
 
-    print(f"  Fetched {len(new_cloudcasts)} new Mixcloud cloudcasts ({pages_fetched} API calls)")
+    print(f"[Mixcloud]   Fetched {len(new_cloudcasts)} new Mixcloud cloudcasts ({pages_fetched} API calls)")
 
     # Fetch descriptions only for NEW items
     if fetch_descriptions and new_cloudcasts:
-        print(f"  Fetching descriptions for {len(new_cloudcasts)} new items...")
+        print(f"[Mixcloud]   Fetching descriptions for {len(new_cloudcasts)} new items...")
         for i, cc in enumerate(new_cloudcasts):
             if (i + 1) % 10 == 0:
-                print(f"    Progress: {i + 1}/{len(new_cloudcasts)}")
+                print(f"[Mixcloud]     Progress: {i + 1}/{len(new_cloudcasts)}")
             try:
                 time.sleep(REQUEST_DELAY)
                 detail_url = f"{MIXCLOUD_BASE_URL}/{MIXCLOUD_USER}/{cc['slug']}/"
@@ -734,7 +733,7 @@ def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_description
                 pass  # Keep empty description on error
 
         with_desc = sum(1 for cc in new_cloudcasts if cc.get('description'))
-        print(f"    New cloudcasts with descriptions: {with_desc}/{len(new_cloudcasts)}")
+        print(f"[Mixcloud]     New cloudcasts with descriptions: {with_desc}/{len(new_cloudcasts)}")
 
     # Merge: new items first (they're newest), then existing cache
     if existing_cache:
@@ -756,11 +755,11 @@ def fetch_mixcloud_cloudcasts_full(fetch_descriptions=True):
     """
     # Try GraphQL first (more efficient - gets descriptions in one query)
     try:
-        print("  Attempting GraphQL API...")
+        print("[Mixcloud]   Attempting GraphQL API...")
         return fetch_mixcloud_cloudcasts_graphql_full()
     except Exception as e:
-        print(f"  GraphQL API failed: {e}")
-        print("  Falling back to REST API...")
+        print(f"[Mixcloud]   GraphQL API failed: {e}")
+        print("[Mixcloud]   Falling back to REST API...")
 
     # Fallback to REST API
     cloudcasts = []
@@ -787,7 +786,7 @@ def fetch_mixcloud_cloudcasts_full(fetch_descriptions=True):
                 })
 
             if pages_fetched % 5 == 0:
-                print(f"  Page {pages_fetched}: {len(cloudcasts)} items so far...")
+                print(f"[Mixcloud]   Page {pages_fetched}: {len(cloudcasts)} items so far...")
 
             # Get next page
             paging = data.get('paging', {})
@@ -797,14 +796,14 @@ def fetch_mixcloud_cloudcasts_full(fetch_descriptions=True):
             print(f"Error fetching Mixcloud cloudcasts: {e}")
             break
 
-    print(f"  Fetched {len(cloudcasts)} Mixcloud cloudcasts ({pages_fetched} API calls)")
+    print(f"[Mixcloud]   Fetched {len(cloudcasts)} Mixcloud cloudcasts ({pages_fetched} API calls)")
 
     # Fetch descriptions for each cloudcast (requires individual API calls)
     if fetch_descriptions:
-        print(f"  Fetching descriptions for {len(cloudcasts)} cloudcasts...")
+        print(f"[Mixcloud]   Fetching descriptions for {len(cloudcasts)} cloudcasts...")
         for i, cc in enumerate(cloudcasts):
             if (i + 1) % 50 == 0:
-                print(f"    Progress: {i + 1}/{len(cloudcasts)}")
+                print(f"[Mixcloud]     Progress: {i + 1}/{len(cloudcasts)}")
             try:
                 time.sleep(REQUEST_DELAY)
                 detail_url = f"{MIXCLOUD_BASE_URL}/{MIXCLOUD_USER}/{cc['slug']}/"
@@ -816,7 +815,7 @@ def fetch_mixcloud_cloudcasts_full(fetch_descriptions=True):
                 pass  # Keep empty description on error
 
         with_desc = sum(1 for cc in cloudcasts if cc.get('description'))
-        print(f"    Cloudcasts with descriptions: {with_desc}/{len(cloudcasts)}")
+        print(f"[Mixcloud]     Cloudcasts with descriptions: {with_desc}/{len(cloudcasts)}")
 
     return cloudcasts
 
