@@ -46,6 +46,7 @@ from match_mcsc_to_rc import (
 # Configuration
 RADIOCULT_BASE_URL = "https://api.radiocult.fm/api/station/eist-radio"
 MIXCLOUD_BASE_URL = "https://api.mixcloud.com"
+MIXCLOUD_GRAPHQL_URL = "https://app.mixcloud.com/graphql"
 MIXCLOUD_USER = "eistcork"
 SOUNDCLOUD_USER = "eistcork"
 DATA_DIR = Path("data")
@@ -361,21 +362,289 @@ def fetch_radiocult_artists(api_key):
         return {}
 
 
+def _get_mixcloud_graphql_headers():
+    """Get headers required for Mixcloud GraphQL API requests."""
+    return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        # Mimic browser request - required for GraphQL endpoint
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Origin': 'https://www.mixcloud.com',
+        'Referer': 'https://www.mixcloud.com/',
+    }
+
+
+def _parse_graphql_cloudcast(node):
+    """
+    Parse a cloudcast node from GraphQL response into our standard format.
+
+    Args:
+        node: GraphQL cloudcast node
+
+    Returns:
+        dict with our standard cloudcast format
+    """
+    # Extract picture URL - GraphQL returns nested structure
+    pictures = {}
+    picture_data = node.get('picture') or {}
+    if picture_data.get('url'):
+        # GraphQL gives us a single URL, we'll use it for all sizes
+        pic_url = picture_data['url']
+        pictures = {
+            'medium': pic_url,
+            'large': pic_url,
+            'extra_large': pic_url,
+        }
+
+    # Build URL from slug
+    slug = node.get('slug', '')
+    url = f"https://www.mixcloud.com/{MIXCLOUD_USER}/{slug}/" if slug else ''
+
+    return {
+        'slug': slug,
+        'name': node.get('name', ''),
+        'url': url,
+        'created_time': node.get('publishDate', ''),
+        'pictures': pictures,
+        'audio_length': node.get('audioLength', 0),
+        'description': node.get('description', '') or '',
+    }
+
+
+def _fetch_mixcloud_graphql_page(username, first=50, after=None):
+    """
+    Fetch a single page of cloudcasts using Mixcloud GraphQL API.
+
+    Args:
+        username: Mixcloud username
+        first: Number of items to fetch (max 50)
+        after: Cursor for pagination (None for first page)
+
+    Returns:
+        Tuple of (cloudcasts_list, has_next_page, end_cursor)
+    """
+    query = """
+    query UserUploads($lookup: UserLookup!, $first: Int!, $after: String) {
+      user(lookup: $lookup) {
+        uploads(first: $first, after: $after) {
+          edges {
+            node {
+              slug
+              name
+              description
+              audioLength
+              publishDate
+              picture {
+                url
+              }
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    }
+    """
+
+    variables = {
+        'lookup': {'username': username},
+        'first': first,
+    }
+    if after:
+        variables['after'] = after
+
+    payload = {
+        'query': query,
+        'variables': variables,
+    }
+
+    response = requests.post(
+        MIXCLOUD_GRAPHQL_URL,
+        json=payload,
+        headers=_get_mixcloud_graphql_headers(),
+        timeout=30
+    )
+    response.raise_for_status()
+    data = response.json()
+
+    # Check for GraphQL errors
+    if 'errors' in data:
+        error_msg = data['errors'][0].get('message', 'Unknown GraphQL error')
+        raise requests.RequestException(f"GraphQL error: {error_msg}")
+
+    # Parse response
+    user_data = data.get('data', {}).get('user')
+    if not user_data:
+        return [], False, None
+
+    uploads = user_data.get('uploads', {})
+    edges = uploads.get('edges', [])
+    page_info = uploads.get('pageInfo', {})
+
+    cloudcasts = [_parse_graphql_cloudcast(edge['node']) for edge in edges if edge.get('node')]
+    has_next_page = page_info.get('hasNextPage', False)
+    end_cursor = page_info.get('endCursor')
+
+    return cloudcasts, has_next_page, end_cursor
+
+
+def fetch_mixcloud_cloudcasts_graphql_full():
+    """
+    Fetch ALL cloudcasts from Mixcloud using GraphQL API (full refresh).
+
+    This is much more efficient than REST API as it fetches descriptions
+    in the same query - no N+1 problem.
+
+    Returns:
+        List of all cloudcasts with full metadata.
+    """
+    all_cloudcasts = []
+    cursor = None
+    pages_fetched = 0
+
+    while True:
+        try:
+            time.sleep(REQUEST_DELAY)
+            cloudcasts, has_next_page, cursor = _fetch_mixcloud_graphql_page(
+                MIXCLOUD_USER, first=50, after=cursor
+            )
+            pages_fetched += 1
+
+            all_cloudcasts.extend(cloudcasts)
+
+            if pages_fetched % 5 == 0:
+                print(f"  Page {pages_fetched}: {len(all_cloudcasts)} items so far...")
+
+            if not has_next_page:
+                break
+
+        except requests.RequestException as e:
+            print(f"Error fetching Mixcloud cloudcasts via GraphQL: {e}")
+            break
+
+    print(f"  Fetched {len(all_cloudcasts)} Mixcloud cloudcasts via GraphQL ({pages_fetched} API calls)")
+
+    with_desc = sum(1 for cc in all_cloudcasts if cc.get('description'))
+    print(f"  Cloudcasts with descriptions: {with_desc}/{len(all_cloudcasts)}")
+
+    return all_cloudcasts
+
+
+def fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache=None):
+    """
+    Fetch cloudcasts from Mixcloud incrementally using GraphQL API.
+
+    Only fetches new items that aren't already in the cache.
+    Stops fetching as soon as we encounter a known item (since API returns newest first).
+
+    This is much more efficient than REST API as it fetches descriptions
+    in the same query - no N+1 problem.
+
+    Args:
+        existing_cache: List of existing cached cloudcasts (newest first)
+
+    Returns:
+        Tuple of (merged_cloudcasts, new_count) where merged_cloudcasts is the
+        complete list with new items prepended, and new_count is how many were new.
+    """
+    # Build set of known slugs for O(1) lookup
+    known_slugs = set()
+    if existing_cache:
+        known_slugs = {cc.get('slug') for cc in existing_cache if cc.get('slug')}
+        print(f"  Loaded {len(known_slugs)} known Mixcloud slugs from cache")
+
+    new_cloudcasts = []
+    cursor = None
+    found_known = False
+    pages_fetched = 0
+
+    while not found_known:
+        try:
+            time.sleep(REQUEST_DELAY)
+            cloudcasts, has_next_page, cursor = _fetch_mixcloud_graphql_page(
+                MIXCLOUD_USER, first=50, after=cursor
+            )
+            pages_fetched += 1
+
+            new_this_page = 0
+
+            for cc in cloudcasts:
+                slug = cc.get('slug')
+
+                # Check if we've seen this item before
+                if slug in known_slugs:
+                    # Found known content - stop fetching
+                    found_known = True
+                    print(f"  Reached known content at slug: {slug[:50]}...")
+                    break
+
+                # New item - add to list
+                new_cloudcasts.append(cc)
+                new_this_page += 1
+
+            if found_known:
+                break
+
+            print(f"  Page {pages_fetched}: {new_this_page} new items")
+
+            if not has_next_page:
+                break
+
+            # Safety limit - if we've fetched 50 pages without finding known content,
+            # something is wrong (or this is effectively a full refresh)
+            if pages_fetched >= 50:
+                print("  Warning: Fetched 50 pages without finding known content")
+                print("  Consider running with --full for a complete refresh")
+                break
+
+        except requests.RequestException as e:
+            print(f"Error fetching Mixcloud cloudcasts via GraphQL: {e}")
+            break
+
+    print(f"  Fetched {len(new_cloudcasts)} new Mixcloud cloudcasts via GraphQL ({pages_fetched} API calls)")
+
+    if new_cloudcasts:
+        with_desc = sum(1 for cc in new_cloudcasts if cc.get('description'))
+        print(f"  New cloudcasts with descriptions: {with_desc}/{len(new_cloudcasts)}")
+
+    # Merge: new items first (they're newest), then existing cache
+    if existing_cache:
+        merged = new_cloudcasts + existing_cache
+    else:
+        merged = new_cloudcasts
+
+    return merged, len(new_cloudcasts)
+
+
 def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_descriptions=True):
     """
     Fetch cloudcasts from eistcork Mixcloud account incrementally.
+
+    Attempts to use the GraphQL API first (more efficient), falls back to REST API
+    if GraphQL fails.
 
     Only fetches new items that aren't already in the cache.
     Stops fetching as soon as we encounter a known item (since API returns newest first).
 
     Args:
         existing_cache: List of existing cached cloudcasts (newest first)
-        fetch_descriptions: Whether to fetch descriptions for new items
+        fetch_descriptions: Whether to fetch descriptions for new items (REST API only)
 
     Returns:
         Tuple of (merged_cloudcasts, new_count) where merged_cloudcasts is the
         complete list with new items prepended, and new_count is how many were new.
     """
+    # Try GraphQL first (more efficient - gets descriptions in one query)
+    try:
+        print("  Attempting GraphQL API...")
+        return fetch_mixcloud_cloudcasts_graphql_incremental(existing_cache)
+    except Exception as e:
+        print(f"  GraphQL API failed: {e}")
+        print("  Falling back to REST API...")
+
+    # Fallback to REST API
     # Build set of known slugs for O(1) lookup
     known_slugs = set()
     if existing_cache:
@@ -474,8 +743,20 @@ def fetch_mixcloud_cloudcasts_full(fetch_descriptions=True):
     """
     Fetch ALL cloudcasts from eistcork Mixcloud account (full refresh).
 
+    Attempts to use the GraphQL API first (more efficient), falls back to REST API
+    if GraphQL fails.
+
     Use this for initial setup or when cache might be corrupted.
     """
+    # Try GraphQL first (more efficient - gets descriptions in one query)
+    try:
+        print("  Attempting GraphQL API...")
+        return fetch_mixcloud_cloudcasts_graphql_full()
+    except Exception as e:
+        print(f"  GraphQL API failed: {e}")
+        print("  Falling back to REST API...")
+
+    # Fallback to REST API
     cloudcasts = []
     url = f"{MIXCLOUD_BASE_URL}/{MIXCLOUD_USER}/cloudcasts/"
     pages_fetched = 0
