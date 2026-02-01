@@ -315,3 +315,107 @@ python3 generate-show-pages.py        # Generate Hugo pages
 ### Changing schedule display
 - Edit `assets/js/schedule.js` for logic
 - Edit `layouts/shortcodes/schedule.html` for markup
+
+## Branch: demo/api-calls-only
+
+The `demo/api-calls-only` branch implements an alternative architecture for sourcing show/episode data. This section documents how it differs from the main branch.
+
+### Main Branch vs Demo Branch Architecture
+
+**Main Branch Flow:**
+```
+RadioCult Schedule → Shows/Episodes (primary source)
+       ↓
+Match to MC/SC tracks (for embeds/links)
+```
+
+In the main branch:
+- Shows are sourced from RadioCult schedule entries
+- Each scheduled show is then matched to Mixcloud/SoundCloud archives using fuzzy matching
+- RadioCult is the authoritative source for show metadata, timing, and artist associations
+
+**Demo Branch Flow (API-Calls-Only):**
+```
+MC/SC API → Shows/Episodes (primary source)
+       ↓
+Match to Artists via username tags from RadioCult
+```
+
+In this branch:
+- Shows are sourced directly from Mixcloud and SoundCloud APIs
+- Each track from MC/SC becomes a show entry
+- Artists are associated by matching track titles to RadioCult artist profiles via username tags
+
+### What RadioCult Is Used For (Demo Branch)
+
+RadioCult is still used for:
+- **Artist metadata**: name, image, bio, and tags (including username mappings)
+- **Upcoming schedule**: Future shows still come from RadioCult
+- **NOT used for**: Archive/episode generation (this comes from MC/SC APIs)
+
+### Artist Matching Mechanism
+
+The demo branch matches tracks to artists using tags in RadioCult artist profiles:
+
+| Tag Format | Purpose |
+|------------|---------|
+| `MC-USERNAME_username` | Maps Mixcloud username to artist |
+| `SC-USERNAME_username` | Maps SoundCloud username to artist |
+| `HOST-MC-PLAYLIST_` | Maps host's Mixcloud playlist to artist |
+
+**Matching strategies (in priority order):**
+1. Extract artist name from track title (e.g., "Artist Name - Track Title")
+2. Match extracted name to MC/SC username tags
+3. Match to normalized artist names
+4. Match to artist slugs
+5. Partial/fuzzy matching for longer names
+
+Tracks that cannot be matched to an artist appear with "Unknown Artist".
+
+### New Features in Demo Branch
+
+1. **Platform indicator badges**: Show cards display MC (purple) or SC (orange) badges indicating the source platform
+
+2. **New data file**: `data/api-shows-cache.json` contains metadata about API-sourced shows including generation timestamp and source counts
+
+3. **Platform field in frontmatter**: Show pages include a `platform` field ("mixcloud" or "soundcloud") indicating the source
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `generate-show-cache.py` | Major rewrite: sources shows from MC/SC APIs instead of RadioCult schedule |
+| `generate-show-pages.py` | Added `platform` field to frontmatter |
+| `layouts/archive/list.html` | Added platform badge display |
+| `layouts/archive/single.html` | Added platform badge display |
+| `layouts/artists/single.html` | Added platform badge on show cards |
+| `assets/scss/_archive.scss` | Platform badge styles (`.archive-platform-badge`) |
+| `assets/scss/_artists.scss` | Platform badge styles (`.artist-show-platform-badge`) |
+| `assets/scss/_shows.scss` | Platform badge styles (`.show-platform-badge`) |
+
+### Key Differences in generate-show-cache.py
+
+**Main branch:**
+- Fetches RadioCult schedule for past shows
+- Matches shows to MC/SC archives using date and title matching
+- Uses `match_mcsc_to_rc.py` for sophisticated fuzzy matching
+
+**Demo branch:**
+- Does NOT fetch RadioCult past schedule
+- Fetches all tracks from MC/SC APIs directly
+- Uses `build_artist_lookup()` to create username-to-artist mappings
+- Uses `match_track_to_artist()` to associate tracks with artists
+- Uses `convert_track_to_show()` to convert API tracks to show format
+
+### When to Use Each Approach
+
+**Main branch (RadioCult-primary):**
+- Best when RadioCult schedule is the authoritative source
+- Handles shows that may not have archives yet
+- Better for stations that schedule shows in advance
+
+**Demo branch (API-primary):**
+- Best when MC/SC archives are the authoritative source
+- Simpler architecture with fewer matching edge cases
+- Good for stations that upload archives without formal scheduling
+- Shows only appear once they have an actual archive
