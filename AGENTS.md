@@ -223,11 +223,10 @@ Automatically deployed to Netlify on PR open/update.
 Pipeline steps:
 1. Install Python dependencies (`thefuzz`, `python-Levenshtein`, `requests`)
 2. Generate artist pages (`generate-artist-pages.py`)
-3. Align artist images for hero sections (`scripts/detect-faces.py`) - skips gracefully if deps unavailable
-4. Generate show cache (`generate-show-cache.py`) - fetches from SoundCloud/Mixcloud APIs
-5. Generate show pages (`generate-show-pages.py`)
-6. Build with Hugo
-7. Deploy to Netlify
+3. Generate show cache (`generate-show-cache.py`) - fetches from SoundCloud/Mixcloud APIs
+4. Generate show pages (`generate-show-pages.py`)
+5. Build with Hugo
+6. Deploy to Netlify
 
 Preview URL format: `preview-{PR_NUMBER}.{NETLIFY_DOMAIN}`
 

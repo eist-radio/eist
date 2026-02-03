@@ -47,9 +47,6 @@ jobs:
       - name: Generate artist pages
         run: python3 generate-artist-pages.py
 
-      - name: Align artist images for hero sections
-        run: python3 scripts/detect-faces.py || true
-
       - name: Generate show pages
         run: python3 generate-show-pages.py
 
