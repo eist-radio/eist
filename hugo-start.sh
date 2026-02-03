@@ -11,10 +11,7 @@ export API_KEY
 # Generate artist pages from RadioCult API
 python3 generate-artist-pages.py
 
-# Fetch pre-matched show data from EIST API
-python3 fetch-shows-from-api.py
-
-# Generate Hugo pages for shows
+# Generate Hugo pages for shows (fetches from API)
 python3 generate-show-pages.py
 
 # Start Hugo dev server

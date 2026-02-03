@@ -50,9 +50,6 @@ jobs:
       - name: Align artist images for hero sections
         run: python3 scripts/detect-faces.py || true
 
-      - name: Fetch show data from API
-        run: python3 fetch-shows-from-api.py
-
       - name: Generate show pages
         run: python3 generate-show-pages.py
 
