@@ -14,18 +14,18 @@
 
     Put another way: inactive = no scheduled non-repeat shows in 40 days AND no archived shows in 3 months AND 3 or fewer total archived shows
 */}}
-{{ $showsData := site.Data.shows }}
+{{ $archivePages := where site.RegularPages "Section" "archive" }}
 {{ $fortyDaysAgo := now.AddDate 0 0 -40 }}
 {{ $threeMonthsAgo := now.AddDate 0 -3 0 }}
 
-{{/* First pass: gather stats per artist */}}
+{{/* First pass: gather stats per artist from archive pages */}}
 {{ $artistStats := dict }}
-{{ range $showsData }}
-    {{ $slug := .artistSlug }}
+{{ range $archivePages }}
+    {{ $slug := .Params.artist_slug }}
     {{ if $slug }}
-        {{ $hasArchive := or .mixcloud_match .soundcloud_match }}
+        {{ $hasArchive := or .Params.mixcloud_slug .Params.soundcloud_id }}
         {{/* Check if this is a repeat show (title contains "éist arís") */}}
-        {{ $isRepeat := in .title "ist ar" }}
+        {{ $isRepeat := in .Title "ist ar" }}
 
         {{ $stats := index $artistStats $slug | default (dict "totalArchived" 0 "recent40NonRepeat" false "recent3moArchived" false) }}
         {{ $totalArchived := index $stats "totalArchived" }}
@@ -35,8 +35,8 @@
         {{/* Count archived shows */}}
         {{ if $hasArchive }}
             {{ $totalArchived = add $totalArchived 1 }}
-            {{ if .start }}
-                {{ $showDate := time .start }}
+            {{ with .Params.show_start }}
+                {{ $showDate := time . }}
                 {{ if $showDate.After $threeMonthsAgo }}
                     {{ $recent3moArchived = true }}
                 {{ end }}
@@ -44,8 +44,8 @@
         {{ end }}
 
         {{/* Check for recent non-repeat scheduled shows (regardless of archive status) */}}
-        {{ if and .start (not $isRepeat) }}
-            {{ $showDate := time .start }}
+        {{ if and .Params.show_start (not $isRepeat) }}
+            {{ $showDate := time .Params.show_start }}
             {{ if $showDate.After $fortyDaysAgo }}
                 {{ $recent40NonRepeat = true }}
             {{ end }}
