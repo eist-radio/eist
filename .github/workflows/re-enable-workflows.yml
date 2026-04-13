@@ -1,0 +1,16 @@
+name: Re-enable workflows
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  re-enable:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          gh workflow enable deploy.yml
+          gh workflow enable preview.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
