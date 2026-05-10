@@ -31,11 +31,13 @@
   {{- $title := $s.title | default "Untitled" -}}
   {{- with $s.episode_info -}}{{- $title = printf "%s %s" $title . -}}{{- end -}}
 
-  {{/* Date - must be time.Time (not string) so Hugo sorts RegularPages correctly */}}
+  {{/* Date - pass as time.Time via dates sub-map (string is silently ignored by AddPage).
+       Truncate to midnight so same-day shows sort alphabetically by title, matching the
+       old generate-show-pages.py behaviour (date = YYYY-MM-DD in TOML = midnight UTC). */}}
   {{- $start := $s.start | default "" -}}
   {{- $end   := $s.end   | default "" -}}
   {{- $pageDate := time "0001-01-01T00:00:00Z" -}}
-  {{- if $start -}}{{- $pageDate = time $start -}}{{- end -}}
+  {{- if $start -}}{{- $pageDate = time (dateFormat "2006-01-02T00:00:00Z" (time $start)) -}}{{- end -}}
 
   {{/* Artist */}}
   {{- $firstArtistId := "" -}}
