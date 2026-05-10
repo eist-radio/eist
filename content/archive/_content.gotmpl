@@ -1,0 +1,164 @@
+{{/*
+  Hugo content adapter: generates archive show pages from data/shows.json.
+  Replaces generate-show-pages.py.
+  Requires Hugo >= 0.126. Local install (0.123.7) must be upgraded.
+*/}}
+
+{{- $shows := .Site.Data.shows -}}
+
+{{/* Pass 1: Build artist → archived show slugs map, newest-first.
+     Sorting first ensures each artist's slice is already in descending date order. */}}
+{{- $sortedShows := sort $shows "start" "desc" -}}
+{{- $artistShows := dict -}}
+{{- range $sortedShows -}}
+  {{- $slug := .slug -}}
+  {{- $aSlug := .artistSlug -}}
+  {{- if and $slug $aSlug (or .mixcloud_match .soundcloud_match) -}}
+    {{- $existing := index $artistShows $aSlug -}}
+    {{- if not $existing -}}{{- $existing = slice -}}{{- end -}}
+    {{- $artistShows = merge $artistShows (dict $aSlug ($existing | append $slug)) -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* Pass 2: Emit one page per archived show. */}}
+{{- range $shows -}}
+  {{- $s := . -}}
+  {{- if not (or $s.mixcloud_match $s.soundcloud_match) -}}{{- continue -}}{{- end -}}
+  {{- $slug := $s.slug -}}
+  {{- if not $slug -}}{{- continue -}}{{- end -}}
+
+  {{/* Title */}}
+  {{- $title := $s.title | default "Untitled" -}}
+  {{- with $s.episode_info -}}{{- $title = printf "%s %s" $title . -}}{{- end -}}
+
+  {{/* Date */}}
+  {{- $start := $s.start | default "" -}}
+  {{- $end   := $s.end   | default "" -}}
+  {{- $pageDate := "" -}}
+  {{- if $start -}}{{- $pageDate = dateFormat "2006-01-02" (time $start) -}}{{- end -}}
+
+  {{/* Artist */}}
+  {{- $firstArtistId := "" -}}
+  {{- with $s.artistIds -}}{{- $firstArtistId = index . 0 -}}{{- end -}}
+  {{- $artistName := $s.artistName | default "" -}}
+  {{- $artistSlug := $s.artistSlug | default "" -}}
+
+  {{/* Mixcloud match fields */}}
+  {{- $mc := dict -}}
+  {{- with $s.mixcloud_match -}}{{- $mc = . -}}{{- end -}}
+  {{- $mcSlug  := $mc.slug | default "" -}}
+  {{- $mcUrl   := $mc.url  | default "" -}}
+  {{- $mcPics  := dict -}}
+  {{- with $mc.pictures -}}{{- $mcPics = . -}}{{- end -}}
+  {{- $mcImage := $mcPics.large | default ($mcPics.medium | default "") -}}
+  {{- $mcDesc  := $mc.description | default "" -}}
+  {{- $mcScore := $mc.score | default 0 -}}
+
+  {{/* SoundCloud match fields */}}
+  {{- $sc := dict -}}
+  {{- with $s.soundcloud_match -}}{{- $sc = . -}}{{- end -}}
+  {{- $scId    := printf "%v" ($sc.id | default "") -}}
+  {{- $scUrl   := $sc.url       | default "" -}}
+  {{- $scImage := $sc.thumbnail | default "" -}}
+  {{- $scDesc  := $sc.description | default "" -}}
+  {{- $scScore := $sc.score | default 0 -}}
+
+  {{- $matchScore := $s.match_score | default 0 -}}
+
+  {{/* Preferred platform: ground-truth URL scores (≥500) win; otherwise prefer SC */}}
+  {{- $mcIsGT := ge ($mcScore | int) 500 -}}
+  {{- $scIsGT := ge ($scScore | int) 500 -}}
+  {{- $preferredPlatform := "mixcloud" -}}
+  {{- if and $mcIsGT (not $scIsGT) -}}
+    {{- $preferredPlatform = "mixcloud" -}}
+  {{- else if and $scIsGT (not $mcIsGT) -}}
+    {{- $preferredPlatform = "soundcloud" -}}
+  {{- else if $scId -}}
+    {{- $preferredPlatform = "soundcloud" -}}
+  {{- end -}}
+
+  {{/* Preferred image: MC URLs are more stable; use SC only when it's a significantly better match */}}
+  {{- $mcIsProfilePic  := and $mcImage (strings.Contains $mcImage "/profile/") -}}
+  {{- $mcHasArtwork    := and $mcImage (not $mcIsProfilePic) -}}
+  {{- $preferredImage  := "" -}}
+  {{- if and $scImage (ge ($scScore | int) (add ($mcScore | int) 50)) -}}
+    {{- $preferredImage = $scImage -}}
+  {{- else if $mcHasArtwork -}}
+    {{- $preferredImage = $mcImage -}}
+  {{- else if $scImage -}}
+    {{- $preferredImage = $scImage -}}
+  {{- else -}}
+    {{- $preferredImage = $mcImage -}}
+  {{- end -}}
+
+  {{/* RC description: walk RadioCult's rich-text JSON → plain text */}}
+  {{- $rcDesc := "" -}}
+  {{- with $s.description -}}
+    {{- $paras := slice -}}
+    {{- range .content -}}
+      {{- $parts := slice -}}
+      {{- range .content -}}
+        {{- if eq .type "text" -}}
+          {{- $parts = $parts | append .text -}}
+        {{- else if eq .type "hardBreak" -}}
+          {{- $parts = $parts | append "\n" -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if $parts -}}
+        {{- $paras = $paras | append (delimit $parts "") -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $rcDesc = delimit $paras "\n\n" -}}
+  {{- end -}}
+
+  {{/* Use the longest available description */}}
+  {{- $description := $rcDesc -}}
+  {{- if gt (len $mcDesc) (len $description) -}}{{- $description = $mcDesc -}}{{- end -}}
+  {{- if gt (len $scDesc) (len $description) -}}{{- $description = $scDesc -}}{{- end -}}
+
+  {{/* Related shows: up to 4 other archived shows by same artist, newest-first */}}
+  {{- $related := slice -}}
+  {{- if $artistSlug -}}
+    {{- $aShows := index $artistShows $artistSlug -}}
+    {{- if not $aShows -}}{{- $aShows = slice -}}{{- end -}}
+    {{- range $aShows -}}
+      {{- if and (ne . $slug) (lt (len $related) 4) -}}
+        {{- $related = $related | append . -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $hasArchive := false -}}
+  {{- if or $mcSlug $scId -}}{{- $hasArchive = true -}}{{- end -}}
+
+  {{- $params := dict
+    "show_start"         $start
+    "show_end"           $end
+    "artist_name"        $artistName
+    "artist_slug"        $artistSlug
+    "artist_id"          (printf "%v" $firstArtistId)
+    "mixcloud_slug"      $mcSlug
+    "mixcloud_url"       $mcUrl
+    "mixcloud_image"     $mcImage
+    "soundcloud_id"      $scId
+    "soundcloud_url"     $scUrl
+    "soundcloud_image"   $scImage
+    "preferred_image"    $preferredImage
+    "preferred_platform" $preferredPlatform
+    "has_archive"        $hasArchive
+    "match_score"        $matchScore
+    "noindex"            false
+  -}}
+  {{- with $s.platform -}}{{- $params = merge $params (dict "platform" .) -}}{{- end -}}
+  {{- if $related -}}{{- $params = merge $params (dict "related_shows" $related) -}}{{- end -}}
+
+  {{- $.AddPage (dict
+    "path"    $slug
+    "kind"    "page"
+    "title"   $title
+    "date"    $pageDate
+    "draft"   false
+    "params"  $params
+    "content" (dict "mediaType" "text/markdown" "value" $description)
+  ) -}}
+{{- end -}}
