@@ -31,11 +31,11 @@
   {{- $title := $s.title | default "Untitled" -}}
   {{- with $s.episode_info -}}{{- $title = printf "%s %s" $title . -}}{{- end -}}
 
-  {{/* Date */}}
+  {{/* Date - must be time.Time (not string) so Hugo sorts RegularPages correctly */}}
   {{- $start := $s.start | default "" -}}
   {{- $end   := $s.end   | default "" -}}
-  {{- $pageDate := "" -}}
-  {{- if $start -}}{{- $pageDate = dateFormat "2006-01-02" (time $start) -}}{{- end -}}
+  {{- $pageDate := time "0001-01-01T00:00:00Z" -}}
+  {{- if $start -}}{{- $pageDate = time $start -}}{{- end -}}
 
   {{/* Artist */}}
   {{- $firstArtistId := "" -}}
@@ -156,7 +156,7 @@
     "path"    $slug
     "kind"    "page"
     "title"   $title
-    "date"    $pageDate
+    "dates"   (dict "date" $pageDate)
     "draft"   false
     "params"  $params
     "content" (dict "mediaType" "text/markdown" "value" $description)
