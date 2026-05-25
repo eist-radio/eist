@@ -917,6 +917,31 @@
     filter: drop-shadow(0 6px 20px rgba(175, 252, 65, 0.4));
 }
 
+// Platform indicator badge (MC/SC) for API-sourced shows
+.artist-show-platform-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border-radius: 3px;
+    z-index: 3;
+    opacity: 0.9;
+
+    &.artist-show-platform-mixcloud {
+        background: #5000ff;
+        color: #fff;
+    }
+
+    &.artist-show-platform-soundcloud {
+        background: #ff5500;
+        color: #fff;
+    }
+}
+
 .artist-show-info {
     padding: 0.9rem;
     display: flex;

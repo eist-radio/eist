@@ -255,6 +255,21 @@ class SoundCloudClient:
 
         return all_tracks
 
+    def get_user_playlist(self, username: str, playlist_slug: str) -> list:
+        """
+        Fetch tracks from a SoundCloud playlist.
+
+        Args:
+            username: SoundCloud username who owns the playlist
+            playlist_slug: Playlist slug (e.g. 'aus-der-ferne')
+
+        Returns:
+            List of track dicts from the playlist (may be partial if playlist is large)
+        """
+        playlist_url = f"https://soundcloud.com/{username}/sets/{playlist_slug}"
+        data = self._api_request('/resolve', {'url': playlist_url})
+        return data.get('tracks', [])
+
     def get_user_tracks_incremental(
         self,
         username: str,
@@ -399,6 +414,26 @@ def normalize_track_data(api_track: dict) -> dict:
         'thumbnail': artwork_url,
         'description': api_track.get('description', '')
     }
+
+
+def fetch_soundcloud_playlist(username: str, playlist_slug: str) -> list:
+    """
+    Fetch all tracks from a SoundCloud playlist.
+
+    Args:
+        username: SoundCloud username who owns the playlist
+        playlist_slug: Playlist slug (lowercase, e.g. 'aus-der-ferne')
+
+    Returns:
+        List of track dicts in cache format
+    """
+    client = SoundCloudClient()
+    try:
+        api_tracks = client.get_user_playlist(username, playlist_slug)
+        return [normalize_track_data(t) for t in api_tracks if is_valid_track(t)]
+    except SoundCloudAPIError as e:
+        print(f"[SoundCloud] Playlist fetch failed for {username}/sets/{playlist_slug}: {e}")
+        return []
 
 
 def fetch_soundcloud_tracks_api(username: str = 'eistcork') -> list:

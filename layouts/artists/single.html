@@ -149,6 +149,11 @@
                     {{ if or $show.Params.mixcloud_slug $show.Params.soundcloud_id }}
                     <img src="/play.svg" alt="" class="artist-show-has-archive">
                     {{ end }}
+                    {{/* Platform indicator for API-sourced shows */}}
+                    {{ $platform := $show.Params.platform | default "" }}
+                    {{ if $platform }}
+                    <span class="artist-show-platform-badge artist-show-platform-{{ $platform }}">{{ if eq $platform "mixcloud" }}MC{{ else if eq $platform "soundcloud" }}SC{{ end }}</span>
+                    {{ end }}
                 </div>
                 <div class="artist-show-info">
                     <span class="artist-show-title">{{ $show.Title }}</span>

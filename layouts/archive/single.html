@@ -66,6 +66,11 @@
                 <img src="/play.svg" alt="" class="show-play-icon">
             </button>
             {{ end }}
+            {{/* Platform indicator for API-sourced shows */}}
+            {{ $sourcePlatform := .Params.platform | default "" }}
+            {{ if $sourcePlatform }}
+            <span class="show-platform-badge show-platform-{{ $sourcePlatform }}">{{ if eq $sourcePlatform "mixcloud" }}Mixcloud{{ else if eq $sourcePlatform "soundcloud" }}SoundCloud{{ end }}</span>
+            {{ end }}
         </div>
 
         <div class="show-hero-details">

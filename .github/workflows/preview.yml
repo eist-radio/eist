@@ -55,9 +55,6 @@ jobs:
       - name: Generate show cache
         run: python3 generate-show-cache.py
 
-      - name: Generate show pages
-        run: python3 generate-show-pages.py
-
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache

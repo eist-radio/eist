@@ -1034,6 +1034,31 @@
     transform: translate(-50%, -50%) scale(1);
 }
 
+// Platform indicator badge (MC/SC) for API-sourced shows
+.archive-platform-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border-radius: 3px;
+    z-index: 3;
+    opacity: 0.9;
+
+    &.archive-platform-mixcloud {
+        background: #5000ff;
+        color: #fff;
+    }
+
+    &.archive-platform-soundcloud {
+        background: #ff5500;
+        color: #fff;
+    }
+}
+
 .archive-card-content {
     padding: 0.9rem;
     display: flex;

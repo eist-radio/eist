@@ -253,6 +253,11 @@
                                     {{ if $hasArchive }}
                                     <img src="/play.svg" alt="" class="archive-play-indicator">
                                     {{ end }}
+                                    {{/* Platform indicator for API-sourced shows */}}
+                                    {{ $platform := .Params.platform | default "" }}
+                                    {{ if $platform }}
+                                    <span class="archive-platform-badge archive-platform-{{ $platform }}">{{ if eq $platform "mixcloud" }}MC{{ else if eq $platform "soundcloud" }}SC{{ end }}</span>
+                                    {{ end }}
                                     <div class="archive-card-overlay"></div>
                                 </div>
                                 <div class="archive-card-content">

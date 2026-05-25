@@ -73,6 +73,30 @@
     filter: drop-shadow(0 0 15px rgba(175, 252, 65, 0.5));
 }
 
+// Platform indicator badge (Mixcloud/SoundCloud) for API-sourced shows
+.show-platform-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border-radius: 4px;
+    z-index: 3;
+
+    &.show-platform-mixcloud {
+        background: #5000ff;
+        color: #fff;
+    }
+
+    &.show-platform-soundcloud {
+        background: #ff5500;
+        color: #fff;
+    }
+}
+
 /* Hero Play Button - prominent CTA in the details section */
 .show-hero-play {
     display: inline-flex;

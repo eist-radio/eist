@@ -1,6 +1,7 @@
 content/artists
 content/artists.md
-content/archive
+content/archive/*.md
+!content/archive/_index.md
 public/
 resources/
 node_modules/
