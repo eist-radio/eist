@@ -53,6 +53,20 @@ jobs:
           echo "API_KEY=${{ secrets.RADIOCULT_API_KEY }}" >> $GITHUB_ENV
           echo "SOUNDCLOUD_CLIENT_ID=${{ secrets.SOUNDCLOUD_CLIENT_ID }}" >> $GITHUB_ENV
           echo "SOUNDCLOUD_CLIENT_SECRET=${{ secrets.SOUNDCLOUD_CLIENT_SECRET }}" >> $GITHUB_ENV
+      - name: Cache show data
+        uses: actions/cache@v3
+        with:
+          path: |
+            data/shows.json
+            data/mixcloud-cache.json
+            data/soundcloud-cache.json
+            data/upcoming_schedule.json
+            data/cache-meta.json
+            data/review-queue.json
+            data/ground-truth-matches.json
+            data/external-archives.json
+          key: show-cache-${{ github.run_id }}
+          restore-keys: show-cache-
       - name: Generate artist pages
         run: python3 generate-artist-pages.py
       - name: Align artist images for hero sections

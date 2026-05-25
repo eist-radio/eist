@@ -361,6 +361,35 @@ def fetch_radiocult_artists(api_key):
         return {}
 
 
+def _fetch_mixcloud_description(slug):
+    """Fetch description for a single Mixcloud cloudcast."""
+    try:
+        detail_url = f"{MIXCLOUD_BASE_URL}/{MIXCLOUD_USER}/{slug}/"
+        response = requests.get(detail_url, timeout=30)
+        response.raise_for_status()
+        return slug, response.json().get('description', '')
+    except requests.RequestException:
+        return slug, ''
+
+
+def _fetch_descriptions_parallel(cloudcasts, max_workers=10):
+    """Fetch descriptions for a list of cloudcasts in parallel."""
+    slug_to_cc = {cc['slug']: cc for cc in cloudcasts}
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_fetch_mixcloud_description, cc['slug']): cc['slug'] for cc in cloudcasts}
+        done = 0
+        for future in as_completed(futures):
+            slug, description = future.result()
+            slug_to_cc[slug]['description'] = description
+            done += 1
+            if done % 50 == 0:
+                print(f"    Progress: {done}/{len(cloudcasts)}")
+
+    with_desc = sum(1 for cc in cloudcasts if cc.get('description'))
+    print(f"    Cloudcasts with descriptions: {with_desc}/{len(cloudcasts)}")
+
+
 def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_descriptions=True):
     """
     Fetch cloudcasts from eistcork Mixcloud account incrementally.
@@ -442,24 +471,10 @@ def fetch_mixcloud_cloudcasts_incremental(existing_cache=None, fetch_description
 
     print(f"  Fetched {len(new_cloudcasts)} new Mixcloud cloudcasts ({pages_fetched} API calls)")
 
-    # Fetch descriptions only for NEW items
+    # Fetch descriptions only for NEW items (in parallel)
     if fetch_descriptions and new_cloudcasts:
         print(f"  Fetching descriptions for {len(new_cloudcasts)} new items...")
-        for i, cc in enumerate(new_cloudcasts):
-            if (i + 1) % 10 == 0:
-                print(f"    Progress: {i + 1}/{len(new_cloudcasts)}")
-            try:
-                time.sleep(REQUEST_DELAY)
-                detail_url = f"{MIXCLOUD_BASE_URL}/{MIXCLOUD_USER}/{cc['slug']}/"
-                response = requests.get(detail_url, timeout=30)
-                response.raise_for_status()
-                detail = response.json()
-                cc['description'] = detail.get('description', '')
-            except requests.RequestException:
-                pass  # Keep empty description on error
-
-        with_desc = sum(1 for cc in new_cloudcasts if cc.get('description'))
-        print(f"    New cloudcasts with descriptions: {with_desc}/{len(new_cloudcasts)}")
+        _fetch_descriptions_parallel(new_cloudcasts)
 
     # Merge: new items first (they're newest), then existing cache
     if existing_cache:
@@ -512,24 +527,10 @@ def fetch_mixcloud_cloudcasts_full(fetch_descriptions=True):
 
     print(f"  Fetched {len(cloudcasts)} Mixcloud cloudcasts ({pages_fetched} API calls)")
 
-    # Fetch descriptions for each cloudcast (requires individual API calls)
+    # Fetch descriptions for each cloudcast (in parallel)
     if fetch_descriptions:
         print(f"  Fetching descriptions for {len(cloudcasts)} cloudcasts...")
-        for i, cc in enumerate(cloudcasts):
-            if (i + 1) % 50 == 0:
-                print(f"    Progress: {i + 1}/{len(cloudcasts)}")
-            try:
-                time.sleep(REQUEST_DELAY)
-                detail_url = f"{MIXCLOUD_BASE_URL}/{MIXCLOUD_USER}/{cc['slug']}/"
-                response = requests.get(detail_url, timeout=30)
-                response.raise_for_status()
-                detail = response.json()
-                cc['description'] = detail.get('description', '')
-            except requests.RequestException:
-                pass  # Keep empty description on error
-
-        with_desc = sum(1 for cc in cloudcasts if cc.get('description'))
-        print(f"    Cloudcasts with descriptions: {with_desc}/{len(cloudcasts)}")
+        _fetch_descriptions_parallel(cloudcasts)
 
     return cloudcasts
 
