@@ -73,12 +73,22 @@
 
             {{/* Next Show Callout */}}
             {{ if $nextShow }}
-            {{ $showTime := time $nextShow.start }}
-            <div class="artist-next-show visible">
+            <div class="artist-next-show visible" data-show-utc="{{ $nextShow.start }}">
                 <span class="next-show-icon">{{ partial "svg.html" (dict "name" "calendar") }}</span>
                 <span class="next-show-label">Next show:</span>
-                <span class="next-show-time">{{ $showTime.Format "Mon 2 Jan, 3pm" }}</span>
+                <span class="next-show-time"></span>
             </div>
+            <script>
+            (function() {
+                var el = document.querySelector('.artist-next-show[data-show-utc]');
+                if (!el) return;
+                var d = new Date(el.dataset.showUtc);
+                var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                var day = d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', timeZone: tz });
+                var time = d.toLocaleTimeString(undefined, { hour: 'numeric', hour12: true, timeZone: tz });
+                el.querySelector('.next-show-time').textContent = day + ', ' + time;
+            })();
+            </script>
             {{ end }}
 
             {{/* Bio */}}
