@@ -1,20 +1,17 @@
 #!/bin/bash
-# Source API keys, run data pipeline, start Hugo server
+# Run data pipeline and start Hugo server
 # Matches the flow in .github/workflows/preview.yml and AGENTS.md
 
 set -e
 
-# Load environment variables
+# Load environment variables (API_KEY needed for artist pages)
 source .env
-export API_KEY SOUNDCLOUD_CLIENT_ID SOUNDCLOUD_CLIENT_SECRET
+export API_KEY
 
 # Generate artist pages from RadioCult API
 python3 generate-artist-pages.py
 
-# Generate show cache from SoundCloud/Mixcloud APIs
-python3 generate-show-cache.py
-
-# Generate Hugo pages for shows
+# Generate Hugo pages for shows (fetches from API)
 python3 generate-show-pages.py
 
 # Start Hugo dev server

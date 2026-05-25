@@ -6,7 +6,6 @@
 {{/* Extract artist data from front matter */}}
 {{ $artistName := .Description | default .Title }}
 {{ $image := .Params.image | default "/eist_online.png" }}
-{{ $heroFocus := .Params.hero_focus | default "center 33%" }}
 {{ $genres := .Params.genres | default "" }}
 {{ $bio := .Content }}
 
@@ -27,7 +26,7 @@
     {{/* Hero Section - Grid layout with image left, content right */}}
     <section class="artist-hero section-inner">
         <div class="artist-hero-artwork">
-            <img src="{{ $image }}" alt="{{ $artistName }}" class="artist-hero-image" style="object-position: {{ $heroFocus }};" loading="eager" onerror="this.onerror=null; this.src='/eist_online.png';">
+            <img src="{{ $image }}" alt="{{ $artistName }}" class="artist-hero-image" loading="eager" onerror="this.onerror=null; this.src='/eist_online.png';">
         </div>
 
         <div class="artist-hero-content">

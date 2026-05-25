@@ -11,5 +11,4 @@ RADIOCULT_API_KEY
 .aider*
 __pycache__
 data
-!data/manual-matches.json
 .claude

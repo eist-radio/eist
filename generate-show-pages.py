@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Generate show pages from cached show data.
+Generate show pages from the EIST API.
 
-Reads from data/shows.json and creates content/archive/*.md
+Fetches show data from the EIST API and creates content/archive/*.md
 
 OPTIMIZATION: This Python version replaces the bash script and is ~10-20x faster
 because it processes all shows in a single pass without spawning subprocesses.
@@ -22,8 +22,52 @@ from datetime import datetime, timezone
 from pathlib import Path
 from collections import defaultdict
 
-SHOWS_FILE = "data/shows.json"
+import requests
+
+API_BASE = "https://eist-api.johnocallaghan.workers.dev"
 OUTPUT_DIR = "content/archive"
+META_OUTPUT = "data/cache-meta.json"
+
+
+def fetch_shows_from_api(has_archive=True, limit=200):
+    """Fetch all shows from API with pagination.
+
+    Args:
+        has_archive: If True, only shows with archives.
+        limit: Number of shows per page.
+
+    Returns:
+        List of show dictionaries.
+    """
+    shows = []
+    offset = 0
+
+    while True:
+        params = {"limit": limit, "offset": offset}
+        if has_archive:
+            params["hasArchive"] = "true"
+
+        print(f"[API] Fetching shows (offset={offset})...")
+        response = requests.get(f"{API_BASE}/api/shows", params=params, timeout=30)
+        response.raise_for_status()
+
+        data = response.json()
+        shows.extend(data["shows"])
+
+        print(f"[API] Got {len(data['shows'])} shows (total: {len(shows)})")
+
+        if not data["pagination"]["hasMore"]:
+            break
+        offset += limit
+
+    return shows
+
+
+def fetch_meta():
+    """Fetch build metadata from API."""
+    response = requests.get(f"{API_BASE}/api/meta", timeout=10)
+    response.raise_for_status()
+    return response.json()
 
 
 def extract_description(desc_obj):
@@ -256,15 +300,30 @@ def generate_show_page(show, artist_shows):
 
 
 def main():
-    # Check if shows.json exists
-    if not os.path.exists(SHOWS_FILE):
-        print(f"Error: {SHOWS_FILE} not found. Run generate-show-cache.py first.")
-        sys.exit(1)
+    # Fetch shows from API
+    try:
+        print("[API] Fetching shows with archives...")
+        shows = fetch_shows_from_api(has_archive=True)
+        print(f"[API] Fetched {len(shows)} shows")
 
-    # Load shows
-    print(f"Loading {SHOWS_FILE}...")
-    with open(SHOWS_FILE, "r") as f:
-        shows = json.load(f)
+        # Sort by start date (newest first)
+        shows.sort(key=lambda s: s.get("start") or "", reverse=True)
+
+        # Fetch and save metadata for debugging
+        print("[API] Fetching metadata...")
+        meta = fetch_meta()
+        meta["fetched_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        meta["source"] = "eist-api"
+        meta["shows_fetched"] = len(shows)
+
+        os.makedirs(os.path.dirname(META_OUTPUT), exist_ok=True)
+        with open(META_OUTPUT, "w") as f:
+            json.dump(meta, f, indent=2)
+        print(f"[API] Saved metadata to {META_OUTPUT}")
+
+    except requests.RequestException as e:
+        print(f"[ERROR] Failed to fetch from API: {e}", file=sys.stderr)
+        sys.exit(1)
 
     print(f"Generating {len(shows)} show pages...")
 
