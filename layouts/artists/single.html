@@ -54,39 +54,30 @@
             {{ with site.Data.upcoming_schedule }}
                 {{ range . }}
                     {{ if and (not $nextShow) (eq .artistSlug $artistSlug) }}
-                        {{ $isRepeat := false }}
-                        {{ $titleLower := .title | lower }}
-                        {{ range $repeatPatterns }}
-                            {{ if in $titleLower . }}
-                                {{ $isRepeat = true }}
+                        {{ $showTime := time .start }}
+                        {{ if $showTime.After now }}
+                            {{ $isRepeat := false }}
+                            {{ $titleLower := .title | lower }}
+                            {{ range $repeatPatterns }}
+                                {{ if in $titleLower . }}
+                                    {{ $isRepeat = true }}
+                                {{ end }}
                             {{ end }}
-                        {{ end }}
-                        {{ if not $isRepeat }}
-                            {{ $nextShow = . }}
+                            {{ if not $isRepeat }}
+                                {{ $nextShow = . }}
+                            {{ end }}
                         {{ end }}
                     {{ end }}
                 {{ end }}
             {{ end }}
 
-            {{/* Next Show Callout - moved above social icons */}}
+            {{/* Next Show Callout */}}
             {{ if $nextShow }}
             {{ $showTime := time $nextShow.start }}
-            {{ $today := now.Format "2006-01-02" }}
-            {{ $tomorrow := (now.AddDate 0 0 1).Format "2006-01-02" }}
-            {{ $showDate := $showTime.Format "2006-01-02" }}
-            {{ $timeStr := $showTime.Format "3pm" }}
-            {{ $dateStr := "" }}
-            {{ if eq $showDate $today }}
-                {{ $dateStr = printf "Today, %s" $timeStr }}
-            {{ else if eq $showDate $tomorrow }}
-                {{ $dateStr = printf "Tomorrow, %s" $timeStr }}
-            {{ else }}
-                {{ $dateStr = printf "%s, %s" ($showTime.Format "Mon 2 Jan") $timeStr }}
-            {{ end }}
             <div class="artist-next-show visible">
                 <span class="next-show-icon">{{ partial "svg.html" (dict "name" "calendar") }}</span>
                 <span class="next-show-label">Next show:</span>
-                <span class="next-show-time">{{ $dateStr }}</span>
+                <span class="next-show-time">{{ $showTime.Format "Mon 2 Jan, 3pm" }}</span>
             </div>
             {{ end }}
 
