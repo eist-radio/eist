@@ -315,6 +315,17 @@ body {
     z-index: 0;
 }
 
+.paypal-thankyou {
+    margin: 24px 0;
+    padding: 24px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.paypal-thankyou h2 {
+    margin-top: 0;
+}
+
 #pagination {
     display: flex;
     width: 100%;
