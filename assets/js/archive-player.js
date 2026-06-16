@@ -188,7 +188,7 @@
         // Use SoundCloud's standard embed URL with éist brand color
         const params = new URLSearchParams({
             url: `https://api.soundcloud.com/tracks/${trackId}`,
-            color: '%23affc41',  // éist lime green accent
+            color: '%23fffff0',
             auto_play: 'true',
             hide_related: 'true',
             show_comments: 'false',
