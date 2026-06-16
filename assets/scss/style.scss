@@ -468,10 +468,11 @@ table {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  flex-shrink: 0;
+  flex-shrink: 1;
   justify-content: center;
   align-items: center;
-  padding-top: 80px;  // Account for header height
+  padding-top: 140px;
+  overflow-y: auto;
 }
 
 .header-menu-nav-list {
