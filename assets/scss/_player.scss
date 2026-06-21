@@ -29,6 +29,11 @@
     object-position: center 33%;  /* Adjustable focus point */
 }
 
+#dj-image-front-page {
+    filter: grayscale(100%);
+    -webkit-filter: grayscale(100%);
+}
+
 .front-hero-overlay {
     position: absolute;
     inset: 0;
@@ -36,10 +41,10 @@
     background: linear-gradient(
         to top,
         $eist 0%,
-        rgba(71, 51, 255, 0.97) 12%,
-        rgba(71, 51, 255, 0.8) 35%,
-        rgba(71, 51, 255, 0.4) 60%,
-        rgba(71, 51, 255, 0.15) 80%,
+        rgba(27, 18, 18, 0.97) 12%,
+        rgba(27, 18, 18, 0.8) 35%,
+        rgba(27, 18, 18, 0.4) 60%,
+        rgba(27, 18, 18, 0.15) 80%,
         transparent 100%
     );
 }
@@ -459,7 +464,7 @@
 /* Mobile responsive for unified header player */
 @media (max-width: 760px) {
     body {
-        margin-top: 210px;
+        margin-top: 280px;
     }
 
     /* Play button on mobile - same size when scrolled */
@@ -680,7 +685,7 @@ body.archive-playing.soundcloud-active {
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 6px 25px rgba(175, 252, 65, 0.35);
+    box-shadow: 0 6px 25px rgba(255, 255, 240, 0.35);
     position: relative;
     overflow: hidden;
 
@@ -692,7 +697,7 @@ body.archive-playing.soundcloud-active {
 
     &:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 40px rgba(175, 252, 65, 0.5);
+        box-shadow: 0 10px 40px rgba(255, 255, 240, 0.5);
     }
 
     &:active {
