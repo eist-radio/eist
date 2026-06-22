@@ -193,7 +193,7 @@ table {
     padding: 1px;
     font-size: 0.7em;
     line-height: 1.8;
-    color: #fff;
+    color: $eist-secondary;
     background-color: #777;
     opacity: 0.6;
     min-width: 55px;
@@ -437,7 +437,7 @@ table {
 // Full-viewport menu overlay
 .header-menu {
   position: fixed;
-  z-index: 9998;  // Below header but above content
+  z-index: 10000;  // Above header so menu items aren't clipped
   display: flex;
   flex-direction: column;
   top: 0;
@@ -463,6 +463,20 @@ table {
   background-color: $eist;
 }
 
+.header-menu-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  z-index: 1;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: $eist-secondary;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
 .header-menu-nav {
   position: relative;
   display: flex;
@@ -471,7 +485,7 @@ table {
   flex-shrink: 1;
   justify-content: center;
   align-items: center;
-  padding-top: 140px;
+  padding-top: 80px;
   overflow-y: auto;
 }
 
@@ -898,7 +912,7 @@ a.footnote-ref {
   padding: .8em;
   margin-top: 1.5em;
   font-size: .8rem;
-  border: 3px dashed rgba(255, 255, 255, .2);
+  border: 3px dashed rgba(113, 1, 128, .2);
   border-radius: 5px;
 
   h2{

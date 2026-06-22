@@ -49,7 +49,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(27, 18, 18, 0.4);
+    background: rgba(198, 198, 255, 0.4);
     opacity: 0;
     transition: opacity 0.3s ease;
     border: none;
@@ -70,7 +70,7 @@
 
 .show-play-overlay:hover .show-play-icon {
     transform: scale(1.08);
-    filter: drop-shadow(0 0 15px rgba(255, 255, 240, 0.5));
+    filter: drop-shadow(0 0 15px rgba(113, 1, 128, 0.5));
 }
 
 /* Hero Play Button - prominent CTA in the details section */
@@ -111,7 +111,7 @@
         opacity: 0.6;
         padding-left: 6px;
         margin-left: 2px;
-        border-left: 1px solid rgba(27, 18, 18, 0.25);
+        border-left: 1px solid rgba(198, 198, 255, 0.25);
     }
 
     &:hover {
@@ -175,7 +175,7 @@
 
 .show-artist-link:hover .artist-link-name {
     color: $eist-secondary;
-    border-bottom-color: rgba(255, 255, 240, 0.4);
+    border-bottom-color: rgba(113, 1, 128, 0.4);
 }
 
 .artist-link-arrow {
@@ -250,9 +250,9 @@
 }
 
 .archive-badge.unavailable {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(113, 1, 128, 0.05);
     color: var(--mid);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(113, 1, 128, 0.15);
 }
 
 .badge-icon {
@@ -284,8 +284,8 @@
     background: rgba(0, 0, 0, 0.35);
     box-shadow:
         0 4px 20px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+        inset 0 1px 0 rgba(113, 1, 128, 0.05);
+    border: 1px solid rgba(113, 1, 128, 0.06);
     transition: box-shadow 0.3s ease;
 }
 
@@ -293,8 +293,8 @@
 .mixcloud-embed-wrapper:hover {
     box-shadow:
         0 6px 30px rgba(0, 0, 0, 0.25),
-        0 0 0 1px rgba(255, 255, 240, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        0 0 0 1px rgba(113, 1, 128, 0.15),
+        inset 0 1px 0 rgba(113, 1, 128, 0.05);
 }
 
 .soundcloud-embed-wrapper iframe,
@@ -306,7 +306,7 @@
 .alternative-player {
     margin-top: 2rem;
     padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(113, 1, 128, 0.08);
 }
 
 .alt-label {
@@ -327,7 +327,7 @@
     margin-top: 0.75rem;
     font-size: 0.8rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(113, 1, 128, 0.5);
     text-decoration: none;
     transition: all 0.2s ease;
 }
@@ -401,7 +401,7 @@
 
 .more-show-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(27, 18, 18, 0.3);
+    box-shadow: 0 8px 25px rgba(198, 198, 255, 0.3);
 }
 
 .more-show-image-wrapper {
@@ -459,7 +459,7 @@
 .more-show-card:hover .more-show-has-archive {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-    filter: drop-shadow(0 6px 20px rgba(255, 255, 240, 0.4));
+    filter: drop-shadow(0 6px 20px rgba(113, 1, 128, 0.4));
 }
 
 .more-show-info {
@@ -482,7 +482,7 @@
 
 .more-show-date {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(113, 1, 128, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -499,7 +499,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 2rem 0 3rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(113, 1, 128, 0.1);
     margin-top: 1rem;
 }
 
@@ -512,7 +512,7 @@
     color: $eist;
     text-decoration: none;
     padding: 0.6rem 1rem;
-    border: 1px solid rgba(27, 18, 18, 0.4);
+    border: 1px solid rgba(198, 198, 255, 0.4);
     border-radius: 4px;
     transition: all 0.2s ease;
 }
