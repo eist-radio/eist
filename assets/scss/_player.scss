@@ -41,10 +41,10 @@
     background: linear-gradient(
         to top,
         $eist 0%,
-        rgba(27, 18, 18, 0.97) 12%,
-        rgba(27, 18, 18, 0.8) 35%,
-        rgba(27, 18, 18, 0.4) 60%,
-        rgba(27, 18, 18, 0.15) 80%,
+        rgba(148, 228, 234, 0.97) 12%,
+        rgba(148, 228, 234, 0.8) 35%,
+        rgba(148, 228, 234, 0.4) 60%,
+        rgba(148, 228, 234, 0.15) 80%,
         transparent 100%
     );
 }
@@ -685,7 +685,7 @@ body.archive-playing.soundcloud-active {
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 6px 25px rgba(255, 255, 240, 0.35);
+    box-shadow: 0 6px 25px rgba(113, 1, 128, 0.35);
     position: relative;
     overflow: hidden;
 
@@ -697,7 +697,7 @@ body.archive-playing.soundcloud-active {
 
     &:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 40px rgba(255, 255, 240, 0.5);
+        box-shadow: 0 10px 40px rgba(113, 1, 128, 0.5);
     }
 
     &:active {

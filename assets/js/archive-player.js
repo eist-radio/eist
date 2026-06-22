@@ -188,7 +188,7 @@
         // Use SoundCloud's standard embed URL with éist brand color
         const params = new URLSearchParams({
             url: `https://api.soundcloud.com/tracks/${trackId}`,
-            color: '%23fffff0',
+            color: '%23710180',
             auto_play: 'true',
             hide_related: 'true',
             show_comments: 'false',
