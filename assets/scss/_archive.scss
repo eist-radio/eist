@@ -51,13 +51,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(113, 1, 128, 0.6);
 }
 
 .filter-select {
     appearance: none;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(113, 1, 128, 0.3);
     border-radius: 8px;
     box-sizing: border-box;
     padding: 0.7rem 2.5rem 0.7rem 1rem;
@@ -315,7 +315,7 @@
     width: 44px;
     height: 24px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(113, 1, 128, 0.25);
     border-radius: 12px;
     transition: all 0.3s ease;
 }
@@ -327,7 +327,7 @@
     left: 2px;
     width: 18px;
     height: 18px;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(113, 1, 128, 0.7);
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -501,13 +501,13 @@
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(113, 1, 128, 0.2);
     border-radius: 8px;
-    color: #fff;
+    color: $eist-secondary;
     font-size: 0.85rem;
     transition: all 0.2s ease;
 }
 
 .genre-drawer-search input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(113, 1, 128, 0.4);
 }
 
 .genre-drawer-search input:focus {
@@ -534,18 +534,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(113, 1, 128, 0.05);
+    border: 1px solid rgba(113, 1, 128, 0.1);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(113, 1, 128, 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .genre-drawer-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(113, 1, 128, 0.1);
+    color: $eist-secondary;
+    border-color: rgba(113, 1, 128, 0.2);
 }
 
 .genre-drawer-close svg {
@@ -582,10 +582,10 @@
 
 .genre-drawer-tag {
     padding: 0.55rem 0.9rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(113, 1, 128, 0.03);
     border: 1px solid rgba(113, 1, 128, 0.2);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(113, 1, 128, 0.8);
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -618,7 +618,7 @@
 .genre-no-results {
     text-align: center;
     padding: 3rem 1rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(113, 1, 128, 0.4);
     font-size: 0.9rem;
 }
 
@@ -633,7 +633,7 @@
 
 .genre-selected-count {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(113, 1, 128, 0.5);
 }
 
 .genre-selected-count span {
@@ -649,9 +649,9 @@
 .genre-clear-btn {
     padding: 0.6rem 1.25rem;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(113, 1, 128, 0.2);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(113, 1, 128, 0.7);
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -659,8 +659,8 @@
 }
 
 .genre-clear-btn:hover {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: #fff;
+    border-color: rgba(113, 1, 128, 0.4);
+    color: $eist-secondary;
 }
 
 .genre-done-btn {
@@ -1047,7 +1047,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(113, 1, 128, 0.5);
 }
 
 .archive-card-title {
@@ -1064,12 +1064,12 @@
 }
 
 .archive-card:hover .archive-card-title {
-    color: #fff;
+    color: $eist-secondary;
 }
 
 .archive-card-artist {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(113, 1, 128, 0.6);
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -1112,11 +1112,11 @@
     justify-content: center;
     padding: 0.2rem 0.4rem;
     background: transparent;
-    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgba(113, 1, 128, 0.2);
     border-radius: 3px;
     font-size: 0.5rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(113, 1, 128, 0.4);
     white-space: nowrap;
 }
 

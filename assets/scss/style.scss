@@ -193,7 +193,7 @@ table {
     padding: 1px;
     font-size: 0.7em;
     line-height: 1.8;
-    color: #fff;
+    color: $eist-secondary;
     background-color: #777;
     opacity: 0.6;
     min-width: 55px;
@@ -898,7 +898,7 @@ a.footnote-ref {
   padding: .8em;
   margin-top: 1.5em;
   font-size: .8rem;
-  border: 3px dashed rgba(255, 255, 255, .2);
+  border: 3px dashed rgba(113, 1, 128, .2);
   border-radius: 5px;
 
   h2{

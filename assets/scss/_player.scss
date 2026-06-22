@@ -238,7 +238,7 @@
     font-size: 0.875rem;
     line-height: 1.5;
     margin: 0 0 0.6rem 0;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(113, 1, 128, 0.75);
 }
 
 .player-discord a {
@@ -292,7 +292,7 @@
 
         td {
             padding: 0.35rem 0.5rem 0.35rem 0 !important;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(113, 1, 128, 0.8);
             vertical-align: baseline;
         }
 
@@ -715,7 +715,7 @@ body.archive-playing.soundcloud-active {
         background: linear-gradient(
             90deg,
             transparent,
-            rgba(255, 255, 255, 0.3),
+            rgba(113, 1, 128, 0.3),
             transparent
         );
         transition: left 0.5s ease;

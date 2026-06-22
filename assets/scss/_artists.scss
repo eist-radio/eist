@@ -42,7 +42,7 @@
 .filter-input {
     appearance: none;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(113, 1, 128, 0.3);
     border-radius: 8px;
     box-sizing: border-box;
     padding: 0.7rem 2.5rem 0.7rem 1rem;
@@ -253,7 +253,7 @@
 }
 
 .artist-card:hover .artist-card-name {
-    color: #fff;
+    color: $eist-secondary;
 }
 
 /* Genre Tags - Always visible with subtle hover enhancement */
@@ -422,7 +422,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(113, 1, 128, 0.5);
     flex-shrink: 0;
 }
 
@@ -556,7 +556,7 @@
 .artist-about {
     margin-top: 1rem;
     padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(113, 1, 128, 0.1);
 }
 
 .artist-bio {
@@ -582,7 +582,7 @@
 }
 
 .artist-bio a:hover {
-    color: #fff;
+    color: $eist-secondary;
     text-decoration-thickness: 2px;
 }
 
@@ -699,7 +699,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(113, 1, 128, 0.5);
     text-decoration: none;
     transition: all 0.2s ease;
 }
@@ -940,13 +940,13 @@
 }
 
 .artist-show-card:hover .artist-show-title {
-    color: #fff;
+    color: $eist-secondary;
 }
 
 .artist-show-date {
     font-size: 0.65rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(113, 1, 128, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
