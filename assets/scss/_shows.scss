@@ -49,7 +49,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(148, 228, 234, 0.4);
+    background: rgba(198, 198, 255, 0.4);
     opacity: 0;
     transition: opacity 0.3s ease;
     border: none;
@@ -111,7 +111,7 @@
         opacity: 0.6;
         padding-left: 6px;
         margin-left: 2px;
-        border-left: 1px solid rgba(148, 228, 234, 0.25);
+        border-left: 1px solid rgba(198, 198, 255, 0.25);
     }
 
     &:hover {
@@ -401,7 +401,7 @@
 
 .more-show-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(148, 228, 234, 0.3);
+    box-shadow: 0 8px 25px rgba(198, 198, 255, 0.3);
 }
 
 .more-show-image-wrapper {
@@ -512,7 +512,7 @@
     color: $eist;
     text-decoration: none;
     padding: 0.6rem 1rem;
-    border: 1px solid rgba(148, 228, 234, 0.4);
+    border: 1px solid rgba(198, 198, 255, 0.4);
     border-radius: 4px;
     transition: all 0.2s ease;
 }

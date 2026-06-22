@@ -58,7 +58,7 @@ expiryDate = ["expiryDate"]
 
   # Metadata mostly used in document's head
   description = "éist is an internet radio station based in Cork, Ireland."
-  themeColor = "#94E4EA"
+  themeColor = "#C6C6FF"
 
   justifyContent = false
 

@@ -30,8 +30,8 @@
 }
 
 #dj-image-front-page {
-    filter: grayscale(100%);
-    -webkit-filter: grayscale(100%);
+    filter: hue-rotate(230deg) saturate(200%) brightness(0.8);
+    -webkit-filter: hue-rotate(230deg) saturate(200%) brightness(0.8);
 }
 
 .front-hero-overlay {
@@ -41,10 +41,10 @@
     background: linear-gradient(
         to top,
         $eist 0%,
-        rgba(148, 228, 234, 0.97) 12%,
-        rgba(148, 228, 234, 0.8) 35%,
-        rgba(148, 228, 234, 0.4) 60%,
-        rgba(148, 228, 234, 0.15) 80%,
+        rgba(198, 198, 255, 0.97) 12%,
+        rgba(198, 198, 255, 0.8) 35%,
+        rgba(198, 198, 255, 0.4) 60%,
+        rgba(198, 198, 255, 0.15) 80%,
         transparent 100%
     );
 }
@@ -61,7 +61,7 @@
     color: $eist-secondary;
     margin: 0;
     line-height: 1.1;
-    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    text-shadow: none;
 }
 
 .broadcast-status {
