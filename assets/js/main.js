@@ -247,6 +247,7 @@ document.addEventListener("turbo:load", () => {
     if (header !== null) {
         // Hamburger button
         listen('#burger-btn', "click", toggleMenuOverlay);
+        listen('#menu-close-btn', "click", closeMenuOverlay);
 
         listen('#share-btn', "click", shareMobileMenu);
         listen('#toc-btn', "click", toggleToc);

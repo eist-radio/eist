@@ -186,7 +186,7 @@
 
 .artist-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(148, 228, 234, 0.3);
+    box-shadow: 0 12px 40px rgba(198, 198, 255, 0.3);
 }
 
 /* Card Image */
@@ -214,8 +214,8 @@
     background: linear-gradient(
         to top,
         $eist 0%,
-        rgba(148, 228, 234, 0.8) 30%,
-        rgba(148, 228, 234, 0.2) 60%,
+        rgba(198, 198, 255, 0.8) 30%,
+        rgba(198, 198, 255, 0.2) 60%,
         transparent 100%
     );
     opacity: 0.85;
@@ -227,7 +227,7 @@
     background: linear-gradient(
         to top,
         $eist 0%,
-        rgba(148, 228, 234, 0.9) 25%,
+        rgba(198, 198, 255, 0.9) 25%,
         rgba(113, 1, 128, 0.15) 70%,
         rgba(113, 1, 128, 0.05) 100%
     );
@@ -855,7 +855,7 @@
 .artist-show-card:hover {
     transform: translateY(-6px);
     box-shadow:
-        0 20px 40px rgba(148, 228, 234, 0.25),
+        0 20px 40px rgba(198, 198, 255, 0.25),
         0 0 0 1px rgba(113, 1, 128, 0.2);
 }
 
@@ -883,8 +883,8 @@
     inset: 0;
     background: linear-gradient(
         to top,
-        rgba(148, 228, 234, 0.9) 0%,
-        rgba(148, 228, 234, 0.4) 40%,
+        rgba(198, 198, 255, 0.9) 0%,
+        rgba(198, 198, 255, 0.4) 40%,
         transparent 100%
     );
     pointer-events: none;
