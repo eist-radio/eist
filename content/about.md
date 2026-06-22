@@ -8,7 +8,7 @@ draft = false
 
 As Ireland's Queer landscapes continue to evolve, what spaces have we inherited, and what new ones are we building? How do Queer communities exist across cities, towns, online networks, dance floors and activist spaces?
 
-**Queering the airwaves** airs between June 22nd - 28th during Dublin Pride, and from July 27th - August 2nd during Cork Pride 🏳️‍🌈
+**Queering the airwaves** airs between June 22nd - 28th during Dublin Pride, and from July 27th - August 2nd during Cork Pride 🏳️‍⚧️ 🏳️‍🌈 
 
 **---**
 
