@@ -30,7 +30,7 @@
 .archive-filters {
     padding: 1.5rem 0;
     background: $eist;
-    border-bottom: 2px solid rgba(113, 1, 128, 0.2);
+    border-bottom: 2px solid rgba(175, 252, 65, 0.2);
 }
 
 .filter-row {
@@ -51,13 +51,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: rgba(113, 1, 128, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .filter-select {
     appearance: none;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(113, 1, 128, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     box-sizing: border-box;
     padding: 0.7rem 2.5rem 0.7rem 1rem;
@@ -67,7 +67,7 @@
     cursor: pointer;
     min-width: 180px;
     transition: all 0.2s ease;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23710180' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23AFFC41' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
 }
@@ -80,7 +80,7 @@
 .filter-select:focus {
     outline: none;
     border-color: $eist-secondary;
-    box-shadow: 0 0 0 3px rgba(113, 1, 128, 0.2);
+    box-shadow: 0 0 0 3px rgba(175, 252, 65, 0.2);
 }
 
 /* Style select dropdown options (limited browser support but helps) */
@@ -129,7 +129,7 @@
     width: 100%;
     padding: 0.7rem 1rem;
     background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(113, 1, 128, 0.3);
+    border: 1px solid rgba(175, 252, 65, 0.3);
     border-radius: 8px;
     color: $eist-secondary;
     font-size: 0.9rem;
@@ -176,7 +176,7 @@
     max-height: 300px;
     overflow-y: auto;
     background: #3526BF;
-    border: 1px solid rgba(113, 1, 128, 0.3);
+    border: 1px solid rgba(175, 252, 65, 0.3);
     border-top: none;
     border-radius: 0 0 8px 8px;
     list-style: none;
@@ -207,17 +207,17 @@
 }
 
 .custom-dropdown-list::-webkit-scrollbar-thumb {
-    background: rgba(113, 1, 128, 0.3);
+    background: rgba(175, 252, 65, 0.3);
     border-radius: 3px;
 }
 
 .custom-dropdown-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(113, 1, 128, 0.5);
+    background: rgba(175, 252, 65, 0.5);
 }
 
 .custom-dropdown-option {
     padding: 0.35rem 1rem;
-    color: rgba(113, 1, 128, 0.8);
+    color: rgba(175, 252, 65, 0.8);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -225,13 +225,13 @@
 }
 
 .custom-dropdown-option:hover {
-    background: rgba(113, 1, 128, 0.1);
+    background: rgba(175, 252, 65, 0.1);
     color: $eist-secondary;
     border-left-color: $eist-secondary;
 }
 
 .custom-dropdown-option.selected {
-    background: rgba(113, 1, 128, 0.15);
+    background: rgba(175, 252, 65, 0.15);
     color: $eist-secondary;
     font-weight: 600;
     border-left-color: $eist-secondary;
@@ -247,28 +247,28 @@
 .custom-dropdown-search {
     padding: 0.5rem;
     background: #3526BF;
-    border: 1px solid rgba(113, 1, 128, 0.3);
+    border: 1px solid rgba(175, 252, 65, 0.3);
     border-top: none;
-    border-bottom: 1px solid rgba(113, 1, 128, 0.15);
+    border-bottom: 1px solid rgba(175, 252, 65, 0.15);
 }
 
 .custom-dropdown-search-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
     background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(113, 1, 128, 0.2);
+    border: 1px solid rgba(175, 252, 65, 0.2);
     border-radius: 4px;
     color: $eist-secondary;
     font-size: 0.85rem;
     box-sizing: border-box;
 
     &::placeholder {
-        color: rgba(113, 1, 128, 0.4);
+        color: rgba(175, 252, 65, 0.4);
     }
 
     &:focus {
         outline: none;
-        border-color: rgba(113, 1, 128, 0.5);
+        border-color: rgba(175, 252, 65, 0.5);
         background: rgba(0, 0, 0, 0.35);
     }
 }
@@ -315,7 +315,7 @@
     width: 44px;
     height: 24px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(113, 1, 128, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 12px;
     transition: all 0.3s ease;
 }
@@ -327,14 +327,14 @@
     left: 2px;
     width: 18px;
     height: 18px;
-    background: rgba(113, 1, 128, 0.7);
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .toggle-input:checked + .toggle-switch {
-    background: rgba(113, 1, 128, 0.25);
-    border-color: rgba(113, 1, 128, 0.5);
+    background: rgba(175, 252, 65, 0.25);
+    border-color: rgba(175, 252, 65, 0.5);
 }
 
 .toggle-input:checked + .toggle-switch::after {
@@ -360,7 +360,7 @@
     gap: 1rem;
     margin-top: 1.25rem;
     padding-top: 1.25rem;
-    border-top: 1px solid rgba(113, 1, 128, 0.15);
+    border-top: 1px solid rgba(175, 252, 65, 0.15);
 }
 
 .genre-tags {
@@ -372,7 +372,7 @@
 
 .genre-filter-tag {
     background: transparent;
-    border: 1px solid rgba(113, 1, 128, 0.4);
+    border: 1px solid rgba(175, 252, 65, 0.4);
     border-radius: 20px;
     padding: 0.4rem 0.9rem;
     font-size: 0.7rem;
@@ -398,12 +398,12 @@
 
 .genre-more-btn {
     background: transparent;
-    border: 1px dashed rgba(113, 1, 128, 0.3);
+    border: 1px dashed rgba(175, 252, 65, 0.3);
     border-radius: 20px;
     padding: 0.4rem 0.9rem;
     font-size: 0.7rem;
     font-weight: 500;
-    color: rgba(113, 1, 128, 0.6);
+    color: rgba(175, 252, 65, 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -439,12 +439,12 @@
     max-width: 900px;
     max-height: 80vh;
     background: linear-gradient(145deg, rgba(25, 20, 60, 0.98), rgba(15, 10, 40, 0.98));
-    border: 1px solid rgba(113, 1, 128, 0.25);
+    border: 1px solid rgba(175, 252, 65, 0.25);
     border-radius: 16px;
     box-shadow:
         0 25px 80px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(113, 1, 128, 0.1) inset,
-        0 0 100px rgba(198, 198, 255, 0.15);
+        0 0 0 1px rgba(175, 252, 65, 0.1) inset,
+        0 0 100px rgba(71, 51, 255, 0.15);
     display: flex;
     flex-direction: column;
     opacity: 0;
@@ -465,8 +465,8 @@
     align-items: center;
     gap: 1.5rem;
     padding: 1.25rem 1.5rem;
-    background: rgba(198, 198, 255, 0.15);
-    border-bottom: 1px solid rgba(113, 1, 128, 0.15);
+    background: rgba(71, 51, 255, 0.15);
+    border-bottom: 1px solid rgba(175, 252, 65, 0.15);
 }
 
 .genre-drawer-title {
@@ -484,7 +484,7 @@
 
 .drawer-genre-count {
     font-size: 0.7rem;
-    color: rgba(113, 1, 128, 0.5);
+    color: rgba(175, 252, 65, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
@@ -499,15 +499,15 @@
     width: 100%;
     padding: 0.6rem 1rem 0.6rem 2.5rem;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(113, 1, 128, 0.2);
+    border: 1px solid rgba(175, 252, 65, 0.2);
     border-radius: 8px;
-    color: $eist-secondary;
+    color: #fff;
     font-size: 0.85rem;
     transition: all 0.2s ease;
 }
 
 .genre-drawer-search input::placeholder {
-    color: rgba(113, 1, 128, 0.4);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .genre-drawer-search input:focus {
@@ -523,7 +523,7 @@
     transform: translateY(-50%);
     width: 16px;
     height: 16px;
-    color: rgba(113, 1, 128, 0.5);
+    color: rgba(175, 252, 65, 0.5);
     pointer-events: none;
 }
 
@@ -534,18 +534,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(113, 1, 128, 0.05);
-    border: 1px solid rgba(113, 1, 128, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    color: rgba(113, 1, 128, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .genre-drawer-close:hover {
-    background: rgba(113, 1, 128, 0.1);
-    color: $eist-secondary;
-    border-color: rgba(113, 1, 128, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .genre-drawer-close svg {
@@ -558,7 +558,7 @@
     overflow-y: auto;
     padding: 1.5rem;
     scrollbar-width: thin;
-    scrollbar-color: rgba(113, 1, 128, 0.3) transparent;
+    scrollbar-color: rgba(175, 252, 65, 0.3) transparent;
 }
 
 .genre-drawer-body::-webkit-scrollbar {
@@ -570,7 +570,7 @@
 }
 
 .genre-drawer-body::-webkit-scrollbar-thumb {
-    background: rgba(113, 1, 128, 0.3);
+    background: rgba(175, 252, 65, 0.3);
     border-radius: 3px;
 }
 
@@ -582,10 +582,10 @@
 
 .genre-drawer-tag {
     padding: 0.55rem 0.9rem;
-    background: rgba(113, 1, 128, 0.03);
-    border: 1px solid rgba(113, 1, 128, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(175, 252, 65, 0.2);
     border-radius: 6px;
-    color: rgba(113, 1, 128, 0.8);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -599,8 +599,8 @@
 }
 
 .genre-drawer-tag:hover {
-    background: rgba(113, 1, 128, 0.1);
-    border-color: rgba(113, 1, 128, 0.4);
+    background: rgba(175, 252, 65, 0.1);
+    border-color: rgba(175, 252, 65, 0.4);
     color: $eist-secondary;
 }
 
@@ -618,7 +618,7 @@
 .genre-no-results {
     text-align: center;
     padding: 3rem 1rem;
-    color: rgba(113, 1, 128, 0.4);
+    color: rgba(255, 255, 255, 0.4);
     font-size: 0.9rem;
 }
 
@@ -628,12 +628,12 @@
     justify-content: space-between;
     padding: 1rem 1.5rem;
     background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(113, 1, 128, 0.1);
+    border-top: 1px solid rgba(175, 252, 65, 0.1);
 }
 
 .genre-selected-count {
     font-size: 0.8rem;
-    color: rgba(113, 1, 128, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .genre-selected-count span {
@@ -649,9 +649,9 @@
 .genre-clear-btn {
     padding: 0.6rem 1.25rem;
     background: transparent;
-    border: 1px solid rgba(113, 1, 128, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
-    color: rgba(113, 1, 128, 0.7);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -659,8 +659,8 @@
 }
 
 .genre-clear-btn:hover {
-    border-color: rgba(113, 1, 128, 0.4);
-    color: $eist-secondary;
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
 }
 
 .genre-done-btn {
@@ -718,7 +718,7 @@
     gap: 0.75rem;
     margin-top: 1rem;
     padding: 0.75rem 1rem;
-    background: rgba(198, 198, 255, 0.06);
+    background: rgba(71, 51, 255, 0.06);
     border-radius: 8px;
     --fade-distance: -8px;
     animation: fadeInUp 0.3s ease-out;
@@ -959,18 +959,18 @@
 .archive-card:hover {
     transform: translateY(-6px);
     box-shadow:
-        0 20px 40px rgba(198, 198, 255, 0.25),
-        0 0 0 1px rgba(113, 1, 128, 0.2);
+        0 20px 40px rgba(71, 51, 255, 0.25),
+        0 0 0 1px rgba(175, 252, 65, 0.2);
 }
 
 .archive-card.has-archive {
-    box-shadow: inset 0 0 0 1px rgba(113, 1, 128, 0.15);
+    box-shadow: inset 0 0 0 1px rgba(175, 252, 65, 0.15);
 }
 
 .archive-card.has-archive:hover {
     box-shadow:
-        0 20px 40px rgba(198, 198, 255, 0.25),
-        0 0 0 2px rgba(113, 1, 128, 0.4);
+        0 20px 40px rgba(71, 51, 255, 0.25),
+        0 0 0 2px rgba(175, 252, 65, 0.4);
 }
 
 .archive-card-link {
@@ -1003,8 +1003,8 @@
     inset: 0;
     background: linear-gradient(
         to top,
-        rgba(198, 198, 255, 0.9) 0%,
-        rgba(198, 198, 255, 0.4) 40%,
+        rgba(71, 51, 255, 0.9) 0%,
+        rgba(71, 51, 255, 0.4) 40%,
         transparent 100%
     );
     opacity: 0.7;
@@ -1047,7 +1047,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgba(113, 1, 128, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .archive-card-title {
@@ -1064,12 +1064,12 @@
 }
 
 .archive-card:hover .archive-card-title {
-    color: $eist-secondary;
+    color: #fff;
 }
 
 .archive-card-artist {
     font-size: 0.75rem;
-    color: rgba(113, 1, 128, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -1088,21 +1088,21 @@
 .archive-genre-pill {
     display: inline-block;
     padding: 0.2rem 0.5rem;
-    background: rgba(113, 1, 128, 0.08);
-    border: 1px solid rgba(113, 1, 128, 0.25);
+    background: rgba(175, 252, 65, 0.08);
+    border: 1px solid rgba(175, 252, 65, 0.25);
     border-radius: 3px;
     font-size: 0.55rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: rgba(113, 1, 128, 0.7);
+    color: rgba(175, 252, 65, 0.7);
     white-space: nowrap;
     transition: all 0.15s ease;
 }
 
 .archive-card:hover .archive-genre-pill {
-    background: rgba(113, 1, 128, 0.12);
-    border-color: rgba(113, 1, 128, 0.4);
+    background: rgba(175, 252, 65, 0.12);
+    border-color: rgba(175, 252, 65, 0.4);
     color: $eist-secondary;
 }
 
@@ -1112,11 +1112,11 @@
     justify-content: center;
     padding: 0.2rem 0.4rem;
     background: transparent;
-    border: 1px dashed rgba(113, 1, 128, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
     border-radius: 3px;
     font-size: 0.5rem;
     font-weight: 500;
-    color: rgba(113, 1, 128, 0.4);
+    color: rgba(255, 255, 255, 0.4);
     white-space: nowrap;
 }
 
@@ -1188,7 +1188,7 @@
     align-items: center;
     gap: 0.5rem;
     background: transparent;
-    border: 1px solid rgba(198, 198, 255, 0.3);
+    border: 1px solid rgba(71, 51, 255, 0.3);
     border-radius: 25px;
     padding: 0.75rem 1.5rem;
     font-size: 0.8rem;
