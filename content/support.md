@@ -75,20 +75,10 @@ draft = false
   document.addEventListener("turbo:load", ensurePaypal);
 </script>
 
-<div class="artist">
-    <div class="artist-image-container">
-        <img src="/support/images/support-1024x1024.jpeg" alt="Support éist" class="artist-image">
-    </div>
-</div>
-
 <div id="subscription-section">
-
-## Support us with a monthly subscription
 
 If you like what you hear, and you want us to keep broadcasting, please consider setting up a monthly **PayPal subscription**.
 Your money goes directly towards the costs of running the radio station, helping us to pay for rent, electricity, radio web hosting, studio kit, etc.
-Your help and support for éist is vital and greatly appreciated - we can't do this alone.
-
 Thank you! 🤟
 
 #### €25 monthly subscription
@@ -123,10 +113,9 @@ Thank you! 🤟
 ## Thank you for supporting éist! 🤟
 
 Your monthly subscription is now active. You're directly helping us keep
-independent radio on the air — covering the rent, the electricity, the hosting and
-all the kit that keeps the music playing.
+independent radio on the air.
 
-It genuinely means the world to us. Thank you for being part of éist.
+It genuinely means the world to us. Thank you for being a part of éist.
 
 </div>
 
