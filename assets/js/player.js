@@ -20,6 +20,122 @@ function initializePage() {
     // Track play promises
     let playPromise = null;
 
+    // ---- Stream recovery ------------------------------------------------
+    // A severed connection does NOT fire `error` in Chromium — it fires
+    // `waiting` then `stalled` and then nothing, leaving the element frozen with
+    // paused === false and the button still showing "pause". The old handler
+    // listened only for `error`, so it never ran; and it called load() without
+    // play(), so even when it did run the stream stayed stopped. Measured: one
+    // severed connection left the page silent for the rest of a 6-minute run.
+    //
+    // `waiting` also fires during ordinary rebuffering, so a stall ARMS a timer
+    // rather than reconnecting. If playback resumes, the timer is cancelled.
+    // Only a stall that outlives the grace period triggers a reconnect.
+    const STALL_GRACE_MS = 4000;
+    // First attempt is immediate: by the time the grace period has elapsed the
+    // listener is already hearing silence, so an extra delay before the first
+    // try is pure added outage. Backoff applies only to repeated failures.
+    const RECONNECT_BACKOFF_MS = [0, 1000, 2000, 5000, 10000, 20000];
+
+    // Resolve the stream URL at reconnect time, not at init: the element's src
+    // can legitimately have been changed since the page loaded, and each
+    // reconnect appends its own cache-buster which must not accumulate.
+    function streamBaseUrl() {
+        const current = audio.getAttribute('src') || '';
+        return current.replace(/[?&]_r=\d+/g, '');
+    }
+
+    let userWantsPlayback = false;   // survives stalls; only togglePlay changes it
+    let stallTimer = null;
+    let reconnectTimer = null;
+    let reconnectAttempt = 0;
+    let lastPlayheadTime = -1;
+    let playheadFrozenSince = null;
+
+    function clearStallTimer() {
+        if (stallTimer) { clearTimeout(stallTimer); stallTimer = null; }
+    }
+
+    function cancelRecovery() {
+        clearStallTimer();
+        if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+        playheadFrozenSince = null;
+        reconnectAttempt = 0;
+    }
+
+    // Arm a reconnect unless playback recovers on its own first.
+    function noteStalled(why) {
+        if (!userWantsPlayback || stallTimer || reconnectTimer) return;
+        console.log(`Stream stalled (${why}), waiting ${STALL_GRACE_MS}ms for recovery`);
+        stallTimer = setTimeout(() => {
+            stallTimer = null;
+            if (!userWantsPlayback) return;
+            reconnect(why);
+        }, STALL_GRACE_MS);
+    }
+
+    // Playback is healthy again — stand down.
+    function noteProgress() {
+        clearStallTimer();
+        playheadFrozenSince = null;
+        reconnectAttempt = 0;
+    }
+
+    function reconnect(why) {
+        if (!userWantsPlayback || reconnectTimer) return;
+
+        const delay = RECONNECT_BACKOFF_MS[Math.min(reconnectAttempt, RECONNECT_BACKOFF_MS.length - 1)];
+        reconnectAttempt += 1;
+        console.warn(`Reconnecting to stream (${why}), attempt ${reconnectAttempt} in ${delay}ms`);
+
+        reconnectTimer = setTimeout(() => {
+            reconnectTimer = null;
+            if (!userWantsPlayback) return;
+
+            // A fresh URL forces a new connection rather than resuming the dead
+            // one. Icecast ignores unknown query params (its own Safari redirect
+            // appends `_ic2`).
+            const base = streamBaseUrl();
+            const sep = base.includes('?') ? '&' : '?';
+            audio.src = `${base}${sep}_r=${Date.now()}`;
+            audio.load();
+
+            // load() alone leaves it stopped; the old code's missing half.
+            audio.play()
+                .then(() => {
+                    console.log('Reconnected to stream');
+                    playPauseBtn.src = '/pause.svg';
+                    isPlaying = true;
+                    updateMediaSession(true);
+                })
+                .catch((error) => {
+                    console.error('Reconnect failed:', error);
+                    if (userWantsPlayback) reconnect('reconnect-failed');
+                });
+        }, delay);
+    }
+
+    // Catches the silent freeze: the playhead stops advancing while the element
+    // still reports playing, and no event fires at all.
+    //
+    // Registered once. initializePage() re-runs on every turbo:load, but
+    // #global-player is data-turbo-permanent so the element — and the closure
+    // that owns the stall listeners below — persists. Without this guard each
+    // navigation would leak another interval.
+    const startWatchdog = () => setInterval(() => {
+        if (!userWantsPlayback || audio.paused) { playheadFrozenSince = null; return; }
+        if (audio.currentTime === lastPlayheadTime) {
+            playheadFrozenSince = playheadFrozenSince ?? Date.now();
+            if (Date.now() - playheadFrozenSince >= STALL_GRACE_MS) {
+                playheadFrozenSince = null;
+                reconnect('playhead-frozen');
+            }
+        } else {
+            noteProgress();
+        }
+        lastPlayheadTime = audio.currentTime;
+    }, 1000);
+
     // Global State
     let artistDetails = {
         name: defaultText,
@@ -34,11 +150,22 @@ function initializePage() {
 
     // Setup audio listeners if not already set
     if (!audio.dataset.listenersAdded) {
-        // Handle audio errors
+        // React to the events that actually fire on a broken stream. `error` is
+        // kept, but Chromium never fires it on an abrupt close — `stalled` and
+        // `waiting` are the ones that do.
         audio.addEventListener("error", function() {
-            console.error("Audio error, retrying...");
-            setTimeout(() => audio.load(), 5000);
+            console.error("Audio error:", audio.error && audio.error.message);
+            if (userWantsPlayback) reconnect('error');
         });
+
+        audio.addEventListener("stalled", () => noteStalled('stalled'));
+        audio.addEventListener("waiting", () => noteStalled('waiting'));
+
+        startWatchdog();
+
+        // Recovery signals — stand the reconnect down.
+        audio.addEventListener("playing", noteProgress);
+        audio.addEventListener("canplay", noteProgress);
 
         // Update play state
         audio.addEventListener("play", function() {
@@ -62,12 +189,17 @@ function initializePage() {
         console.log("Toggle play called, current state:", isPlaying);
 
         if (isPlaying) {
+            // The user is stopping: drop the intent flag first so no in-flight
+            // stall timer can reconnect behind them.
+            userWantsPlayback = false;
+
             // If we have an ongoing play operation, wait for it to complete before pausing
             if (playPromise !== null) {
                 console.log("Waiting for play promise to resolve before pausing");
                 playPromise
                     .then(() => {
                         console.log("Play promise resolved, now pausing");
+                        cancelRecovery();
                         audio.pause();
                         audio.currentTime = 0;
                         playPauseBtn.src = '/play.svg';
@@ -76,6 +208,7 @@ function initializePage() {
                     })
                     .catch(() => {
                         console.log("Play promise rejected, updating UI only");
+                        cancelRecovery();
                         playPauseBtn.src = '/play.svg';
                         isPlaying = false;
                         updateMediaSession(false);
@@ -83,6 +216,7 @@ function initializePage() {
             } else {
                 // No ongoing play operation, pause directly
                 console.log("Pausing directly");
+                cancelRecovery();
                 audio.pause();
                 audio.currentTime = 0;
                 playPauseBtn.src = '/play.svg';
@@ -95,6 +229,10 @@ function initializePage() {
                 window.archivePlayer.close();
                 console.log("Archive player stopped for live stream playback");
             }
+
+            // The user is starting: recovery is armed from here until they stop.
+            userWantsPlayback = true;
+            reconnectAttempt = 0;
 
             // Reload the stream before playing
             audio.load();
@@ -259,6 +397,10 @@ function initializePage() {
                         window.archivePlayer.close();
                     }
                     try {
+                        // Lock-screen / headset play must arm recovery too,
+                        // otherwise a stall started this way is never repaired.
+                        userWantsPlayback = true;
+                        reconnectAttempt = 0;
                         await audio.play();
                         isPlaying = true;
                         playPauseBtn.src = '/pause.svg';
@@ -271,6 +413,9 @@ function initializePage() {
 
             navigator.mediaSession.setActionHandler('pause', () => {
                 if (!audio.paused) {
+                    // Deliberate pause: stand recovery down.
+                    userWantsPlayback = false;
+                    cancelRecovery();
                     audio.pause();
                     isPlaying = false;
                     playPauseBtn.src = '/play.svg';

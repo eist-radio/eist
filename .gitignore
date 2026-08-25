@@ -13,3 +13,7 @@ __pycache__
 data
 !data/manual-matches.json
 .claude
+
+# Stream-dropout investigation harness — kept out of the repo, lives locally only
+test/node_modules
+test/stream-dropout
