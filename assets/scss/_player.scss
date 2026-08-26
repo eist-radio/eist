@@ -20,6 +20,7 @@
     position: absolute;
     inset: 0;
     z-index: 1;
+    background: $eist;  /* Show brand color while image loads */
 }
 
 .front-hero-image {
@@ -27,6 +28,12 @@
     height: 100%;
     object-fit: cover;
     object-position: center 33%;  /* Adjustable focus point */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &.loaded {
+        opacity: 1;
+    }
 }
 
 .front-hero-overlay {
